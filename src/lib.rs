@@ -1,3 +1,4 @@
+pub mod credentials;
 #[path = "proto/xenon.rs"]
 mod xenon;
 #[path = "proto/xenon_grpc.rs"]
