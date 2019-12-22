@@ -18,4 +18,4 @@ Cargo.lock
 **/*.rs.bk
 
 ### Custom ###
-/src/protos/
+/src/proto
