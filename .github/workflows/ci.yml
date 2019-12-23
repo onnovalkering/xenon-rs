@@ -19,3 +19,24 @@ jobs:
       
       - name: Run unit tests
         run: cargo test -v --lib
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      
+      - name: Install protoc
+        run: ./scripts/install-protoc.sh
+
+      - name: Start services
+        run: docker-compose up -d        
+
+      - name: Build project
+        run: cargo build -v
+
+      - name: Run integration tests
+        run: |
+          cargo test -v --test storage

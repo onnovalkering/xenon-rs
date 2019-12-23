@@ -27,7 +27,7 @@ pub fn create_sftp_filesystem() -> FileSystem {
         String::from("sftp"), 
         channel, 
         credential, 
-        String::from("localhost:10022"),
+        String::from("slurm:22"),
         properties,
     ).unwrap()
 }
