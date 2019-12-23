@@ -1,5 +1,6 @@
 mod common;
 use rand::random;
+use xenon_rs::credentials::Credential;
 use xenon_rs::storage::FileSystemPath;
 
 #[test]
@@ -172,6 +173,57 @@ fn exists_nonexisting_false() {
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), false);
+}
+
+#[test]
+fn getfscredential_default_password() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.get_fs_credential();
+
+    assert!(result.is_ok());
+    let credential = result.unwrap();
+    assert!(credential.is_some());
+    
+    let credential = credential.unwrap();
+    if let Credential::Password(credential) = credential {
+        assert_eq!(credential.username, String::from("xenon"));
+        assert_eq!(credential.password, String::from("javagat"));
+    } else {
+        unreachable!();
+    }
+}
+
+#[test]
+fn getfslocation_default_location() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.get_fs_location();
+    assert!(result.is_ok());
+    let location = result.unwrap();
+
+    assert_eq!(location, String::from("slurm:22"));
+}
+
+#[test]
+fn getfsproperties_default_properties() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.get_fs_properties();
+    assert!(result.is_ok());
+    let properties = result.unwrap();
+    assert!(properties.contains_key(&String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking")))
+}
+
+#[test]
+fn getfsseparator_default_separator() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.get_fs_separator();
+    assert!(result.is_ok());
+    let separator = result.unwrap();
+
+    assert_eq!(separator, String::from("/"));
 }
 
 #[test]

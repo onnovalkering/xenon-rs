@@ -1,4 +1,4 @@
-use crate::credentials::Credential;
+use crate::credentials::{CertificateCredential, Credential, PasswordCredential};
 use crate::xenon;
 use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{future, Future, Sink, Stream};
@@ -15,8 +15,6 @@ pub struct FileSystem {
     client: FileSystemServiceClient,
     filesystem: xenon::FileSystem,
     pub identifier: String,
-    pub location: String,
-    pub properties: Map<String>,
 }
 
 impl FileSystem {
@@ -81,8 +79,8 @@ impl FileSystem {
         // Construct create request message.
         let mut request = xenon::CreateFileSystemRequest::new();
         request.set_adaptor(adaptor.clone());
-        request.set_location(location.clone());
-        request.set_properties(properties.clone());    
+        request.set_location(location);
+        request.set_properties(properties);    
         match credential {
             Credential::Password(password) => {
                 request.set_password_credential(password.proto())
@@ -99,8 +97,6 @@ impl FileSystem {
             adaptor,
             filesystem,
             identifier,
-            location,
-            properties,
             client
         })
     }
@@ -209,20 +205,66 @@ impl FileSystem {
         unimplemented!()
     }
 
-    pub fn get_fs_credential() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn get_fs_credential(
+        &self
+    ) -> FResult<Option<Credential>> {
+        let response = self.client.get_credential(&self.filesystem)?;
+        if let Some(one_of_credential) = response.credential {
+            use xenon::GetCredentialResponse_oneof_credential::*;
+
+            match one_of_credential {
+                certificate_credential(credential) => {
+                    Ok(Some(CertificateCredential::new(
+                        credential.certfile, 
+                        credential.username, 
+                        credential.passphrase)))
+                },
+                password_credential(credential) => {
+                    Ok(Some(PasswordCredential::new(
+                        credential.username, 
+                        credential.password)))
+                },
+                _ => unreachable!(),
+            }
+        } else {
+            Ok(None)
+        }
     }
 
-    pub fn get_fs_location() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn get_fs_location(
+        &self
+    ) -> FResult<String> {
+        let response = self.client.get_location(&self.filesystem)?;
+
+        Ok(response.location)
     }
 
-    pub fn get_fs_seperator() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn get_fs_separator(        
+        &self
+    ) -> FResult<String> {
+        let response = self.client.get_path_separator(&self.filesystem)?;
+
+        Ok(response.separator)
     }
 
-    pub fn get_fs_properties() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn get_fs_properties(        
+        &self
+    ) -> FResult<Map<String>> {
+        let response = self.client.get_properties(&self.filesystem)?;
+
+        Ok(response.properties)
     }
 
     pub fn get_working_directory() -> FResult<()> {

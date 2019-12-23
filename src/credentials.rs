@@ -1,5 +1,4 @@
 use crate::xenon;
-use std::path::PathBuf;
 
 ///
 /// 
@@ -15,7 +14,7 @@ pub enum Credential {
 /// 
 #[derive(Clone)]
 pub struct CertificateCredential {
-    pub certificate: PathBuf,
+    pub certificate: String,
     pub passphrase: String,
     pub username: String,
 }
@@ -25,7 +24,7 @@ impl CertificateCredential {
     /// 
     /// 
     pub fn new(
-        certificate: PathBuf,
+        certificate: String,
         username: String,
         passphrase: String,
     ) -> Credential {
@@ -45,9 +44,7 @@ impl CertificateCredential {
         self
     ) -> xenon::CertificateCredential {
         let mut credential = xenon::CertificateCredential::new();
-        credential.set_certfile(
-            self.certificate.into_os_string().into_string().unwrap()
-        );
+        credential.set_certfile(self.certificate);
         credential.set_passphrase(self.passphrase);
         credential.set_username(self.username);
 
