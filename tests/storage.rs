@@ -1,7 +1,7 @@
 mod common;
 use rand::random;
 use xenon_rs::credentials::Credential;
-use xenon_rs::storage::FileSystemPath;
+use xenon_rs::storage::{FileSystemPath, FileSystemPermission};
 
 #[test]
 fn appendtofile_existing_ok() {
@@ -176,6 +176,27 @@ fn exists_nonexisting_false() {
 }
 
 #[test]
+fn getattributes_existing_ok() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("test-slurm.job"));
+    let result = filesystem.exists(path);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn getattributes_nonexisting_err() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("nonexisting.txt"));
+    let result = filesystem.get_attributes(path);
+
+    assert!(result.is_err());
+}
+
+
+#[test]
 fn getfscredential_default_password() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -224,6 +245,14 @@ fn getfsseparator_default_separator() {
     let separator = result.unwrap();
 
     assert_eq!(separator, String::from("/"));
+}
+
+#[test]
+fn getworkingdirectory_default_path() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.get_working_directory();
+    assert!(result.is_ok());
 }
 
 #[test]
@@ -280,6 +309,50 @@ fn readsymboliclink_nonsymboliclink_ok() {
 
     let link = FileSystemPath::new(String::from("test-slurm.job"));
     let result = filesystem.read_symbolic_link(link);
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn setpermissions_existing_ok() {
+    use FileSystemPermission::*;
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("test-slurm.job"));
+    let permissions = vec!(OwnerRead, OwnerWrite, OwnerExecute);
+    let result = filesystem.set_permissions(path, permissions);
+
+    assert!(result.is_ok());  
+}
+
+#[test]
+fn setpermissions_nonexisting_err() {
+    use FileSystemPermission::*;
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("nonexisting.txt"));
+    let permissions = vec!(OwnerRead, OwnerWrite, OwnerExecute);
+    let result = filesystem.set_permissions(path, permissions);
+
+    assert!(result.is_err());  
+}
+
+#[test]
+fn setworkingdirectory_existing_ok() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let directory = FileSystemPath::new(String::from("/home/xenon/filesystem-test-fixture"));
+    let result = filesystem.set_working_directory(directory);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn setworkingdirectory_nonexisting_err() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let directory = FileSystemPath::new(String::from("/nonexisting"));
+    let result = filesystem.set_working_directory(directory);
 
     assert!(result.is_err());
 }
