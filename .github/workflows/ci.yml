@@ -1,0 +1,21 @@
+name: CI
+
+on: [push]
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      
+      - name: Install protoc
+        run: ./scripts/install-protoc.sh
+
+      - name: Build project
+        run: cargo build -v
+      
+      - name: Run unit tests
+        run: cargo test -v --lib
