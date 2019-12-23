@@ -20,8 +20,23 @@ pub struct FileSystem {
 }
 
 impl FileSystem {
-    pub fn append_to_file() -> FResult<()> {
-        unimplemented!()
+    pub fn append_to_file(
+        &self,
+        buffer: Vec<u8>,
+        path: FileSystemPath,
+    ) -> FResult<()> {
+        let mut request = xenon::AppendToFileRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_path(path.proto());
+        request.set_buffer(buffer);
+
+        let (mut sink, mut receiver) = self.client.append_to_file()?;
+        sink = sink.send((request, WriteFlags::default())).wait()?;
+
+        future::poll_fn(|| sink.close()).wait()?;
+        future::poll_fn(|| receiver.poll()).wait()?;
+
+        Ok(())
     }
 
     ///
@@ -90,12 +105,36 @@ impl FileSystem {
         })
     }
 
-    pub fn create_directories() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn create_directories(
+        &self,
+        path: FileSystemPath,
+    ) -> FResult<()> {
+        let mut request = xenon::PathRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_path(path.proto());
+
+        self.client.create_directories(&request)?;
+
+        Ok(())
     }
 
-    pub fn create_directory() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn create_directory(        
+        &self,
+        path: FileSystemPath,
+    ) -> FResult<()> {
+        let mut request = xenon::PathRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_path(path.proto());
+
+        self.client.create_directory(&request)?;
+
+        Ok(())
     }
 
     ///
@@ -114,8 +153,22 @@ impl FileSystem {
         Ok(())
     }
 
-    pub fn create_symbolic_link() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn create_symbolic_link(
+        &self,
+        link: FileSystemPath,
+        target: FileSystemPath,
+    ) -> FResult<()> {
+        let mut request = xenon::CreateSymbolicLinkRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_link(link.proto());
+        request.set_target(target.proto());
+
+        self.client.create_symbolic_link(&request)?;
+
+        Ok(())
     }
 
     ///
@@ -188,6 +241,9 @@ impl FileSystem {
         unimplemented!()
     }
 
+    ///
+    /// 
+    /// 
     pub fn read_from_file(
         &self,
         path: FileSystemPath,
@@ -204,8 +260,21 @@ impl FileSystem {
         }
     }
 
-    pub fn read_symbolic_link() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn read_symbolic_link(
+        &self,
+        path: FileSystemPath,
+    ) -> FResult<FileSystemPath> {
+        let mut request = xenon::PathRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_path(path.proto());
+
+        let target = self.client.read_symbolic_link(&request)?;
+        let target = FileSystemPath::new(target.path);
+
+        Ok(target)
     }
 
     pub fn set_permissions() -> FResult<()> {
@@ -251,6 +320,7 @@ impl Drop for FileSystem {
 ///
 /// 
 ///
+#[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemPath {
     pub path: String,
 }
