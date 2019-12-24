@@ -1,5 +1,6 @@
 mod common;
 use rand::random;
+use std::collections::HashSet;
 use xenon_rs::credentials::Credential;
 use xenon_rs::storage::{FileSystemPath, FileSystemPermission};
 
@@ -319,10 +320,14 @@ fn setpermissions_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let permissions = vec!(OwnerRead, OwnerWrite, OwnerExecute);
-    let result = filesystem.set_permissions(path, permissions);
+    let mut permissions = HashSet::<FileSystemPermission>::new();
+    permissions.extend(vec!(OwnerRead, OwnerWrite, OwnerExecute));
+
+    let result = filesystem.set_permissions(path.clone(), permissions.clone());
 
     assert!(result.is_ok());  
+    let attributes = filesystem.get_attributes(path).unwrap();
+    assert_eq!(permissions, attributes.permissions);
 }
 
 #[test]
@@ -331,7 +336,9 @@ fn setpermissions_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let permissions = vec!(OwnerRead, OwnerWrite, OwnerExecute);
+    let mut permissions = HashSet::<FileSystemPermission>::new();
+    permissions.extend(vec!(OwnerRead, OwnerWrite, OwnerExecute));
+
     let result = filesystem.set_permissions(path, permissions);
 
     assert!(result.is_err());  

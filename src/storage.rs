@@ -3,6 +3,7 @@ use crate::xenon;
 use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{future, Future, Sink, Stream};
 use grpcio::{Channel, WriteFlags};
+use std::collections::HashSet;
 
 type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
@@ -349,7 +350,7 @@ impl FileSystem {
     pub fn set_permissions(
         &self,
         path: FileSystemPath,
-        permissions: Vec<FileSystemPermission>,
+        permissions: HashSet<FileSystemPermission>,
     ) -> FResult<()> {
         let mut request = xenon::SetPosixFilePermissionsRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -427,7 +428,7 @@ pub struct FileSystemAttributes {
     pub last_access_time: u64,
     pub last_modified_time: u64,
     pub owner: String,
-    pub permissions: Vec<FileSystemPermission>,
+    pub permissions: HashSet<FileSystemPermission>,
     pub size: u64,
 }
 
@@ -438,6 +439,11 @@ impl FileSystemAttributes {
     pub(crate) fn new(
         attributes: xenon::PathAttributes
     ) -> FileSystemAttributes {
+        let permissions = attributes.permissions
+            .iter()
+            .map(|p| { FileSystemPermission::from(p) })
+            .collect();
+
         FileSystemAttributes {
             creation_time: attributes.creation_time,
             group: attributes.group,
@@ -452,11 +458,7 @@ impl FileSystemAttributes {
             last_access_time: attributes.last_access_time,
             last_modified_time: attributes.last_modified_time,
             owner: attributes.owner,
-            permissions: attributes
-                .permissions
-                .iter()
-                .map(|p| { FileSystemPermission::from(p) })
-                .collect(),
+            permissions: permissions,
             size: attributes.size,
         }
     }
@@ -498,7 +500,7 @@ impl FileSystemPath {
 ///
 /// 
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum FileSystemPermission {
     None = 0,
     OwnerRead = 1,
