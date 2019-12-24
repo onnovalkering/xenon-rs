@@ -4,6 +4,7 @@ use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{future, Future, Sink, Stream};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
+use std::{thread, time};
 
 type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
@@ -15,7 +16,7 @@ pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient,
     open: bool,
-    filesystem: xenon::FileSystem,
+    pub(crate) filesystem: xenon::FileSystem,
     pub identifier: String,
 }
 
@@ -54,20 +55,38 @@ impl FileSystem {
         Ok(())
     }
 
-    pub fn copy() -> FResult<()> {
-        unimplemented!()
-    }
+    ///
+    /// 
+    /// 
+    pub fn copy(
+        &self,
+        source: FileSystemPath,
+        destination: FileSystemPath,
+        destination_filesystem: Option<FileSystem>,
+        recursive: bool,
+        timeout: u64,
+    ) -> FResult<()> {
+        let mut request = xenon::CopyRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_source(source.proto());
+        request.set_destination(destination.proto());
+        request.set_recursive(recursive);
+        if let Some(remote) = destination_filesystem {
+            request.set_destination_filesystem(remote.filesystem.clone());
+        } else {
+            request.set_destination_filesystem(self.filesystem.clone());
+        };
 
-    pub fn copy_cancel() -> FResult<()> {
-        unimplemented!()
-    }
+        let operation = self.client.copy(&request)?;
 
-    pub fn copy_status() -> FResult<()> {
-        unimplemented!()
-    }
+        let mut request = xenon::WaitUntilDoneRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_copy_operation(operation.clone());
+        request.set_timeout(timeout);
 
-    pub fn copy_wait() -> FResult<()> {
-        unimplemented!()
+        self.client.wait_until_done(&request)?;
+
+        Ok(())
     }
 
     ///

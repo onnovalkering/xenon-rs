@@ -29,6 +29,17 @@ fn appendtofile_nonexisting_err() {
 }
 
 #[test]
+fn copy_existing_ok() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let source = FileSystemPath::new(String::from("test-slurm.job"));
+    let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
+    let result = filesystem.copy(source, destination, None, false, 5000);
+
+    assert!(result.is_ok());
+}
+
+#[test]
 fn create_default_ok() {
     let filesystem = common::create_sftp_filesystem();
 
