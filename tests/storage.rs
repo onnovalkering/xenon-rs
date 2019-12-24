@@ -256,6 +256,47 @@ fn getworkingdirectory_default_path() {
 }
 
 #[test]
+fn isopen_open_true() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let result = filesystem.is_open();
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), true);
+}
+
+#[test]
+fn isopen_closed_false() {
+    let mut filesystem = common::create_sftp_filesystem().unwrap();
+    filesystem.close().unwrap();
+
+    let result = filesystem.is_open();
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), false);
+}
+
+#[test]
+fn list_existing_ok() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("/home/xenon"));
+    let result = filesystem.list(path, false);
+
+    assert!(result.is_ok());
+    let files = result.unwrap();
+    assert!(files.len() > 0);
+}
+
+#[test]
+fn list_nonexisting_err() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let path = FileSystemPath::new(String::from("/nonexisting"));
+    let result = filesystem.list(path, false);
+
+    assert!(result.is_err());
+}
+
+#[test]
 fn readfromfile_existing_buffer() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -309,6 +350,30 @@ fn readsymboliclink_nonsymboliclink_ok() {
 
     let link = FileSystemPath::new(String::from("test-slurm.job"));
     let result = filesystem.read_symbolic_link(link);
+
+    assert!(result.is_err());
+}
+
+#[test]
+fn rename_existing_ok() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let source = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
+    filesystem.create_file(source.clone()).unwrap();
+
+    let destination = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
+    let result = filesystem.rename(source, destination);
+
+    assert!(result.is_ok());
+}
+
+#[test]
+fn rename_nonexisting_err() {
+    let filesystem = common::create_sftp_filesystem().unwrap();
+
+    let source = FileSystemPath::new(String::from("nonexisting.txt"));
+    let destination = FileSystemPath::new(String::from("nonexisting.txt"));
+    let result = filesystem.rename(source, destination);
 
     assert!(result.is_err());
 }

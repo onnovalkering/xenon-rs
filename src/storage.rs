@@ -14,6 +14,7 @@ type Map<T> = std::collections::HashMap<String, T>;
 pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient,
+    open: bool,
     filesystem: xenon::FileSystem,
     pub identifier: String,
 }
@@ -44,8 +45,11 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn close(&self) -> FResult<()> {
-        self.client.close(&self.filesystem)?;
+    pub fn close(&mut self) -> FResult<()> {
+        if self.open {
+            self.client.close(&self.filesystem)?;
+            self.open = false;
+        }
 
         Ok(())
     }
@@ -94,6 +98,7 @@ impl FileSystem {
         Ok(FileSystem {
             adaptor,
             filesystem,
+            open: true,
             identifier,
             client,
         })
@@ -211,7 +216,7 @@ impl FileSystem {
         request.set_path(path.proto());
 
         let attributes = self.client.get_attributes(&request)?;
-        let attributes = FileSystemAttributes::new(attributes);
+        let attributes = FileSystemAttributes::from(attributes);
 
         Ok(attributes)
     }
@@ -277,16 +282,57 @@ impl FileSystem {
         Ok(directory)
     }
 
-    pub fn is_open() -> FResult<bool> {
-        unimplemented!()
+    ///
+    ///
+    ///
+    pub fn is_open(&self) -> FResult<bool> {
+        if !self.open {
+            return Ok(false);
+        }
+
+        let is = self.client.is_open(&self.filesystem)?;
+
+        Ok(is.value)
     }
 
-    pub fn list() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn list(
+        &self,
+        path: FileSystemPath,
+        recursive: bool,
+    ) -> FResult<Vec<FileSystemAttributes>> {
+        let mut request = xenon::ListRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_dir(path.proto());
+        request.set_recursive(recursive);
+
+        let files = self.client.list(&request)?.collect().wait()?;
+        let files = files
+            .into_iter()
+            .map(|f| FileSystemAttributes::from(f))
+            .collect();
+
+        Ok(files)
     }
 
-    pub fn rename() -> FResult<()> {
-        unimplemented!()
+    ///
+    /// 
+    /// 
+    pub fn rename(
+        &self,
+        source: FileSystemPath,
+        target: FileSystemPath,
+    ) -> FResult<()> {
+        let mut request = xenon::RenameRequest::new();
+        request.set_filesystem(self.filesystem.clone());
+        request.set_source(source.proto());
+        request.set_target(target.proto());
+
+        self.client.rename(&request)?;
+
+        Ok(())
     }
 
     ///
@@ -409,6 +455,7 @@ pub struct FileSystemAttributes {
     pub last_access_time: u64,
     pub last_modified_time: u64,
     pub owner: String,
+    pub path: Option<FileSystemPath>,
     pub permissions: HashSet<FileSystemPermission>,
     pub size: u64,
 }
@@ -417,7 +464,8 @@ impl FileSystemAttributes {
     ///
     ///
     ///
-    pub(crate) fn new(attributes: xenon::PathAttributes) -> FileSystemAttributes {
+    pub(crate) fn from(attributes: xenon::PathAttributes) -> FileSystemAttributes {
+        let path = FileSystemPath::from(attributes.path);
         let permissions = attributes
             .permissions
             .iter()
@@ -438,6 +486,7 @@ impl FileSystemAttributes {
             last_access_time: attributes.last_access_time,
             last_modified_time: attributes.last_modified_time,
             owner: attributes.owner,
+            path: path,
             permissions: permissions,
             size: attributes.size,
         }
@@ -453,6 +502,17 @@ pub struct FileSystemPath {
 }
 
 impl FileSystemPath {
+    ///
+    /// 
+    /// 
+    pub(crate) fn from(path: protobuf::SingularPtrField<xenon::Path>) -> Option<FileSystemPath> {
+        if let Some(path) = path.into_option() {
+            Some(FileSystemPath::new(path.path))
+        } else {
+            None
+        }
+    }
+
     ///
     ///
     ///
