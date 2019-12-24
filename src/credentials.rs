@@ -1,17 +1,17 @@
 use crate::xenon;
 
 ///
-/// 
+///
 ///
 #[derive(Clone)]
 pub enum Credential {
     Certificate(CertificateCredential),
-    Password(PasswordCredential)
+    Password(PasswordCredential),
 }
 
 ///
-/// 
-/// 
+///
+///
 #[derive(Clone)]
 pub struct CertificateCredential {
     pub certificate: String,
@@ -21,28 +21,24 @@ pub struct CertificateCredential {
 
 impl CertificateCredential {
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn new(
         certificate: String,
         username: String,
         passphrase: String,
     ) -> Credential {
-        Credential::Certificate(
-            CertificateCredential {
-                certificate,
-                passphrase,
-                username,
-            }
-        )
+        Credential::Certificate(CertificateCredential {
+            certificate,
+            passphrase,
+            username,
+        })
     }
 
     ///
-    /// 
-    /// 
-    pub(crate) fn proto(
-        self
-    ) -> xenon::CertificateCredential {
+    ///
+    ///
+    pub(crate) fn proto(self) -> xenon::CertificateCredential {
         let mut credential = xenon::CertificateCredential::new();
         credential.set_certfile(self.certificate);
         credential.set_passphrase(self.passphrase);
@@ -53,8 +49,8 @@ impl CertificateCredential {
 }
 
 ///
-/// 
-/// 
+///
+///
 #[derive(Clone)]
 pub struct PasswordCredential {
     pub password: String,
@@ -63,26 +59,19 @@ pub struct PasswordCredential {
 
 impl PasswordCredential {
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn new(
         username: String,
         password: String,
     ) -> Credential {
-        Credential::Password(
-            PasswordCredential {
-                password,
-                username
-            }
-        )
+        Credential::Password(PasswordCredential { password, username })
     }
 
     ///
-    /// 
-    /// 
-    pub(crate) fn proto(
-        self
-    ) -> xenon::PasswordCredential {
+    ///
+    ///
+    pub(crate) fn proto(self) -> xenon::PasswordCredential {
         let mut credential = xenon::PasswordCredential::new();
         credential.set_username(self.username);
         credential.set_password(self.password);

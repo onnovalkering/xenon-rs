@@ -168,7 +168,7 @@ fn exists_existing_true() {
 #[test]
 fn exists_nonexisting_false() {
     let filesystem = common::create_sftp_filesystem().unwrap();
- 
+
     let path = FileSystemPath::new(String::from("nonexisting.txt"));
     let result = filesystem.exists(path);
 
@@ -196,7 +196,6 @@ fn getattributes_nonexisting_err() {
     assert!(result.is_err());
 }
 
-
 #[test]
 fn getfscredential_default_password() {
     let filesystem = common::create_sftp_filesystem().unwrap();
@@ -206,7 +205,7 @@ fn getfscredential_default_password() {
     assert!(result.is_ok());
     let credential = result.unwrap();
     assert!(credential.is_some());
-    
+
     let credential = credential.unwrap();
     if let Credential::Password(credential) = credential {
         assert_eq!(credential.username, String::from("xenon"));
@@ -321,11 +320,11 @@ fn setpermissions_existing_ok() {
 
     let path = FileSystemPath::new(String::from("test-slurm.job"));
     let mut permissions = HashSet::<FileSystemPermission>::new();
-    permissions.extend(vec!(OwnerRead, OwnerWrite, OwnerExecute));
+    permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
     let result = filesystem.set_permissions(path.clone(), permissions.clone());
 
-    assert!(result.is_ok());  
+    assert!(result.is_ok());
     let attributes = filesystem.get_attributes(path).unwrap();
     assert_eq!(permissions, attributes.permissions);
 }
@@ -337,11 +336,11 @@ fn setpermissions_nonexisting_err() {
 
     let path = FileSystemPath::new(String::from("nonexisting.txt"));
     let mut permissions = HashSet::<FileSystemPermission>::new();
-    permissions.extend(vec!(OwnerRead, OwnerWrite, OwnerExecute));
+    permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
     let result = filesystem.set_permissions(path, permissions);
 
-    assert!(result.is_err());  
+    assert!(result.is_err());
 }
 
 #[test]

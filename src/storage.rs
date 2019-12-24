@@ -9,8 +9,8 @@ type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
 
 ///
-/// 
-/// 
+///
+///
 pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient,
@@ -20,8 +20,8 @@ pub struct FileSystem {
 
 impl FileSystem {
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn append_to_file(
         &self,
         buffer: Vec<u8>,
@@ -42,11 +42,9 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
-    pub fn close(
-        &self
-    ) -> FResult<()> {
+    ///
+    ///
+    pub fn close(&self) -> FResult<()> {
         self.client.close(&self.filesystem)?;
 
         Ok(())
@@ -69,8 +67,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn create(
         adaptor: String,
         channel: Channel,
@@ -84,14 +82,10 @@ impl FileSystem {
         let mut request = xenon::CreateFileSystemRequest::new();
         request.set_adaptor(adaptor.clone());
         request.set_location(location);
-        request.set_properties(properties);    
+        request.set_properties(properties);
         match credential {
-            Credential::Password(password) => {
-                request.set_password_credential(password.proto())
-            },
-            Credential::Certificate(certificate) => {
-                request.set_certificate_credential(certificate.proto())
-            },
+            Credential::Password(password) => request.set_password_credential(password.proto()),
+            Credential::Certificate(certificate) => request.set_certificate_credential(certificate.proto()),
         }
 
         let filesystem = client.create(&request)?;
@@ -101,13 +95,13 @@ impl FileSystem {
             adaptor,
             filesystem,
             identifier,
-            client
+            client,
         })
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn create_directories(
         &self,
         path: FileSystemPath,
@@ -122,9 +116,9 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
-    pub fn create_directory(        
+    ///
+    ///
+    pub fn create_directory(
         &self,
         path: FileSystemPath,
     ) -> FResult<()> {
@@ -138,8 +132,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn create_file(
         &self,
         path: FileSystemPath,
@@ -154,8 +148,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn create_symbolic_link(
         &self,
         link: FileSystemPath,
@@ -172,8 +166,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn delete(
         &self,
         path: FileSystemPath,
@@ -190,8 +184,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn exists(
         &self,
         path: FileSystemPath,
@@ -206,8 +200,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn get_attributes(
         &self,
         path: FileSystemPath,
@@ -223,27 +217,22 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
-    pub fn get_fs_credential(
-        &self
-    ) -> FResult<Option<Credential>> {
+    ///
+    ///
+    pub fn get_fs_credential(&self) -> FResult<Option<Credential>> {
         let response = self.client.get_credential(&self.filesystem)?;
         if let Some(one_of_credential) = response.credential {
             use xenon::GetCredentialResponse_oneof_credential::*;
 
             match one_of_credential {
-                certificate_credential(credential) => {
-                    Ok(Some(CertificateCredential::new(
-                        credential.certfile, 
-                        credential.username, 
-                        credential.passphrase)))
-                },
+                certificate_credential(credential) => Ok(Some(CertificateCredential::new(
+                    credential.certfile,
+                    credential.username,
+                    credential.passphrase,
+                ))),
                 password_credential(credential) => {
-                    Ok(Some(PasswordCredential::new(
-                        credential.username, 
-                        credential.password)))
-                },
+                    Ok(Some(PasswordCredential::new(credential.username, credential.password)))
+                }
                 _ => unreachable!(),
             }
         } else {
@@ -252,44 +241,36 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
-    pub fn get_fs_location(
-        &self
-    ) -> FResult<String> {
+    ///
+    ///
+    pub fn get_fs_location(&self) -> FResult<String> {
         let response = self.client.get_location(&self.filesystem)?;
 
         Ok(response.location)
     }
 
     ///
-    /// 
-    /// 
-    pub fn get_fs_separator(        
-        &self
-    ) -> FResult<String> {
+    ///
+    ///
+    pub fn get_fs_separator(&self) -> FResult<String> {
         let response = self.client.get_path_separator(&self.filesystem)?;
 
         Ok(response.separator)
     }
 
     ///
-    /// 
-    /// 
-    pub fn get_fs_properties(        
-        &self
-    ) -> FResult<Map<String>> {
+    ///
+    ///
+    pub fn get_fs_properties(&self) -> FResult<Map<String>> {
         let response = self.client.get_properties(&self.filesystem)?;
 
         Ok(response.properties)
     }
 
     ///
-    /// 
-    /// 
-    pub fn get_working_directory(
-        &self,
-    ) -> FResult<FileSystemPath> {
+    ///
+    ///
+    pub fn get_working_directory(&self) -> FResult<FileSystemPath> {
         let directory = self.client.get_working_directory(&self.filesystem)?;
         let directory = FileSystemPath::new(directory.path);
 
@@ -309,8 +290,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn read_from_file(
         &self,
         path: FileSystemPath,
@@ -328,8 +309,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn read_symbolic_link(
         &self,
         path: FileSystemPath,
@@ -345,8 +326,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn set_permissions(
         &self,
         path: FileSystemPath,
@@ -355,7 +336,7 @@ impl FileSystem {
         let mut request = xenon::SetPosixFilePermissionsRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
-        request.set_permissions(permissions.iter().map(|p| { p.proto() }).collect());
+        request.set_permissions(permissions.iter().map(|p| p.proto()).collect());
 
         self.client.set_posix_file_permissions(&request)?;
 
@@ -363,8 +344,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn set_working_directory(
         &self,
         path: FileSystemPath,
@@ -379,8 +360,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn write_to_file(
         &self,
         buffer: Vec<u8>,
@@ -403,16 +384,16 @@ impl FileSystem {
 
 impl Drop for FileSystem {
     ///
-    /// 
-    /// 
+    ///
+    ///
     fn drop(&mut self) {
         self.close().unwrap();
     }
 }
 
 ///
-/// 
-/// 
+///
+///
 #[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemAttributes {
     pub creation_time: u64,
@@ -434,14 +415,13 @@ pub struct FileSystemAttributes {
 
 impl FileSystemAttributes {
     ///
-    /// 
-    /// 
-    pub(crate) fn new(
-        attributes: xenon::PathAttributes
-    ) -> FileSystemAttributes {
-        let permissions = attributes.permissions
+    ///
+    ///
+    pub(crate) fn new(attributes: xenon::PathAttributes) -> FileSystemAttributes {
+        let permissions = attributes
+            .permissions
             .iter()
-            .map(|p| { FileSystemPermission::from(p) })
+            .map(|p| FileSystemPermission::from(p))
             .collect();
 
         FileSystemAttributes {
@@ -465,7 +445,7 @@ impl FileSystemAttributes {
 }
 
 ///
-/// 
+///
 ///
 #[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemPath {
@@ -474,31 +454,25 @@ pub struct FileSystemPath {
 
 impl FileSystemPath {
     ///
-    /// 
-    /// 
-    pub fn new(
-        path: String,
-    ) -> FileSystemPath {
-        FileSystemPath {
-            path
-        }
+    ///
+    ///
+    pub fn new(path: String) -> FileSystemPath {
+        FileSystemPath { path }
     }
 
     ///
-    /// 
     ///
-    pub(crate) fn proto(
-        self
-    ) -> xenon::Path {
+    ///
+    pub(crate) fn proto(self) -> xenon::Path {
         let mut path = xenon::Path::new();
         path.set_path(self.path);
-        
+
         path
     }
 }
 
 ///
-/// 
+///
 ///
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum FileSystemPermission {
@@ -516,13 +490,11 @@ pub enum FileSystemPermission {
 
 impl FileSystemPermission {
     ///
-    /// 
-    /// 
-    pub(crate) fn from(
-        permission: &xenon::PosixFilePermission
-    ) -> FileSystemPermission {
-        use FileSystemPermission::*;
+    ///
+    ///
+    pub(crate) fn from(permission: &xenon::PosixFilePermission) -> FileSystemPermission {
         use xenon::PosixFilePermission::*;
+        use FileSystemPermission::*;
 
         match permission {
             NONE => None,
@@ -539,13 +511,11 @@ impl FileSystemPermission {
     }
 
     ///
-    /// 
-    /// 
-    pub fn proto(
-        &self,
-    ) -> xenon::PosixFilePermission {
-        use FileSystemPermission::*;
+    ///
+    ///
+    pub fn proto(&self) -> xenon::PosixFilePermission {
         use xenon::PosixFilePermission::*;
+        use FileSystemPermission::*;
 
         match self {
             None => NONE,

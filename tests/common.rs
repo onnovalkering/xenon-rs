@@ -7,35 +7,38 @@ type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
 
 ///
-/// 
-/// 
+///
+///
 pub fn build_channel() -> Channel {
     let env = Arc::new(EnvBuilder::new().build());
     ChannelBuilder::new(env).connect("localhost:50051")
 }
 
 ///
-/// 
-/// 
+///
+///
 pub fn create_sftp_filesystem() -> FResult<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
 
     let mut properties = Map::<String>::new();
-    properties.insert(String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking"), String::from("false"));
-    
+    properties.insert(
+        String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking"),
+        String::from("false"),
+    );
+
     Ok(FileSystem::create(
-        String::from("sftp"), 
-        channel, 
-        credential, 
+        String::from("sftp"),
+        channel,
+        credential,
         String::from("slurm:22"),
         properties,
     )?)
 }
 
 ///
-/// 
-/// 
+///
+///
 pub fn get_slurmjob_file() -> Vec<u8> {
     let slurmjob = concat!(
         "#!/bin/bash\n",
@@ -51,16 +54,13 @@ pub fn get_slurmjob_file() -> Vec<u8> {
         "sleep 15\n",
         "date\n"
     );
-    
-    slurmjob.as_bytes().to_vec() 
+
+    slurmjob.as_bytes().to_vec()
 }
 
 ///
-/// 
+///
 ///
 pub fn new_credential() -> Credential {
-    PasswordCredential::new(
-        String::from("xenon"), 
-        String::from("javagat"),
-    )
+    PasswordCredential::new(String::from("xenon"), String::from("javagat"))
 }
