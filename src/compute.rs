@@ -1,10 +1,8 @@
-use crate::credentials::{CertificateCredential, Credential, PasswordCredential};
-use crate::storage::FileSystem;
+use crate::credentials::Credential;
 use crate::xenon;
 use crate::xenon_grpc::SchedulerServiceClient;
 use futures::{future, Future, Sink, Stream};
 use grpcio::{Channel, WriteFlags};
-use std::collections::HashSet;
 use protobuf::RepeatedField;
 
 type FResult<T> = Result<T, failure::Error>;
@@ -25,8 +23,17 @@ impl Scheduler {
     ///
     /// 
     /// 
-    pub fn cancel_job() -> FResult<()> {
-        unimplemented!();
+    pub fn cancel_job(
+        &self,
+        job: Job
+    ) -> FResult<JobStatus> {
+        let mut request = xenon::JobRequest::new();
+        request.set_job(job.proto());
+        request.set_scheduler(self.scheduler.clone());
+
+        let response = self.client.cancel_job(&request)?;
+
+        Ok(JobStatus::from(response))
     }
 
     ///
@@ -92,7 +99,7 @@ impl Scheduler {
     pub fn get_job_status(
         &self,
         job: Job, 
-    ) -> FResult<Option<JobStatus>> {
+    ) -> FResult<JobStatus> {
         let mut request = xenon::JobRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
@@ -108,7 +115,7 @@ impl Scheduler {
     pub fn get_job_statuses(
         &self,
         jobs: Vec<Job>,
-    ) -> FResult<Vec<Option<JobStatus>>> {
+    ) -> FResult<Vec<JobStatus>> {
         let jobs = jobs.iter().map(|j| j.clone().proto()).collect();
 
         let mut request = xenon::GetJobStatusesRequest::new();
@@ -116,7 +123,13 @@ impl Scheduler {
         request.set_scheduler(self.scheduler.clone());
 
         let response = self.client.get_job_statuses(&request)?;
-        Ok(response.statuses.iter().map(|j| JobStatus::from(j.clone())).collect())
+        let statuses = response
+            .statuses
+            .iter()
+            .map(|j| JobStatus::from(j.clone()))
+            .collect();
+
+        Ok(statuses)
     }
 
     ///
@@ -133,7 +146,13 @@ impl Scheduler {
         }
 
         let response = self.client.get_jobs(&request)?;
-        Ok(response.jobs.iter().map(|j| Job::new(j.id.clone())).collect())
+        let jobs = response
+            .jobs
+            .iter()
+            .map(|j| Job::new(j.id.clone()))
+            .collect();
+
+        Ok(jobs)
     }
 
     ///
@@ -163,9 +182,14 @@ impl Scheduler {
     /// 
     pub fn get_queue_status(
         &self,
-        queue: Option<String>,
-    ) -> FResult<()> {
-        unimplemented!();
+        queue: String,
+    ) -> FResult<QueueStatus> {
+        let mut request = xenon::GetQueueStatusRequest::new();
+        request.set_scheduler(self.scheduler.clone());
+        request.set_queue(queue);
+
+        let response = self.client.get_queue_status(&request)?;
+        Ok(QueueStatus::from(response))
     }
 
     ///
@@ -174,8 +198,21 @@ impl Scheduler {
     pub fn get_queue_statuses(
         &self,
         queues: Option<Vec<String>>,
-    ) -> FResult<()> {
-        unimplemented!();
+    ) -> FResult<Vec<QueueStatus>> {
+        let mut request = xenon::SchedulerAndQueues::new();
+        request.set_scheduler(self.scheduler.clone());
+        if let Some(queues) = queues {
+            request.set_queues(RepeatedField::from_vec(queues));
+        }
+
+        let response = self.client.get_queue_statuses(&request)?;
+        let statuses = response
+            .statuses
+            .iter()
+            .map(|s| QueueStatus::from(s.clone()))
+            .collect();
+
+        Ok(statuses)
     }
 
     ///
@@ -195,8 +232,14 @@ impl Scheduler {
     pub fn submit_batch_job(
         &self,
         description: JobDescription
-    ) -> FResult<()> {
-        unimplemented!();
+    ) -> FResult<Job> {
+        let mut request = xenon::SubmitBatchJobRequest::new();
+        request.set_description(description.proto());
+        request.set_scheduler(self.scheduler.clone());
+
+        let response = self.client.submit_batch_job(&request)?;
+
+        Ok(Job::new(response.id))
     }
 
     ///
@@ -274,23 +317,97 @@ impl Job {
 ///
 #[derive(Clone, Debug, PartialEq)]
 pub struct JobDescription {
-    pub arguments: Vec<String>,
-    pub executable: String,
-    pub working_directory: String,
-    pub environment: Map<String>,
-    pub queue: String,
-    pub max_runtime: u32,
-    pub stderr: String,
-    pub stdin: String,
-    pub stdout: String,
-    pub max_memory: u32,
-    pub scheduler_arguments: Vec<String>,
-    pub tasks: u32,
-    pub cores_per_tasak: u32,
-    pub tasks_per_node: u32,
-    pub start_per_task: bool,
-    pub start_time: String,
-    pub temp_space: u32,
+    pub arguments: Option<Vec<String>>,
+    pub executable: Option<String>,
+    pub working_directory: Option<String>,
+    pub environment: Option<Map<String>>,
+    pub queue: Option<String>,
+    pub max_runtime: Option<u32>,
+    pub stderr: Option<String>,
+    pub stdin: Option<String>,
+    pub stdout: Option<String>,
+    pub max_memory: Option<u32>,
+    pub scheduler_arguments: Option<Vec<String>>,
+    pub tasks: Option<u32>,
+    pub cores_per_tasks: Option<u32>,
+    pub tasks_per_node: Option<u32>,
+    pub start_per_task: Option<bool>,
+    pub start_time: Option<String>,
+    pub temp_space: Option<u32>,
+}
+
+impl JobDescription {
+    ///
+    /// 
+    /// 
+    pub fn new(
+
+    ) -> JobDescription {
+        unimplemented!();
+    }
+
+    ///
+    /// 
+    /// 
+    pub(crate) fn proto(
+        self
+    ) -> xenon::JobDescription {
+        let mut description = xenon::JobDescription::new();
+        if let Some(arguments) = self.arguments {
+            description.set_arguments(RepeatedField::from_vec(arguments));
+        }
+        if let Some(executable) = self.executable {
+            description.set_executable(executable);
+        }
+        if let Some(working_directory) = self.working_directory {
+            description.set_working_directory(working_directory);
+        }
+        if let Some(environment) = self.environment {
+            description.set_environment(environment);
+        }
+        if let Some(queue) = self.queue {
+            description.set_queue_name(queue);
+        }
+        if let Some(max_runtime) = self.max_runtime {
+            description.set_max_runtime(max_runtime);
+        }
+        if let Some(stderr) = self.stderr {
+            description.set_stderr(stderr);
+        }
+        if let Some(stdin) = self.stdin {
+            description.set_stdin(stdin);
+        }
+        if let Some(stdout) = self.stdout {
+            description.set_stdout(stdout);
+        }
+        if let Some(max_memory) = self.max_memory {
+            description.set_max_memory(max_memory);
+        }
+        if let Some(scheduler_arguments) = self.scheduler_arguments {
+            description.set_scheduler_arguments(RepeatedField::from_vec(scheduler_arguments));
+        }
+        if let Some(tasks) = self.tasks {
+            description.set_tasks(tasks);
+        }
+        if let Some(cores_per_tasks) = self.cores_per_tasks {
+            description.set_cores_per_task(cores_per_tasks);
+        }
+        if let Some(tasks_per_node) = self.tasks_per_node {
+            description.set_tasks_per_node(tasks_per_node);
+        }
+        if let Some(start_per_task) = self.start_per_task {
+            description.set_start_per_task(start_per_task);
+        }
+        if let Some(start_time) = self.start_time {
+            description.set_start_time(start_time);
+        }
+        if let Some(temp_space) = self.temp_space {
+            description.set_temp_space(temp_space);
+        }
+
+        description
+    }
+
 }
 
 ///
@@ -302,7 +419,7 @@ pub struct JobStatus {
     pub exit_code: i32,
     pub error_message: String,
     pub error_type: JobErrorType,
-    pub job: Job,
+    pub job: Option<Job>,
     pub name: String,
     pub running: bool,
     pub state: String,
@@ -312,34 +429,30 @@ impl JobStatus {
     ///
     /// 
     /// 
-    pub(crate) fn from(status: xenon::JobStatus) -> Option<JobStatus> {
-        if let Some(job) = Job::from(status.job) {
-            let error_type = JobErrorType::from(&status.error_type);
+    pub(crate) fn from(status: xenon::JobStatus) -> JobStatus {
+        let error_type = JobErrorType::from(&status.error_type);
 
-            Some(JobStatus::new(
-                job,
-                status.done,
-                status.exit_code,
-                status.error_message,
-                error_type,
-                status.name,
-                status.running,
-                status.state,
-            ))
-        } else {
-            None
-        }
+        JobStatus::new(
+            status.done,
+            status.exit_code,
+            status.error_message,
+            error_type,
+            Job::from(status.job),
+            status.name,
+            status.running,
+            status.state,
+        )
     }
 
     ///
     ///
     ///
     pub fn new(
-        job: Job,
         done: bool,
         exit_code: i32,
         error_message: String,
         error_type: JobErrorType,
+        job: Option<Job>,
         name: String,
         running: bool,
         state: String,
@@ -384,7 +497,7 @@ impl JobErrorType {
     ///
     ///
     ///
-    pub fn proto(&self) -> xenon::JobStatus_ErrorType {
+    pub(crate) fn proto(&self) -> xenon::JobStatus_ErrorType {
         use xenon::JobStatus_ErrorType::*;
         use JobErrorType::*;
 
@@ -392,6 +505,89 @@ impl JobErrorType {
             None => NONE,
             NotFound => NOT_FOUND,
             Cancelled => CANCELLED,
+            NotConnected => NOT_CONNECTED,
+            Xenon => XENON,
+            InputOutput => IO,
+            Other => OTHER,
+        }
+    }
+}
+
+///
+///
+///
+#[derive(Clone, Debug, PartialEq)]
+pub struct QueueStatus {
+    name: String,
+    error_message: String,
+    error_type: QueueErrorType
+}
+
+impl QueueStatus {
+    ///
+    /// 
+    /// 
+    pub(crate) fn from(
+        status: xenon::QueueStatus
+    ) -> QueueStatus {
+        let error_type = QueueErrorType::from(&status.error_type);
+
+        QueueStatus::new(status.name, status.error_message, error_type)
+    }
+
+    ///
+    ///
+    ///
+    pub fn new(
+        name: String,
+        error_message: String,
+        error_type: QueueErrorType
+    ) -> QueueStatus {
+        QueueStatus { name, error_message, error_type }
+    }
+}
+
+///
+/// 
+/// 
+#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+pub enum QueueErrorType {
+    None = 0,
+    NotFound = 1,
+    NotConnected = 2,
+    Xenon = 3,
+    InputOutput = 4,
+    Other = 5,
+}
+
+impl QueueErrorType {
+    ///
+    ///
+    ///
+    pub(crate) fn from(error_type: &xenon::QueueStatus_ErrorType) -> QueueErrorType {
+        use xenon::QueueStatus_ErrorType::*;
+        use QueueErrorType::*;
+
+        match error_type {
+            NONE => None,
+            NOT_FOUND => NotFound,
+            NOT_CONNECTED => NotConnected,
+            XENON => Xenon,
+            IO => InputOutput,
+            OTHER => Other,
+        }
+    }
+
+    ///
+    ///
+    ///
+    pub(crate) fn proto(&self) -> xenon::QueueStatus_ErrorType {
+        use xenon::QueueStatus_ErrorType::*;
+        use QueueErrorType::*;
+
+        match self {
+            None => NONE,
+            NotFound => NOT_FOUND,
             NotConnected => NOT_CONNECTED,
             Xenon => XENON,
             InputOutput => IO,
