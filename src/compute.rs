@@ -226,10 +226,19 @@ impl Scheduler {
     ///
     pub fn wait_until_done(
         &self,
-        _job: Job,
-        _timeout: u64,
-    ) -> FResult<()> {
-        unimplemented!();
+        job: Job,
+        timeout: Option<u64>,
+    ) -> FResult<JobStatus> {
+        let mut request = xenon::WaitRequest::new();
+        request.set_job(job.proto());
+        request.set_scheduler(self.scheduler.clone());
+        if let Some(timeout) = timeout {
+            request.set_timeout(timeout);
+        }
+
+        let response = self.client.wait_until_done(&request)?;
+
+        Ok(JobStatus::from(response))
     }
 
     ///
@@ -237,10 +246,19 @@ impl Scheduler {
     ///
     pub fn wait_until_running(
         &self,
-        _job: Job,
-        _timeout: u64,
-    ) -> FResult<()> {
-        unimplemented!();
+        job: Job,
+        timeout: Option<u64>,
+    ) -> FResult<JobStatus> {
+        let mut request = xenon::WaitRequest::new();
+        request.set_job(job.proto());
+        request.set_scheduler(self.scheduler.clone());
+        if let Some(timeout) = timeout {
+            request.set_timeout(timeout);
+        }
+
+        let response = self.client.wait_until_running(&request)?;
+
+        Ok(JobStatus::from(response))
     }
 }
 
