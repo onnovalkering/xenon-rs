@@ -199,10 +199,13 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn is_open(&self) -> FResult<bool> {
-        let response = self.client.is_open(&self.scheduler)?;
+    pub fn is_open(&mut self) -> FResult<bool> {
+        if self.open {
+            let response = self.client.is_open(&self.scheduler)?;
+            self.open = response.value
+        }
 
-        Ok(response.value)
+        Ok(self.open)
     }
 
     ///

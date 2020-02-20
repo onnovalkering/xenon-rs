@@ -1,5 +1,6 @@
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use std::sync::Arc;
+use xenon_rs::compute::Scheduler;
 use xenon_rs::credentials::Credential;
 use xenon_rs::storage::FileSystem;
 
@@ -32,6 +33,28 @@ pub fn create_sftp_filesystem() -> FResult<FileSystem> {
         channel,
         credential,
         String::from("slurm:22"),
+        properties,
+    )?)
+}
+
+///
+///
+///
+pub fn create_slurm_scheduler() -> FResult<Scheduler> {
+    let channel = build_channel();
+    let credential = new_credential();
+
+    let mut properties = Map::<String>::new();
+    properties.insert(
+        String::from("xenon.adaptors.schedulers.ssh.strictHostKeyChecking"),
+        String::from("false"),
+    );
+
+    Ok(Scheduler::create(
+        String::from("slurm"),
+        channel,
+        credential,
+        String::from("ssh://slurm:22"),
         properties,
     )?)
 }
