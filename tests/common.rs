@@ -1,6 +1,6 @@
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use std::sync::Arc;
-use xenon_rs::credentials::{Credential, PasswordCredential};
+use xenon_rs::credentials::Credential;
 use xenon_rs::storage::FileSystem;
 
 type FResult<T> = Result<T, failure::Error>;
@@ -62,5 +62,5 @@ pub fn get_slurmjob_file() -> Vec<u8> {
 ///
 ///
 pub fn new_credential() -> Credential {
-    PasswordCredential::new(String::from("xenon"), String::from("javagat"))
+    Credential::new_password(String::from("xenon"), String::from("javagat"))
 }
