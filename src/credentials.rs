@@ -9,6 +9,31 @@ pub enum Credential {
     Password(PasswordCredential),
 }
 
+impl Credential {
+    ///
+    ///
+    ///
+    pub fn new_password(
+        username: String,
+        password: String,
+    ) -> Credential {
+        let password = PasswordCredential::new(username, password);
+        Credential::Password(password)
+    }
+
+    ///
+    ///
+    ///
+    pub fn new_certificate(
+        certificate: String,
+        username: String,
+        passphrase: String,
+    ) -> Credential {
+        let certificate = CertificateCredential::new(certificate, username, passphrase);
+        Credential::Certificate(certificate)
+    }
+}
+
 ///
 ///
 ///
@@ -27,12 +52,12 @@ impl CertificateCredential {
         certificate: String,
         username: String,
         passphrase: String,
-    ) -> Credential {
-        Credential::Certificate(CertificateCredential {
+    ) -> CertificateCredential {
+        CertificateCredential {
             certificate,
             passphrase,
             username,
-        })
+        }
     }
 
     ///
@@ -64,8 +89,8 @@ impl PasswordCredential {
     pub fn new(
         username: String,
         password: String,
-    ) -> Credential {
-        Credential::Password(PasswordCredential { password, username })
+    ) -> PasswordCredential {
+        PasswordCredential { password, username }
     }
 
     ///

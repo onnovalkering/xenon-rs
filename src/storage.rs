@@ -1,10 +1,9 @@
-use crate::credentials::{CertificateCredential, Credential, PasswordCredential};
+use crate::credentials::Credential;
 use crate::xenon;
 use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{future, Future, Sink, Stream};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
-use std::{thread, time};
 
 type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
@@ -56,8 +55,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn copy(
         &self,
         source: FileSystemPath,
@@ -81,7 +80,7 @@ impl FileSystem {
 
         let mut request = xenon::WaitUntilDoneRequest::new();
         request.set_filesystem(self.filesystem.clone());
-        request.set_copy_operation(operation.clone());
+        request.set_copy_operation(operation);
         request.set_timeout(timeout);
 
         self.client.wait_until_done(&request)?;
@@ -249,13 +248,13 @@ impl FileSystem {
             use xenon::GetCredentialResponse_oneof_credential::*;
 
             match one_of_credential {
-                certificate_credential(credential) => Ok(Some(CertificateCredential::new(
+                certificate_credential(credential) => Ok(Some(Credential::new_certificate(
                     credential.certfile,
                     credential.username,
                     credential.passphrase,
                 ))),
                 password_credential(credential) => {
-                    Ok(Some(PasswordCredential::new(credential.username, credential.password)))
+                    Ok(Some(Credential::new_password(credential.username, credential.password)))
                 }
                 _ => unreachable!(),
             }
@@ -315,8 +314,8 @@ impl FileSystem {
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn list(
         &self,
         path: FileSystemPath,
@@ -328,17 +327,14 @@ impl FileSystem {
         request.set_recursive(recursive);
 
         let files = self.client.list(&request)?.collect().wait()?;
-        let files = files
-            .into_iter()
-            .map(|f| FileSystemAttributes::from(f))
-            .collect();
+        let files = files.into_iter().map(FileSystemAttributes::from).collect();
 
         Ok(files)
     }
 
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub fn rename(
         &self,
         source: FileSystemPath,
@@ -488,7 +484,7 @@ impl FileSystemAttributes {
         let permissions = attributes
             .permissions
             .iter()
-            .map(|p| FileSystemPermission::from(p))
+            .map(|p| FileSystemPermission::from(*p))
             .collect();
 
         FileSystemAttributes {
@@ -505,8 +501,8 @@ impl FileSystemAttributes {
             last_access_time: attributes.last_access_time,
             last_modified_time: attributes.last_modified_time,
             owner: attributes.owner,
-            path: path,
-            permissions: permissions,
+            path,
+            permissions,
             size: attributes.size,
         }
     }
@@ -522,8 +518,8 @@ pub struct FileSystemPath {
 
 impl FileSystemPath {
     ///
-    /// 
-    /// 
+    ///
+    ///
     pub(crate) fn from(path: protobuf::SingularPtrField<xenon::Path>) -> Option<FileSystemPath> {
         if let Some(path) = path.into_option() {
             Some(FileSystemPath::new(path.path))
@@ -571,7 +567,7 @@ impl FileSystemPermission {
     ///
     ///
     ///
-    pub(crate) fn from(permission: &xenon::PosixFilePermission) -> FileSystemPermission {
+    pub(crate) fn from(permission: xenon::PosixFilePermission) -> FileSystemPermission {
         use xenon::PosixFilePermission::*;
         use FileSystemPermission::*;
 
