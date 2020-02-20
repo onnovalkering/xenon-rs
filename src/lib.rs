@@ -1,3 +1,4 @@
+pub mod compute;
 pub mod credentials;
 pub mod storage;
 #[path = "proto/xenon.rs"]
