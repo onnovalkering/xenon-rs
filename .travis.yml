@@ -1,0 +1,24 @@
+language: rust
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    packages:
+      - libssl-dev
+
+before_cache:
+  - cargo install -f cargo-tarpaulin
+
+cache: cargo
+
+install:
+  - ./scripts/install-protoc.sh
+
+script:
+  - cargo build
+  - docker-compose up -d
+  - cargo test
+
+after_success:
+  - cargo tarpaulin --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
