@@ -5,10 +5,19 @@ description = "Rust bindings to the Xenon interface (gRPC)."
 authors = ["Onno Valkering"]
 repository = "https://github.com/onnovalkering/xenon-rs"
 documentation = "https://docs.rs/xenon-rs"
-keywords  = ["xenon", "middleware", "grpc", "hpc", "adaptors"]
+keywords  = ["xenon", "middleware", "grpc", "hpc", "adaptors", "slurm"]
 license = "MIT"
 edition = "2018"
 build = "build.rs"
+exclude = [
+    ".github/*",
+    ".gitignore",
+    ".travis.yml",
+    "Dockerfile",
+    "docker-compose.yml",
+    "rustfmt.toml",
+    "scripts/*",
+]
 
 [dependencies]
 failure = "0.1"
