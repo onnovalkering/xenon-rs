@@ -1,16 +1,53 @@
 mod common;
-use xenon_rs::compute::{QueueErrorType, QueueStatus};
+use xenon_rs::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
 
 type Map<T> = std::collections::HashMap<String, T>;
 
-// #[test]
+#[test]
 fn canceljob_existing_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("10")
+        ]),
+        executable: Some(String::from("sleep")),
+        working_directory: None,
+        environment: None,
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let job = scheduler.submit_batch_job(job_description);
+    assert!(job.is_ok());
+
+    let job_status = scheduler.cancel_job(job.unwrap());
+    assert!(job_status.is_ok());
+    let job_status = job_status.unwrap();
+
+    assert!(job_status.done);
+    assert_eq!(job_status.error_type, JobErrorType::Cancelled);
 }
 
-// #[test]
+#[test]
 fn canceljob_nonexisting_err() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    let job = Job::new(String::from("non-existing"));
+
+    let result = scheduler.cancel_job(job);
+
+    assert!(result.is_err());
 }
 
 #[test]
@@ -35,9 +72,14 @@ fn getjobstatus_existing_ok() {
     unimplemented!();
 }
 
-// #[test]
+#[test]
 fn getjobstatus_nonexisting_err() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    let job = Job::new(String::from("non-existing"));
+
+    let result = scheduler.get_job_status(job);
+
+    assert!(result.is_err());
 }
 
 // #[test]
@@ -50,9 +92,19 @@ fn getjobstatuses_existing_ok() {
     unimplemented!();
 }
 
-// #[test]
+#[test]
 fn getjobstatuses_nonexisting_err() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    let job = Job::new(String::from("non-existing"));
+
+    let result = scheduler.get_job_statuses(vec![job]);
+
+    assert!(result.is_ok());
+    let result = result.unwrap();
+    let job_status = result.first();
+    assert!(job_status.is_some());
+    let job_status = job_status.unwrap();
+    assert_eq!(job_status.error_type, JobErrorType::NotFound);
 }
 
 #[test]
@@ -62,7 +114,6 @@ fn getjobs_none_ok() {
     let result = scheduler.get_jobs(None);
 
     assert!(result.is_ok());
-    assert_eq!(result.unwrap(), vec!());
 }
 
 #[test]
@@ -201,32 +252,135 @@ fn isopen_closed_false() {
     assert_eq!(result.unwrap(), false);
 }
 
-// #[test]
+#[test]
 fn submitbatchjob_valid_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let mut environment = Map::<String>::new();
+    environment.insert(String::from("NAME"), String::from("Xenon!"));
+
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("-c"),
+            String::from("echo"),
+            String::from("$NAME")
+        ]),
+        executable: Some(String::from("bash")),
+        working_directory: None,
+        environment: Some(environment),
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let result = scheduler.submit_batch_job(job_description);
+
+    assert!(result.is_ok());
 }
 
-// #[test]
-fn submitbatchjob_invalid_err() {
-    unimplemented!();
-}
-
-// #[test]
+#[test]
 fn waituntildone_existing_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let mut environment = Map::<String>::new();
+    environment.insert(String::from("NAME"), String::from("Xenon!"));
+
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("-c"),
+            String::from("echo"),
+            String::from("$NAME")
+        ]),
+        executable: Some(String::from("bash")),
+        working_directory: None,
+        environment: Some(environment),
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let job = scheduler.submit_batch_job(job_description);
+    assert!(job.is_ok());
+
+    let job_status = scheduler.wait_until_done(job.unwrap(), None);
+    assert!(job_status.is_ok());
+    let job_status = job_status.unwrap();
+    assert!(job_status.done);
+    assert_eq!(job_status.error_type, JobErrorType::None);
 }
 
-// #[test]
+#[test]
 fn waituntildone_nonexisting_err() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    let job = Job::new(String::from("non-existing"));
+
+    let job_status = scheduler.wait_until_done(job, None);
+
+    assert!(job_status.is_err());
 }
 
-// #[test]
+#[test]
 fn waituntilrunning_existing_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("10")
+        ]),
+        executable: Some(String::from("sleep")),
+        working_directory: None,
+        environment: None,
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let job = scheduler.submit_batch_job(job_description);
+    assert!(job.is_ok());
+
+    let job_status = scheduler.wait_until_running(job.unwrap(), None);
+    assert!(job_status.is_ok());
+    let job_status = job_status.unwrap();
+    assert!(!job_status.done);
+    assert_eq!(job_status.state, String::from("RUNNING"));
 }
 
-// #[test]
+#[test]
 fn waituntilrunning_nonexisting_err() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    let job = Job::new(String::from("non-existing"));
+
+    let job_status = scheduler.wait_until_running(job, None);
+
+    assert!(job_status.is_err());
 }

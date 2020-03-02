@@ -18,6 +18,7 @@ pub fn build_channel() -> Channel {
 ///
 ///
 ///
+#[allow(dead_code)] 
 pub fn create_sftp_filesystem() -> FResult<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
@@ -39,7 +40,7 @@ pub fn create_sftp_filesystem() -> FResult<FileSystem> {
 
 ///
 ///
-///
+#[allow(dead_code)]
 pub fn create_slurm_scheduler() -> FResult<Scheduler> {
     let channel = build_channel();
     let credential = new_credential();
@@ -62,6 +63,7 @@ pub fn create_slurm_scheduler() -> FResult<Scheduler> {
 ///
 ///
 ///
+#[allow(dead_code)]
 pub fn get_slurmjob_file() -> Vec<u8> {
     let slurmjob = concat!(
         "#!/bin/bash\n",
