@@ -8,7 +8,6 @@ documentation = "https://docs.rs/xenon-rs"
 keywords  = ["xenon", "middleware", "grpc", "hpc", "slurm"]
 license = "MIT"
 edition = "2018"
-build = "build.rs"
 exclude = [
     ".github/*",
     ".gitignore",
@@ -29,6 +28,3 @@ protobuf = "2.8"
 [dev-dependencies]
 env_logger = "0.7"
 rand = "0.7"
-
-[build-dependencies]
-protoc-grpcio = "1.1"

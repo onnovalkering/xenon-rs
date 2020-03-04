@@ -11,9 +11,6 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: Install protoc
-        run: ./scripts/install-protoc.sh
-
       - name: Build project
         run: cargo build -v
       
@@ -28,9 +25,6 @@ jobs:
         with:
           fetch-depth: 1
       
-      - name: Install protoc
-        run: ./scripts/install-protoc.sh
-
       - name: Start services
         run: docker-compose up -d        
 
@@ -39,4 +33,4 @@ jobs:
 
       - name: Run integration tests
         run: |
-          cargo test -v --test storage
+          cargo test -v --test storage --test compute

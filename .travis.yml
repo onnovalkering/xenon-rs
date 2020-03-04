@@ -12,9 +12,6 @@ before_cache:
 
 cache: cargo
 
-install:
-  - ./scripts/install-protoc.sh
-
 script:
   - cargo clean
   - cargo build
