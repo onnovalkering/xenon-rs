@@ -8,7 +8,7 @@ addons:
       - libssl-dev
 
 before_cache:
-  - cargo install -f cargo-tarpaulin
+  - cargo install cargo-tarpaulin
 
 cache: cargo
 
@@ -16,9 +16,10 @@ install:
   - ./scripts/install-protoc.sh
 
 script:
+  - cargo clean
   - cargo build
   - docker-compose up -d
   - cargo test
 
 after_success:
-  - cargo tarpaulin --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+  - cargo tarpaulin --exclude-files src/proto/* --exclude-files tests/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
