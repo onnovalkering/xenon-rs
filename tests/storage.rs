@@ -40,6 +40,18 @@ fn copy_existing_ok() {
 }
 
 #[test]
+fn copy_existingremotefs_ok() {
+    let filesystem1 = common::create_sftp_filesystem().unwrap();
+    let filesystem2 = common::create_sftp_filesystem().unwrap();
+
+    let source = FileSystemPath::new(String::from("test-slurm.job"));
+    let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
+    let result = filesystem1.copy(source, destination, Some(filesystem2), false, 5000);
+
+    assert!(result.is_ok());
+}
+
+#[test]
 fn create_default_ok() {
     let filesystem = common::create_sftp_filesystem();
 

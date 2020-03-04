@@ -47,6 +47,8 @@ impl FileSystem {
     ///
     pub fn close(&mut self) -> FResult<()> {
         if self.open {
+            debug!("Closing filesystem: {}", self.identifier);
+
             self.client.close(&self.filesystem)?;
             self.open = false;
         }
@@ -70,8 +72,11 @@ impl FileSystem {
         request.set_source(source.proto());
         request.set_destination(destination.proto());
         request.set_recursive(recursive);
+
+        let mut _remote_fs;
         if let Some(remote) = destination_filesystem {
             request.set_destination_filesystem(remote.filesystem.clone());
+            _remote_fs = remote;
         } else {
             request.set_destination_filesystem(self.filesystem.clone());
         };

@@ -67,9 +67,44 @@ fn getdefaultqueuename_default_ok() {
     assert_eq!(result.unwrap(), "mypartition");
 }
 
-// #[test]
+#[test]
 fn getjobstatus_existing_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("3")
+        ]),
+        executable: Some(String::from("sleep")),
+        working_directory: None,
+        environment: None,
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let job = scheduler.submit_batch_job(job_description);
+    assert!(job.is_ok());
+    let job = job.unwrap();
+
+    let job_status = scheduler.get_job_status(job.clone());
+    assert!(job_status.is_ok());
+    let job_status = job_status.unwrap();
+
+    assert!(!job_status.done);
+    assert_eq!(job_status.error_type, JobErrorType::None);
+
+    scheduler.wait_until_done(job, None).unwrap();
 }
 
 #[test]
@@ -82,14 +117,58 @@ fn getjobstatus_nonexisting_err() {
     assert!(result.is_err());
 }
 
-// #[test]
-fn getjobstatuses_none_ok() {
-    unimplemented!();
+#[test]
+fn getjobstatuses_none_empty() {
+    let scheduler = common::create_slurm_scheduler().unwrap();
+
+    let result = scheduler.get_job_statuses(vec![]);
+
+    assert!(result.is_ok());
+    let result = result.unwrap();
+    let job_status = result.first();
+    assert!(job_status.is_none());
 }
 
-// #[test]
+#[test]
 fn getjobstatuses_existing_ok() {
-    unimplemented!();
+    let scheduler = common::create_slurm_scheduler().unwrap();
+    
+    let job_description = JobDescription {
+        arguments: Some(vec![
+            String::from("3")
+        ]),
+        executable: Some(String::from("sleep")),
+        working_directory: None,
+        environment: None,
+        queue: None,
+        max_runtime: None,
+        stderr: None,
+        stdin: None,
+        stdout: None,
+        max_memory: None,
+        scheduler_arguments: None,
+        tasks: None,
+        cores_per_tasks: None,
+        tasks_per_node: None,
+        start_per_task: None,
+        start_time: None,
+        temp_space: None,
+    };
+
+    let job = scheduler.submit_batch_job(job_description);
+    assert!(job.is_ok());
+    let job = job.unwrap();
+
+    let result = scheduler.get_job_statuses(vec![job.clone()]);
+
+    assert!(result.is_ok());
+    let result = result.unwrap();
+    let job_status = result.first();
+    assert!(job_status.is_some());
+    let job_status = job_status.unwrap();
+    assert_eq!(job_status.error_type, JobErrorType::None);
+
+    scheduler.wait_until_done(job, None).unwrap();
 }
 
 #[test]
@@ -123,7 +202,6 @@ fn getjobs_existing_ok() {
     let result = scheduler.get_jobs(Some(vec![String::from("mypartition")]));
 
     assert!(result.is_ok());
-    assert_eq!(result.unwrap(), vec!());
 }
 
 #[test]

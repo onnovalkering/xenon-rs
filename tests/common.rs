@@ -1,3 +1,4 @@
+use log::LevelFilter;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use std::sync::Arc;
 use xenon_rs::compute::Scheduler;
@@ -89,3 +90,25 @@ pub fn get_slurmjob_file() -> Vec<u8> {
 pub fn new_credential() -> Credential {
     Credential::new_password(String::from("xenon"), String::from("javagat"))
 }
+
+///
+/// 
+/// 
+#[allow(dead_code)] 
+pub fn show_log() {
+    let _ = env_logger::builder()
+        .filter_level(LevelFilter::Debug)
+        .init();
+}
+
+///
+/// 
+/// 
+#[allow(dead_code)] 
+pub fn hide_log() {
+    let _ = env_logger::builder()
+        .filter_level(LevelFilter::Error)
+        .init();
+}
+
+

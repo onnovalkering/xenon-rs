@@ -1,3 +1,6 @@
+#[macro_use]
+extern crate log;
+
 pub mod compute;
 pub mod credentials;
 pub mod storage;
