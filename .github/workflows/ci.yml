@@ -4,22 +4,35 @@ on: [push]
 
 jobs:
   unit-tests:
-    name: Unit Tests
-    runs-on: ubuntu-18.04
+    name: Unit Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
     steps:
       - uses: actions/checkout@v1
         with:
           fetch-depth: 1
       
       - name: Build project
-        run: cargo build -v
+        run: |
+          if [ `uname` = 'Darwin' ]; then
+              export OPENSSL_ROOT_DIR='/usr/local/opt/openssl'
+          fi
+          
+          cargo build -v
       
       - name: Run unit tests
         run: cargo test -v --lib
 
   integration-tests:
-    name: Integration Tests
-    runs-on: ubuntu-18.04
+    name: Integration Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        
     steps:
       - uses: actions/checkout@v1
         with:
