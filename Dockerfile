@@ -2,7 +2,7 @@
 # The 'nlesc/xenon-slurm' image can be used for integration testing.
 FROM alpine:3.10
 
-ENV VERSION="3.0.1"
+ENV VERSION="3.0.2"
 ENV RELEASE="xenon-grpc-shadow-$VERSION"
 
 RUN apk add --no-cache \
