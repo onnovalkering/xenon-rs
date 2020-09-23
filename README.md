@@ -7,9 +7,7 @@
 This crate contains Rust bindings to the Xenon middleware (gRPC).
 
 ## gRPC Interface
-To (re)generate the gRPC interface from the Xenon proto file:
-
-_* Currently only on Linux._
+To (re)generate the gRPC interface from the Xenon's `.proto` file:
 
 1. Install the protobuf compiler:
 ```
