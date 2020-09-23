@@ -1,11 +1,11 @@
+use anyhow::Result;
 use crate::credentials::Credential;
 use crate::xenon;
 use crate::xenon_grpc::FileSystemServiceClient;
-use futures::{future, Future, Sink, Stream};
+use futures::{StreamExt, SinkExt};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
 
-type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
 
 ///
@@ -23,21 +23,22 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn append_to_file(
+    pub async fn append_to_file(
         &self,
         buffer: Vec<u8>,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::AppendToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_buffer(buffer);
 
-        let (mut sink, mut receiver) = self.client.append_to_file()?;
-        sink = sink.send((request, WriteFlags::default())).wait()?;
+        let (mut sink, receiver) = self.client.append_to_file()?;
+        
+        sink.send((request, WriteFlags::default())).await?;
 
-        future::poll_fn(|| sink.close()).wait()?;
-        future::poll_fn(|| receiver.poll()).wait()?;
+        sink.close().await?;
+        receiver.await?;
 
         Ok(())
     }
@@ -45,7 +46,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn close(&mut self) -> FResult<()> {
+    pub fn close(&mut self) -> Result<()> {
         if self.open {
             debug!("Closing filesystem: {}", self.identifier);
 
@@ -66,7 +67,7 @@ impl FileSystem {
         destination_filesystem: Option<FileSystem>,
         recursive: bool,
         timeout: u64,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::CopyRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_source(source.proto());
@@ -102,7 +103,7 @@ impl FileSystem {
         credential: Credential,
         location: String,
         properties: Map<String>,
-    ) -> FResult<FileSystem> {
+    ) -> Result<FileSystem> {
         let client = FileSystemServiceClient::new(channel);
 
         // Construct create request message.
@@ -133,7 +134,7 @@ impl FileSystem {
     pub fn create_directories(
         &self,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -149,7 +150,7 @@ impl FileSystem {
     pub fn create_directory(
         &self,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -165,7 +166,7 @@ impl FileSystem {
     pub fn create_file(
         &self,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -182,7 +183,7 @@ impl FileSystem {
         &self,
         link: FileSystemPath,
         target: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::CreateSymbolicLinkRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_link(link.proto());
@@ -200,7 +201,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
         recursive: bool,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::DeleteRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -217,7 +218,7 @@ impl FileSystem {
     pub fn exists(
         &self,
         path: FileSystemPath,
-    ) -> FResult<bool> {
+    ) -> Result<bool> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -233,7 +234,7 @@ impl FileSystem {
     pub fn get_attributes(
         &self,
         path: FileSystemPath,
-    ) -> FResult<FileSystemAttributes> {
+    ) -> Result<FileSystemAttributes> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -247,7 +248,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_credential(&self) -> FResult<Option<Credential>> {
+    pub fn get_fs_credential(&self) -> Result<Option<Credential>> {
         let response = self.client.get_credential(&self.filesystem)?;
         if let Some(one_of_credential) = response.credential {
             use xenon::GetCredentialResponse_oneof_credential::*;
@@ -271,7 +272,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_location(&self) -> FResult<String> {
+    pub fn get_fs_location(&self) -> Result<String> {
         let response = self.client.get_location(&self.filesystem)?;
 
         Ok(response.location)
@@ -280,7 +281,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_separator(&self) -> FResult<String> {
+    pub fn get_fs_separator(&self) -> Result<String> {
         let response = self.client.get_path_separator(&self.filesystem)?;
 
         Ok(response.separator)
@@ -289,7 +290,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_properties(&self) -> FResult<Map<String>> {
+    pub fn get_fs_properties(&self) -> Result<Map<String>> {
         let response = self.client.get_properties(&self.filesystem)?;
 
         Ok(response.properties)
@@ -298,7 +299,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_working_directory(&self) -> FResult<FileSystemPath> {
+    pub fn get_working_directory(&self) -> Result<FileSystemPath> {
         let directory = self.client.get_working_directory(&self.filesystem)?;
         let directory = FileSystemPath::new(directory.path);
 
@@ -308,7 +309,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn is_open(&self) -> FResult<bool> {
+    pub fn is_open(&self) -> Result<bool> {
         if !self.open {
             return Ok(false);
         }
@@ -321,18 +322,39 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn list(
+    pub async fn list(
         &self,
         path: FileSystemPath,
         recursive: bool,
-    ) -> FResult<Vec<FileSystemAttributes>> {
+    ) -> Result<Vec<FileSystemAttributes>> {
         let mut request = xenon::ListRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_dir(path.proto());
         request.set_recursive(recursive);
 
-        let files = self.client.list(&request)?.collect().wait()?;
-        let files = files.into_iter().map(FileSystemAttributes::from).collect();
+        let reciever = self.client.list(&request)?;
+        let files = reciever.collect::<Vec<Result<xenon::PathAttributes, grpcio::Error>>>().await;
+
+        let mut files = files.into_iter();
+
+        // In case the path does not exist, 
+        let files = if files.len() == 1 {
+            let file = files.next().unwrap();
+            match file {
+                Ok(f) => vec![FileSystemAttributes::from(f)],
+                Err(_) => {
+                    bail!("Couldn't list files in path.")
+                }
+            }
+        } else {
+            files
+                .into_iter()
+                .filter(|f| f.is_ok())
+                .map(|f| {
+                    FileSystemAttributes::from(f.unwrap())
+                })
+                .collect()
+        };
 
         Ok(files)
     }
@@ -344,7 +366,7 @@ impl FileSystem {
         &self,
         source: FileSystemPath,
         target: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::RenameRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_source(source.proto());
@@ -358,16 +380,17 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn read_from_file(
+    pub async fn read_from_file(
         &self,
         path: FileSystemPath,
-    ) -> FResult<Option<Vec<u8>>> {
+    ) -> Result<Option<Vec<u8>>> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
         let mut receiver = self.client.read_from_file(&request)?;
-        if let Some(file) = future::poll_fn(|| receiver.poll()).wait()? {
+
+        if let Some(Ok(file)) = receiver.next().await {
             Ok(Some(file.buffer))
         } else {
             Ok(None)
@@ -380,7 +403,7 @@ impl FileSystem {
     pub fn read_symbolic_link(
         &self,
         path: FileSystemPath,
-    ) -> FResult<FileSystemPath> {
+    ) -> Result<FileSystemPath> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -398,7 +421,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
         permissions: HashSet<FileSystemPermission>,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::SetPosixFilePermissionsRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -415,7 +438,7 @@ impl FileSystem {
     pub fn set_working_directory(
         &self,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
@@ -428,21 +451,21 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn write_to_file(
+    pub async fn write_to_file(
         &self,
         buffer: Vec<u8>,
         path: FileSystemPath,
-    ) -> FResult<()> {
+    ) -> Result<()> {
         let mut request = xenon::WriteToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_buffer(buffer);
 
-        let (mut sink, mut receiver) = self.client.write_to_file()?;
-        sink = sink.send((request, WriteFlags::default())).wait()?;
+        let (mut sink, receiver) = self.client.write_to_file()?;
+        sink.send((request, WriteFlags::default())).await?;
+        sink.close().await?;
 
-        future::poll_fn(|| sink.close()).wait()?;
-        future::poll_fn(|| receiver.poll()).wait()?;
+        receiver.await?;
 
         Ok(())
     }

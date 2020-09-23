@@ -1,10 +1,10 @@
+use anyhow::Result;
 use crate::credentials::Credential;
 use crate::xenon;
 use crate::xenon_grpc::SchedulerServiceClient;
 use grpcio::Channel;
 use protobuf::RepeatedField;
 
-type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
 
 ///
@@ -25,7 +25,7 @@ impl Scheduler {
     pub fn cancel_job(
         &self,
         job: Job,
-    ) -> FResult<JobStatus> {
+    ) -> Result<JobStatus> {
         let mut request = xenon::JobRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
@@ -38,7 +38,7 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn close(&mut self) -> FResult<()> {
+    pub fn close(&mut self) -> Result<()> {
         if self.open {
             self.client.close(&self.scheduler)?;
             self.open = false;
@@ -56,7 +56,7 @@ impl Scheduler {
         credential: Credential,
         location: String,
         properties: Map<String>,
-    ) -> FResult<Scheduler> {
+    ) -> Result<Scheduler> {
         let client = SchedulerServiceClient::new(channel);
 
         // Construct create request message.
@@ -84,7 +84,7 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_default_queue_name(&self) -> FResult<String> {
+    pub fn get_default_queue_name(&self) -> Result<String> {
         let response = self.client.get_default_queue_name(&self.scheduler)?;
 
         Ok(response.name)
@@ -96,7 +96,7 @@ impl Scheduler {
     pub fn get_job_status(
         &self,
         job: Job,
-    ) -> FResult<JobStatus> {
+    ) -> Result<JobStatus> {
         let mut request = xenon::JobRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
@@ -112,7 +112,7 @@ impl Scheduler {
     pub fn get_job_statuses(
         &self,
         jobs: Vec<Job>,
-    ) -> FResult<Vec<JobStatus>> {
+    ) -> Result<Vec<JobStatus>> {
         let jobs = jobs.iter().map(|j| j.clone().proto()).collect();
 
         let mut request = xenon::GetJobStatusesRequest::new();
@@ -131,7 +131,7 @@ impl Scheduler {
     pub fn get_jobs(
         &self,
         queues: Option<Vec<String>>,
-    ) -> FResult<Vec<Job>> {
+    ) -> Result<Vec<Job>> {
         let mut request = xenon::SchedulerAndQueues::new();
         request.set_scheduler(self.scheduler.clone());
         if let Some(queues) = queues {
@@ -147,7 +147,7 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_properties(&self) -> FResult<Map<String>> {
+    pub fn get_properties(&self) -> Result<Map<String>> {
         let response = self.client.get_properties(&self.scheduler)?;
 
         Ok(response.properties)
@@ -156,7 +156,7 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_queue_names(&self) -> FResult<Vec<String>> {
+    pub fn get_queue_names(&self) -> Result<Vec<String>> {
         let response = self.client.get_queue_names(&self.scheduler)?;
 
         Ok(response.name.into_vec())
@@ -168,7 +168,7 @@ impl Scheduler {
     pub fn get_queue_status(
         &self,
         queue: String,
-    ) -> FResult<QueueStatus> {
+    ) -> Result<QueueStatus> {
         let mut request = xenon::GetQueueStatusRequest::new();
         request.set_scheduler(self.scheduler.clone());
         request.set_queue(queue);
@@ -183,7 +183,7 @@ impl Scheduler {
     pub fn get_queue_statuses(
         &self,
         queues: Option<Vec<String>>,
-    ) -> FResult<Vec<QueueStatus>> {
+    ) -> Result<Vec<QueueStatus>> {
         let mut request = xenon::SchedulerAndQueues::new();
         request.set_scheduler(self.scheduler.clone());
         if let Some(queues) = queues {
@@ -199,7 +199,7 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn is_open(&mut self) -> FResult<bool> {
+    pub fn is_open(&mut self) -> Result<bool> {
         if self.open {
             let response = self.client.is_open(&self.scheduler)?;
             self.open = response.value
@@ -214,7 +214,7 @@ impl Scheduler {
     pub fn submit_batch_job(
         &self,
         description: JobDescription,
-    ) -> FResult<Job> {
+    ) -> Result<Job> {
         let mut request = xenon::SubmitBatchJobRequest::new();
         request.set_description(description.proto());
         request.set_scheduler(self.scheduler.clone());
@@ -231,7 +231,7 @@ impl Scheduler {
         &self,
         job: Job,
         timeout: Option<u64>,
-    ) -> FResult<JobStatus> {
+    ) -> Result<JobStatus> {
         let mut request = xenon::WaitRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
@@ -251,7 +251,7 @@ impl Scheduler {
         &self,
         job: Job,
         timeout: Option<u64>,
-    ) -> FResult<JobStatus> {
+    ) -> Result<JobStatus> {
         let mut request = xenon::WaitRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());

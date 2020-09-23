@@ -1,7 +1,7 @@
 // This file is generated. Do not edit
 // @generated
 
-// https://github.com/rust-lang/rust-clippy/issues/702
+// https://github.com/Manishearth/rust-clippy/issues/702
 #![allow(unknown_lints)]
 #![allow(clippy::all)]
 
@@ -756,7 +756,7 @@ impl FileSystemServiceClient {
     pub fn list_file_systems_async(&self, req: &super::xenon::Empty) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::xenon::FileSystems>> {
         self.list_file_systems_async_opt(req, ::grpcio::CallOption::default())
     }
-    pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Item = (), Error = ()> + Send + 'static {
+    pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Output = ()> + Send + 'static {
         self.client.spawn(f)
     }
 }
@@ -927,7 +927,7 @@ pub fn create_file_system_service<S: FileSystemService + Send + Clone + 'static>
     builder = builder.add_unary_handler(&METHOD_FILE_SYSTEM_SERVICE_LOCAL_FILE_SYSTEMS, move |ctx, req, resp| {
         instance.local_file_systems(ctx, req, resp)
     });
-    let mut instance = s.clone();
+    let mut instance = s;
     builder = builder.add_unary_handler(&METHOD_FILE_SYSTEM_SERVICE_LIST_FILE_SYSTEMS, move |ctx, req, resp| {
         instance.list_file_systems(ctx, req, resp)
     });
@@ -1535,7 +1535,7 @@ impl SchedulerServiceClient {
     pub fn list_schedulers_async(&self, req: &super::xenon::Empty) -> ::grpcio::Result<::grpcio::ClientUnaryReceiver<super::xenon::Schedulers>> {
         self.list_schedulers_async_opt(req, ::grpcio::CallOption::default())
     }
-    pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Item = (), Error = ()> + Send + 'static {
+    pub fn spawn<F>(&self, f: F) where F: ::futures::Future<Output = ()> + Send + 'static {
         self.client.spawn(f)
     }
 }
@@ -1671,7 +1671,7 @@ pub fn create_scheduler_service<S: SchedulerService + Send + Clone + 'static>(s:
     builder = builder.add_unary_handler(&METHOD_SCHEDULER_SERVICE_LOCAL_SCHEDULER, move |ctx, req, resp| {
         instance.local_scheduler(ctx, req, resp)
     });
-    let mut instance = s.clone();
+    let mut instance = s;
     builder = builder.add_unary_handler(&METHOD_SCHEDULER_SERVICE_LIST_SCHEDULERS, move |ctx, req, resp| {
         instance.list_schedulers(ctx, req, resp)
     });

@@ -4,26 +4,26 @@ use std::collections::HashSet;
 use xenon_rs::credentials::Credential;
 use xenon_rs::storage::{FileSystemPath, FileSystemPermission};
 
-#[test]
-fn appendtofile_existing_ok() {
+#[actix_rt::test]
+async fn appendtofile_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
     filesystem.create_file(path.clone()).unwrap();
 
     let buffer = String::from("Hello, world!").as_bytes().to_vec();
-    let result = filesystem.append_to_file(buffer, path);
+    let result = filesystem.append_to_file(buffer, path).await;
 
     assert!(result.is_ok())
 }
 
-#[test]
-fn appendtofile_nonexisting_err() {
+#[actix_rt::test]
+async fn appendtofile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("nonexisting.txt"));
     let buffer = String::new().as_bytes().to_vec();
-    let result = filesystem.append_to_file(buffer, path);
+    let result = filesystem.append_to_file(buffer, path).await;
 
     assert!(result.is_err());
 }
@@ -297,34 +297,34 @@ fn isopen_closed_false() {
     assert_eq!(result.unwrap(), false);
 }
 
-#[test]
-fn list_existing_ok() {
+#[actix_rt::test]
+async fn list_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("/home/xenon"));
-    let result = filesystem.list(path, false);
+    let result = filesystem.list(path, false).await;
 
     assert!(result.is_ok());
     let files = result.unwrap();
     assert!(files.len() > 0);
 }
 
-#[test]
-fn list_nonexisting_err() {
+#[actix_rt::test]
+async fn list_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("/nonexisting"));
-    let result = filesystem.list(path, false);
+    let result = filesystem.list(path, false).await;
 
     assert!(result.is_err());
 }
 
-#[test]
-fn readfromfile_existing_buffer() {
+#[actix_rt::test]
+async fn readfromfile_existing_buffer() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.read_from_file(path);
+    let result = filesystem.read_from_file(path).await;
 
     assert!(result.is_ok());
     let result = result.unwrap();
@@ -333,14 +333,16 @@ fn readfromfile_existing_buffer() {
     assert_eq!(buffer, common::get_slurmjob_file());
 }
 
-#[test]
-fn readfromfile_nonexisting_err() {
+#[actix_rt::test]
+async fn readfromfile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
     let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.read_from_file(path);
+    let result = filesystem.read_from_file(path).await;
 
-    assert!(result.is_err());
+    assert!(result.is_ok());
+    let result = result.unwrap();
+    assert!(result.is_none());
 }
 
 #[test]

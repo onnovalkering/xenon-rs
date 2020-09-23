@@ -1,6 +1,6 @@
 language: rust
 sudo: required
-dist: trusty
+dist: bionic
 
 addons:
   apt:
@@ -12,6 +12,25 @@ before_cache:
 
 cache: cargo
 
+before_script:
+  - export GRPC_VERSION=1.29.1
+  - export PATH="$PATH:$HOME/.cache/bin:$HOME/.cargo/bin"
+  - GRPC_HEADER="$HOME/.cache/include/grpc/grpc.h"
+  - if [[ ! -f "$GRPC_HEADER" ]] ; then
+      (
+        git clone -b v$GRPC_VERSION https://github.com/grpc/grpc &&
+        cd grpc &&
+        git submodule update --init &&
+        env prefix=$HOME/.cache make install_c
+      );
+    fi
+  - eval "$(gimme stable)"
+  - export CPLUS_INCLUDE_PATH="$HOME/.cache/include"
+  - export LD_LIBRARY_PATH="$HOME/.cache/lib"
+  - export DYLD_LIBRARY_PATH="$HOME/.cache/lib"
+  - export LIBRARY_PATH="$HOME/.cache/lib"
+  - export PKG_CONFIG_PATH="$HOME/.cache/lib/pkgconfig"
+
 script:
   - cargo clean
   - cargo build
@@ -19,4 +38,4 @@ script:
   - cargo test
 
 after_success:
-  - cargo tarpaulin --exclude-files src/proto/* --exclude-files tests/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
+  - cargo tarpaulin --exclude-files src/proto/* --exclude-files tests/* --exclude-files ../../../../../usr/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID

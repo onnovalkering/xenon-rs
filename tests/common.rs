@@ -1,3 +1,4 @@
+use anyhow::Result;
 use log::LevelFilter;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use std::sync::Arc;
@@ -5,7 +6,6 @@ use xenon_rs::compute::Scheduler;
 use xenon_rs::credentials::Credential;
 use xenon_rs::storage::FileSystem;
 
-type FResult<T> = Result<T, failure::Error>;
 type Map<T> = std::collections::HashMap<String, T>;
 
 ///
@@ -20,7 +20,7 @@ pub fn build_channel() -> Channel {
 ///
 ///
 #[allow(dead_code)] 
-pub fn create_sftp_filesystem() -> FResult<FileSystem> {
+pub fn create_sftp_filesystem() -> Result<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
 
@@ -42,7 +42,7 @@ pub fn create_sftp_filesystem() -> FResult<FileSystem> {
 ///
 ///
 #[allow(dead_code)]
-pub fn create_slurm_scheduler() -> FResult<Scheduler> {
+pub fn create_slurm_scheduler() -> Result<Scheduler> {
     let channel = build_channel();
     let credential = new_credential();
 
