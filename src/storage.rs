@@ -633,3 +633,66 @@ impl FileSystemPermission {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::xenon as x;
+
+
+    #[test]
+    fn filesystempermission_fromproto_ok() {
+        let none = x::PosixFilePermission::NONE;
+        let owner_read = x::PosixFilePermission::OWNER_READ;
+        let owner_write = x::PosixFilePermission::OWNER_WRITE;
+        let owner_execute = x::PosixFilePermission::OWNER_EXECUTE;
+        let group_read = x::PosixFilePermission::GROUP_READ;
+        let group_write = x::PosixFilePermission::GROUP_WRITE;
+        let group_execute = x::PosixFilePermission::GROUP_EXECUTE;
+        let others_read = x::PosixFilePermission::OTHERS_READ;
+        let others_write = x::PosixFilePermission::OTHERS_WRITE;
+        let others_execute = x::PosixFilePermission::OTHERS_EXECUTE;
+
+        assert_eq!(FileSystemPermission::from(none), FileSystemPermission::None);
+
+        assert_eq!(FileSystemPermission::from(owner_read), FileSystemPermission::OwnerRead);
+        assert_eq!(FileSystemPermission::from(owner_write), FileSystemPermission::OwnerWrite);
+        assert_eq!(FileSystemPermission::from(owner_execute), FileSystemPermission::OwnerExecute);
+
+        assert_eq!(FileSystemPermission::from(group_read), FileSystemPermission::GroupRead);
+        assert_eq!(FileSystemPermission::from(group_write), FileSystemPermission::GroupWrite);
+        assert_eq!(FileSystemPermission::from(group_execute), FileSystemPermission::GroupExecute);
+
+        assert_eq!(FileSystemPermission::from(others_read), FileSystemPermission::OthersRead);
+        assert_eq!(FileSystemPermission::from(others_write), FileSystemPermission::OthersWrite);
+        assert_eq!(FileSystemPermission::from(others_execute), FileSystemPermission::OthersExecute);
+    }
+
+    #[test]
+    fn filesystempermission_toproto_ok() {
+        let none = FileSystemPermission::None;
+        let owner_read = FileSystemPermission::OwnerRead;
+        let owner_write = FileSystemPermission::OwnerWrite;
+        let owner_execute = FileSystemPermission::OwnerExecute;
+        let group_read = FileSystemPermission::GroupRead;
+        let group_write = FileSystemPermission::GroupWrite;
+        let group_execute = FileSystemPermission::GroupExecute;
+        let others_read = FileSystemPermission::OthersRead;
+        let others_write = FileSystemPermission::OthersWrite;
+        let others_execute = FileSystemPermission::OthersExecute;
+
+        assert_eq!(none.proto(), x::PosixFilePermission::NONE);
+
+        assert_eq!(owner_read.proto(), x::PosixFilePermission::OWNER_READ);
+        assert_eq!(owner_write.proto(), x::PosixFilePermission::OWNER_WRITE);
+        assert_eq!(owner_execute.proto(), x::PosixFilePermission::OWNER_EXECUTE);
+
+        assert_eq!(group_read.proto(), x::PosixFilePermission::GROUP_READ);
+        assert_eq!(group_write.proto(), x::PosixFilePermission::GROUP_WRITE);
+        assert_eq!(group_execute.proto(), x::PosixFilePermission::GROUP_EXECUTE);
+
+        assert_eq!(others_read.proto(), x::PosixFilePermission::OTHERS_READ);
+        assert_eq!(others_write.proto(), x::PosixFilePermission::OTHERS_WRITE);
+        assert_eq!(others_execute.proto(), x::PosixFilePermission::OTHERS_EXECUTE);
+    }
+}
