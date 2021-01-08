@@ -4,11 +4,15 @@ All notable changes to `xenon-rs` will be documented in this file.
 
 ## [0.3.0] - xxxx-yy-zz
 ### Added
-- Support for macOS (build, generate gRPC interface, and CI)
+- Support for macOS (build, generate gRPC interface, and CI).
 
-## [0.2.0] - 2020-02-04
 ### Changed
-- Include generated gRPC interface in source code.
+- Replaced `failure` with `anyhow` for error handling.
+- Library is now exposed as `xenon`, instead of `xenon_rs`.
+
+## [0.2.0] - 2020-03-04
+### Changed
+- Generated gRPC interface is now included in source code.
 
 ## [0.1.0] - 2020-03-02
 ### Added
