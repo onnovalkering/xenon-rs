@@ -104,3 +104,57 @@ impl PasswordCredential {
         credential
     }
 }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn credential_newpassword_variant() {
+        let username = String::from("username");
+        let password = String::from("password");
+
+        let credential = Credential::new_password(username, password);
+        match credential {
+            Credential::Certificate(_) => panic!(),
+            Credential::Password(_) => {}
+        }
+    }
+
+    #[test]
+    fn credential_newcertificate_variant() {
+        let certificate = String::from("certificate");
+        let username = String::from("username");
+        let passphrase = String::from("passphrase");
+
+        let credential = Credential::new_certificate(certificate, username, passphrase);
+        match credential {
+            Credential::Certificate(_) => {},
+            Credential::Password(_) => panic!()
+        }
+    }
+
+    #[test]
+    fn certificate_proto_ok() {
+        let certificate = String::from("certificate");
+        let username = String::from("username");
+        let passphrase = String::from("passphrase");
+
+        let credential = Credential::new_certificate(
+            certificate.clone(),
+            username.clone(),
+            passphrase.clone()
+        );
+
+        if let Credential::Certificate(cc) = credential {
+            let cc_proto = cc.proto();
+
+            assert_eq!(cc_proto.get_certfile(), &certificate);
+            assert_eq!(cc_proto.get_username(), &username);
+            assert_eq!(cc_proto.get_passphrase(), &passphrase);
+        } else {
+            panic!()
+        }
+    }
+}
