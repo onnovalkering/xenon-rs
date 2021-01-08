@@ -5,7 +5,8 @@ else
     OS='linux'
 fi
 
-PROTOC_VERSION="3.11.4"
+# Use same `protoc` version as Xenon
+PROTOC_VERSION="3.7.1"
 PROTOC_RELEASE="protoc-$PROTOC_VERSION-$OS-x86_64.zip"
 
 curl -OL "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/$PROTOC_RELEASE"
