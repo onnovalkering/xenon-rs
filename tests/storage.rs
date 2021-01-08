@@ -3,16 +3,17 @@ use rand::random;
 use std::collections::HashSet;
 use xenon::credentials::Credential;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
+use std::path::PathBuf;
 
 #[actix_rt::test]
 async fn appendtofile_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_file(path.clone()).unwrap();
+    let path = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    filesystem.create_file(&path).unwrap();
 
     let buffer = String::from("Hello, world!").as_bytes().to_vec();
-    let result = filesystem.append_to_file(buffer, path).await;
+    let result = filesystem.append_to_file(buffer, &path).await;
 
     assert!(result.is_ok())
 }
@@ -21,9 +22,9 @@ async fn appendtofile_existing_ok() {
 async fn appendtofile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
     let buffer = String::new().as_bytes().to_vec();
-    let result = filesystem.append_to_file(buffer, path).await;
+    let result = filesystem.append_to_file(buffer, &path).await;
 
     assert!(result.is_err());
 }
@@ -32,9 +33,9 @@ async fn appendtofile_nonexisting_err() {
 fn copy_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let source = FileSystemPath::new(String::from("test-slurm.job"));
-    let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem.copy(source, destination, None, false, 5000);
+    let source = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let destination = FileSystemPath::new(PathBuf::from(format!("copy_{}.txt", random::<u16>())));
+    let result = filesystem.copy(&source, &destination, None, false, 5000);
 
     assert!(result.is_ok());
 }
@@ -44,9 +45,9 @@ fn copy_existingremotefs_ok() {
     let filesystem1 = common::create_sftp_filesystem().unwrap();
     let filesystem2 = common::create_sftp_filesystem().unwrap();
 
-    let source = FileSystemPath::new(String::from("test-slurm.job"));
-    let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem1.copy(source, destination, Some(filesystem2), false, 5000);
+    let source = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let destination = FileSystemPath::new(PathBuf::from(format!("copy_{}.txt", random::<u16>())));
+    let result = filesystem1.copy(&source, &destination, Some(filesystem2), false, 5000);
 
     assert!(result.is_ok());
 }
@@ -62,8 +63,8 @@ fn create_default_ok() {
 fn createdirectories_existing_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("filesystem-test-fixture/links"));
-    let result = filesystem.create_directories(path);
+    let path = FileSystemPath::new(PathBuf::from("filesystem-test-fixture/links"));
+    let result = filesystem.create_directories(&path);
 
     assert!(result.is_err());
 }
@@ -72,8 +73,8 @@ fn createdirectories_existing_err() {
 fn createdirectories_nonexisting_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(format!("directory_{}/sub/sub", random::<u16>()));
-    let result = filesystem.create_directories(path);
+    let path = FileSystemPath::new(PathBuf::from(format!("directory_{}/sub/sub", random::<u16>())));
+    let result = filesystem.create_directories(&path);
 
     assert!(result.is_ok());
 }
@@ -82,8 +83,8 @@ fn createdirectories_nonexisting_ok() {
 fn createdirectory_existing_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("filesystem-test-fixture"));
-    let result = filesystem.create_directory(path);
+    let path = FileSystemPath::new(PathBuf::from("filesystem-test-fixture"));
+    let result = filesystem.create_directory(&path);
 
     assert!(result.is_err());
 }
@@ -92,8 +93,8 @@ fn createdirectory_existing_err() {
 fn createdirectory_nonexisting_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(format!("directory_{}", random::<u16>()));
-    let result = filesystem.create_directory(path);
+    let path = FileSystemPath::new(PathBuf::from(format!("directory_{}", random::<u16>())));
+    let result = filesystem.create_directory(&path);
 
     assert!(result.is_ok());
 }
@@ -102,8 +103,8 @@ fn createdirectory_nonexisting_ok() {
 fn createfile_existing_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.create_file(path);
+    let path = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let result = filesystem.create_file(&path);
 
     assert!(result.is_err());
 }
@@ -112,8 +113,8 @@ fn createfile_existing_err() {
 fn createfile_nonexisting_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let result = filesystem.create_file(path);
+    let path = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    let result = filesystem.create_file(&path);
 
     assert!(result.is_ok());
 }
@@ -122,9 +123,9 @@ fn createfile_nonexisting_ok() {
 fn createsymboliclink_existing_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(String::from("test-slurm.job"));
-    let target = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.create_symbolic_link(link.clone(), target.clone());
+    let link = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let target = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.create_symbolic_link(&link, &target);
 
     assert!(result.is_err());
 }
@@ -133,11 +134,11 @@ fn createsymboliclink_existing_err() {
 fn createsymboliclink_nonexisting_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let target = FileSystemPath::new(String::from("test-slurm.job"));
-    filesystem.create_symbolic_link(link.clone(), target.clone()).unwrap();
+    let link = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    let target = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    filesystem.create_symbolic_link(&link, &target).unwrap();
 
-    let result = filesystem.read_symbolic_link(link);
+    let result = filesystem.read_symbolic_link(&link);
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
@@ -147,11 +148,11 @@ fn createsymboliclink_nonexisting_ok() {
 fn createsymboliclink_nonexistingtarget_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let target = FileSystemPath::new(String::from("nonexisting.txt"));
-    filesystem.create_symbolic_link(link.clone(), target.clone()).unwrap();
+    let link = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    let target = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    filesystem.create_symbolic_link(&link, &target).unwrap();
 
-    let result = filesystem.read_symbolic_link(link);
+    let result = filesystem.read_symbolic_link(&link);
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
@@ -161,8 +162,8 @@ fn createsymboliclink_nonexistingtarget_ok() {
 fn delete_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.delete(path, false);
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.delete(&path, false);
 
     assert!(result.is_err());
 }
@@ -171,8 +172,8 @@ fn delete_existing_ok() {
 fn delete_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.delete(path, false);
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.delete(&path, false);
 
     assert!(result.is_err());
 }
@@ -181,8 +182,8 @@ fn delete_nonexisting_err() {
 fn exists_existing_true() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.exists(path);
+    let path = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let result = filesystem.exists(&path);
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), true);
@@ -192,8 +193,8 @@ fn exists_existing_true() {
 fn exists_nonexisting_false() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.exists(path);
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.exists(&path);
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), false);
@@ -203,8 +204,8 @@ fn exists_nonexisting_false() {
 fn getattributes_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.exists(path);
+    let path = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let result = filesystem.exists(&path);
 
     assert!(result.is_ok());
 }
@@ -213,8 +214,8 @@ fn getattributes_existing_ok() {
 fn getattributes_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.get_attributes(path);
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.get_attributes(&path);
 
     assert!(result.is_err());
 }
@@ -301,8 +302,8 @@ fn isopen_closed_false() {
 async fn list_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("/home/xenon"));
-    let result = filesystem.list(path, false).await;
+    let path = FileSystemPath::new(PathBuf::from("/home/xenon"));
+    let result = filesystem.list(&path, false).await;
 
     assert!(result.is_ok());
     let files = result.unwrap();
@@ -313,8 +314,8 @@ async fn list_existing_ok() {
 async fn list_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("/nonexisting"));
-    let result = filesystem.list(path, false).await;
+    let path = FileSystemPath::new(PathBuf::from("/nonexisting"));
+    let result = filesystem.list(&path, false).await;
 
     assert!(result.is_err());
 }
@@ -323,8 +324,8 @@ async fn list_nonexisting_err() {
 async fn readfromfile_existing_buffer() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.read_from_file(path).await;
+    let path = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let result = filesystem.read_from_file(&path).await;
 
     assert!(result.is_ok());
     let result = result.unwrap();
@@ -337,8 +338,8 @@ async fn readfromfile_existing_buffer() {
 async fn readfromfile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.read_from_file(path).await;
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.read_from_file(&path).await;
 
     assert!(result.is_ok());
     let result = result.unwrap();
@@ -349,11 +350,11 @@ async fn readfromfile_nonexisting_err() {
 fn readsymboliclink_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let target = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_symbolic_link(link.clone(), target.clone()).unwrap();
+    let link = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    let target = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    filesystem.create_symbolic_link(&link, &target).unwrap();
 
-    let result = filesystem.read_symbolic_link(link);
+    let result = filesystem.read_symbolic_link(&link);
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
@@ -363,8 +364,8 @@ fn readsymboliclink_existing_ok() {
 fn readsymboliclink_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.read_symbolic_link(link);
+    let link = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.read_symbolic_link(&link);
 
     assert!(result.is_err());
 }
@@ -373,8 +374,8 @@ fn readsymboliclink_nonexisting_err() {
 fn readsymboliclink_nonsymboliclink_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let link = FileSystemPath::new(String::from("test-slurm.job"));
-    let result = filesystem.read_symbolic_link(link);
+    let link = FileSystemPath::new(PathBuf::from("test-slurm.job"));
+    let result = filesystem.read_symbolic_link(&link);
 
     assert!(result.is_err());
 }
@@ -383,11 +384,11 @@ fn readsymboliclink_nonsymboliclink_ok() {
 fn rename_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let source = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_file(source.clone()).unwrap();
+    let source = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    filesystem.create_file(&source).unwrap();
 
-    let destination = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let result = filesystem.rename(source, destination);
+    let destination = FileSystemPath::new(PathBuf::from(format!("file_{}.txt", random::<u16>())));
+    let result = filesystem.rename(&source, &destination);
 
     assert!(result.is_ok());
 }
@@ -396,9 +397,9 @@ fn rename_existing_ok() {
 fn rename_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let source = FileSystemPath::new(String::from("nonexisting.txt"));
-    let destination = FileSystemPath::new(String::from("nonexisting.txt"));
-    let result = filesystem.rename(source, destination);
+    let source = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let destination = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
+    let result = filesystem.rename(&source, &destination);
 
     assert!(result.is_err());
 }
@@ -408,14 +409,14 @@ fn setpermissions_existing_ok() {
     use FileSystemPermission::*;
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("test-slurm.job"));
+    let path = FileSystemPath::new(PathBuf::from("test-slurm.job"));
     let mut permissions = HashSet::<FileSystemPermission>::new();
     permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
-    let result = filesystem.set_permissions(path.clone(), permissions.clone());
+    let result = filesystem.set_permissions(&path, permissions.clone());
 
     assert!(result.is_ok());
-    let attributes = filesystem.get_attributes(path).unwrap();
+    let attributes = filesystem.get_attributes(&path).unwrap();
     assert_eq!(permissions, attributes.permissions);
 }
 
@@ -424,11 +425,11 @@ fn setpermissions_nonexisting_err() {
     use FileSystemPermission::*;
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let path = FileSystemPath::new(String::from("nonexisting.txt"));
+    let path = FileSystemPath::new(PathBuf::from("nonexisting.txt"));
     let mut permissions = HashSet::<FileSystemPermission>::new();
     permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
-    let result = filesystem.set_permissions(path, permissions);
+    let result = filesystem.set_permissions(&path, permissions);
 
     assert!(result.is_err());
 }
@@ -437,8 +438,8 @@ fn setpermissions_nonexisting_err() {
 fn setworkingdirectory_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let directory = FileSystemPath::new(String::from("/home/xenon/filesystem-test-fixture"));
-    let result = filesystem.set_working_directory(directory);
+    let directory = FileSystemPath::new(PathBuf::from("/home/xenon/filesystem-test-fixture"));
+    let result = filesystem.set_working_directory(&directory);
 
     assert!(result.is_ok());
 }
@@ -447,8 +448,8 @@ fn setworkingdirectory_existing_ok() {
 fn setworkingdirectory_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
-    let directory = FileSystemPath::new(String::from("/nonexisting"));
-    let result = filesystem.set_working_directory(directory);
+    let directory = FileSystemPath::new(PathBuf::from("/nonexisting"));
+    let result = filesystem.set_working_directory(&directory);
 
     assert!(result.is_err());
 }

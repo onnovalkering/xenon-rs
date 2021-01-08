@@ -5,6 +5,7 @@ use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{StreamExt, SinkExt};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
+use std::path::PathBuf;
 
 type Map<T> = std::collections::HashMap<String, T>;
 
@@ -26,7 +27,7 @@ impl FileSystem {
     pub async fn append_to_file(
         &self,
         buffer: Vec<u8>,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::AppendToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -62,8 +63,8 @@ impl FileSystem {
     ///
     pub fn copy(
         &self,
-        source: FileSystemPath,
-        destination: FileSystemPath,
+        source: &FileSystemPath,
+        destination: &FileSystemPath,
         destination_filesystem: Option<FileSystem>,
         recursive: bool,
         timeout: u64,
@@ -133,7 +134,7 @@ impl FileSystem {
     ///
     pub fn create_directories(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -149,7 +150,7 @@ impl FileSystem {
     ///
     pub fn create_directory(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -165,7 +166,7 @@ impl FileSystem {
     ///
     pub fn create_file(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -181,8 +182,8 @@ impl FileSystem {
     ///
     pub fn create_symbolic_link(
         &self,
-        link: FileSystemPath,
-        target: FileSystemPath,
+        link: &FileSystemPath,
+        target: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::CreateSymbolicLinkRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -199,7 +200,7 @@ impl FileSystem {
     ///
     pub fn delete(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
         recursive: bool,
     ) -> Result<()> {
         let mut request = x::DeleteRequest::new();
@@ -217,7 +218,7 @@ impl FileSystem {
     ///
     pub fn exists(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<bool> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -233,7 +234,7 @@ impl FileSystem {
     ///
     pub fn get_attributes(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<FileSystemAttributes> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -301,7 +302,8 @@ impl FileSystem {
     ///
     pub fn get_working_directory(&self) -> Result<FileSystemPath> {
         let directory = self.client.get_working_directory(&self.filesystem)?;
-        let directory = FileSystemPath::new(directory.path);
+        let directory = FileSystemPath::from(directory);
+
 
         Ok(directory)
     }
@@ -324,7 +326,7 @@ impl FileSystem {
     ///
     pub async fn list(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
         recursive: bool,
     ) -> Result<Vec<FileSystemAttributes>> {
         let mut request = x::ListRequest::new();
@@ -364,8 +366,8 @@ impl FileSystem {
     ///
     pub fn rename(
         &self,
-        source: FileSystemPath,
-        target: FileSystemPath,
+        source: &FileSystemPath,
+        target: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::RenameRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -382,7 +384,7 @@ impl FileSystem {
     ///
     pub async fn read_from_file(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<Option<Vec<u8>>> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -402,14 +404,14 @@ impl FileSystem {
     ///
     pub fn read_symbolic_link(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<FileSystemPath> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
         let target = self.client.read_symbolic_link(&request)?;
-        let target = FileSystemPath::new(target.path);
+        let target = FileSystemPath::from(target);
 
         Ok(target)
     }
@@ -419,7 +421,7 @@ impl FileSystem {
     ///
     pub fn set_permissions(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
         permissions: HashSet<FileSystemPermission>,
     ) -> Result<()> {
         let mut request = x::SetPosixFilePermissionsRequest::new();
@@ -437,7 +439,7 @@ impl FileSystem {
     ///
     pub fn set_working_directory(
         &self,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -454,7 +456,7 @@ impl FileSystem {
     pub async fn write_to_file(
         &self,
         buffer: Vec<u8>,
-        path: FileSystemPath,
+        path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::WriteToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
@@ -508,7 +510,7 @@ impl FileSystemAttributes {
     ///
     ///
     pub(crate) fn from(attributes: x::PathAttributes) -> FileSystemAttributes {
-        let path = FileSystemPath::from(attributes.path);
+        let path = FileSystemPath::from(attributes.path.unwrap());
         let permissions = attributes
             .permissions
             .iter()
@@ -529,7 +531,7 @@ impl FileSystemAttributes {
             last_access_time: attributes.last_access_time,
             last_modified_time: attributes.last_modified_time,
             owner: attributes.owner,
-            path,
+            path: Some(path),
             permissions,
             size: attributes.size,
         }
@@ -541,34 +543,31 @@ impl FileSystemAttributes {
 ///
 #[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemPath {
-    pub path: String,
+    pub path: PathBuf,
 }
 
 impl FileSystemPath {
     ///
     ///
     ///
-    pub(crate) fn from(path: protobuf::SingularPtrField<x::Path>) -> Option<FileSystemPath> {
-        if let Some(path) = path.into_option() {
-            Some(FileSystemPath::new(path.path))
-        } else {
-            None
-        }
-    }
-
-    ///
-    ///
-    ///
-    pub fn new(path: String) -> FileSystemPath {
+    pub fn new(path: PathBuf) -> Self {
         FileSystemPath { path }
     }
 
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> x::Path {
+    pub(crate) fn from(path: x::Path) -> Self {
+        let pathbuf = PathBuf::from(path.path);
+        FileSystemPath::new(pathbuf)
+    }
+
+    ///
+    ///
+    ///
+    pub(crate) fn proto(&self) -> x::Path {
         let mut path = x::Path::new();
-        path.set_path(self.path);
+        path.set_path(self.path.clone().into_os_string().into_string().unwrap());
 
         path
     }
