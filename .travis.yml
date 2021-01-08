@@ -1,6 +1,6 @@
 language: rust
 sudo: required
-dist: bionic
+dist: focal
 
 addons:
   apt:
@@ -34,8 +34,7 @@ before_script:
 script:
   - cargo clean
   - cargo build
-  - docker-compose up -d
-  - cargo test
 
 after_success:
+  - docker-compose up -d
   - cargo tarpaulin --exclude-files src/proto/* --exclude-files tests/* --exclude-files ../../../../../usr/* --ciserver travis-ci --coveralls $TRAVIS_JOB_ID
