@@ -1,6 +1,6 @@
 use anyhow::Result;
 use crate::credentials::Credential;
-use crate::xenon;
+use crate::xenon as x;
 use crate::xenon_grpc::FileSystemServiceClient;
 use futures::{StreamExt, SinkExt};
 use grpcio::{Channel, WriteFlags};
@@ -15,7 +15,7 @@ pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient,
     open: bool,
-    pub(crate) filesystem: xenon::FileSystem,
+    pub(crate) filesystem: x::FileSystem,
     pub identifier: String,
 }
 
@@ -28,13 +28,13 @@ impl FileSystem {
         buffer: Vec<u8>,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::AppendToFileRequest::new();
+        let mut request = x::AppendToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_buffer(buffer);
 
         let (mut sink, receiver) = self.client.append_to_file()?;
-        
+
         sink.send((request, WriteFlags::default())).await?;
 
         sink.close().await?;
@@ -68,7 +68,7 @@ impl FileSystem {
         recursive: bool,
         timeout: u64,
     ) -> Result<()> {
-        let mut request = xenon::CopyRequest::new();
+        let mut request = x::CopyRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_source(source.proto());
         request.set_destination(destination.proto());
@@ -84,7 +84,7 @@ impl FileSystem {
 
         let operation = self.client.copy(&request)?;
 
-        let mut request = xenon::WaitUntilDoneRequest::new();
+        let mut request = x::WaitUntilDoneRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_copy_operation(operation);
         request.set_timeout(timeout);
@@ -107,7 +107,7 @@ impl FileSystem {
         let client = FileSystemServiceClient::new(channel);
 
         // Construct create request message.
-        let mut request = xenon::CreateFileSystemRequest::new();
+        let mut request = x::CreateFileSystemRequest::new();
         request.set_adaptor(adaptor.clone());
         request.set_location(location);
         request.set_properties(properties);
@@ -135,7 +135,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -151,7 +151,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -167,7 +167,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -184,7 +184,7 @@ impl FileSystem {
         link: FileSystemPath,
         target: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::CreateSymbolicLinkRequest::new();
+        let mut request = x::CreateSymbolicLinkRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_link(link.proto());
         request.set_target(target.proto());
@@ -202,7 +202,7 @@ impl FileSystem {
         path: FileSystemPath,
         recursive: bool,
     ) -> Result<()> {
-        let mut request = xenon::DeleteRequest::new();
+        let mut request = x::DeleteRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_recursive(recursive);
@@ -219,7 +219,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<bool> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -235,7 +235,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<FileSystemAttributes> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -251,7 +251,7 @@ impl FileSystem {
     pub fn get_fs_credential(&self) -> Result<Option<Credential>> {
         let response = self.client.get_credential(&self.filesystem)?;
         if let Some(one_of_credential) = response.credential {
-            use xenon::GetCredentialResponse_oneof_credential::*;
+            use x::GetCredentialResponse_oneof_credential::*;
 
             match one_of_credential {
                 certificate_credential(credential) => Ok(Some(Credential::new_certificate(
@@ -327,17 +327,17 @@ impl FileSystem {
         path: FileSystemPath,
         recursive: bool,
     ) -> Result<Vec<FileSystemAttributes>> {
-        let mut request = xenon::ListRequest::new();
+        let mut request = x::ListRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_dir(path.proto());
         request.set_recursive(recursive);
 
         let reciever = self.client.list(&request)?;
-        let files = reciever.collect::<Vec<Result<xenon::PathAttributes, grpcio::Error>>>().await;
+        let files = reciever.collect::<Vec<Result<x::PathAttributes, grpcio::Error>>>().await;
 
         let mut files = files.into_iter();
 
-        // In case the path does not exist, 
+        // In case the path does not exist,
         let files = if files.len() == 1 {
             let file = files.next().unwrap();
             match file {
@@ -367,7 +367,7 @@ impl FileSystem {
         source: FileSystemPath,
         target: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::RenameRequest::new();
+        let mut request = x::RenameRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_source(source.proto());
         request.set_target(target.proto());
@@ -384,7 +384,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<Option<Vec<u8>>> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -404,7 +404,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<FileSystemPath> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -422,7 +422,7 @@ impl FileSystem {
         path: FileSystemPath,
         permissions: HashSet<FileSystemPermission>,
     ) -> Result<()> {
-        let mut request = xenon::SetPosixFilePermissionsRequest::new();
+        let mut request = x::SetPosixFilePermissionsRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_permissions(permissions.iter().map(|p| p.proto()).collect());
@@ -439,7 +439,7 @@ impl FileSystem {
         &self,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::PathRequest::new();
+        let mut request = x::PathRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
 
@@ -456,7 +456,7 @@ impl FileSystem {
         buffer: Vec<u8>,
         path: FileSystemPath,
     ) -> Result<()> {
-        let mut request = xenon::WriteToFileRequest::new();
+        let mut request = x::WriteToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
         request.set_buffer(buffer);
@@ -507,7 +507,7 @@ impl FileSystemAttributes {
     ///
     ///
     ///
-    pub(crate) fn from(attributes: xenon::PathAttributes) -> FileSystemAttributes {
+    pub(crate) fn from(attributes: x::PathAttributes) -> FileSystemAttributes {
         let path = FileSystemPath::from(attributes.path);
         let permissions = attributes
             .permissions
@@ -548,7 +548,7 @@ impl FileSystemPath {
     ///
     ///
     ///
-    pub(crate) fn from(path: protobuf::SingularPtrField<xenon::Path>) -> Option<FileSystemPath> {
+    pub(crate) fn from(path: protobuf::SingularPtrField<x::Path>) -> Option<FileSystemPath> {
         if let Some(path) = path.into_option() {
             Some(FileSystemPath::new(path.path))
         } else {
@@ -566,8 +566,8 @@ impl FileSystemPath {
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> xenon::Path {
-        let mut path = xenon::Path::new();
+    pub(crate) fn proto(self) -> x::Path {
+        let mut path = x::Path::new();
         path.set_path(self.path);
 
         path
@@ -595,8 +595,8 @@ impl FileSystemPermission {
     ///
     ///
     ///
-    pub(crate) fn from(permission: xenon::PosixFilePermission) -> FileSystemPermission {
-        use xenon::PosixFilePermission::*;
+    pub(crate) fn from(permission: x::PosixFilePermission) -> FileSystemPermission {
+        use x::PosixFilePermission::*;
         use FileSystemPermission::*;
 
         match permission {
@@ -616,8 +616,8 @@ impl FileSystemPermission {
     ///
     ///
     ///
-    pub fn proto(&self) -> xenon::PosixFilePermission {
-        use xenon::PosixFilePermission::*;
+    pub fn proto(&self) -> x::PosixFilePermission {
+        use x::PosixFilePermission::*;
         use FileSystemPermission::*;
 
         match self {

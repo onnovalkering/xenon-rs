@@ -1,4 +1,4 @@
-use crate::xenon;
+use crate::xenon as x;
 
 ///
 ///
@@ -63,8 +63,8 @@ impl CertificateCredential {
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> xenon::CertificateCredential {
-        let mut credential = xenon::CertificateCredential::new();
+    pub(crate) fn proto(self) -> x::CertificateCredential {
+        let mut credential = x::CertificateCredential::new();
         credential.set_certfile(self.certificate);
         credential.set_passphrase(self.passphrase);
         credential.set_username(self.username);
@@ -96,8 +96,8 @@ impl PasswordCredential {
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> xenon::PasswordCredential {
-        let mut credential = xenon::PasswordCredential::new();
+    pub(crate) fn proto(self) -> x::PasswordCredential {
+        let mut credential = x::PasswordCredential::new();
         credential.set_username(self.username);
         credential.set_password(self.password);
 

@@ -1,6 +1,6 @@
 use anyhow::Result;
 use crate::credentials::Credential;
-use crate::xenon;
+use crate::xenon as x;
 use crate::xenon_grpc::SchedulerServiceClient;
 use grpcio::Channel;
 use protobuf::RepeatedField;
@@ -14,7 +14,7 @@ pub struct Scheduler {
     pub adaptor: String,
     client: SchedulerServiceClient,
     open: bool,
-    pub(crate) scheduler: xenon::Scheduler,
+    pub(crate) scheduler: x::Scheduler,
     pub identifier: String,
 }
 
@@ -26,7 +26,7 @@ impl Scheduler {
         &self,
         job: Job,
     ) -> Result<JobStatus> {
-        let mut request = xenon::JobRequest::new();
+        let mut request = x::JobRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
 
@@ -60,7 +60,7 @@ impl Scheduler {
         let client = SchedulerServiceClient::new(channel);
 
         // Construct create request message.
-        let mut request = xenon::CreateSchedulerRequest::new();
+        let mut request = x::CreateSchedulerRequest::new();
         request.set_adaptor(adaptor.clone());
         request.set_location(location);
         request.set_properties(properties);
@@ -97,7 +97,7 @@ impl Scheduler {
         &self,
         job: Job,
     ) -> Result<JobStatus> {
-        let mut request = xenon::JobRequest::new();
+        let mut request = x::JobRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
 
@@ -115,7 +115,7 @@ impl Scheduler {
     ) -> Result<Vec<JobStatus>> {
         let jobs = jobs.iter().map(|j| j.clone().proto()).collect();
 
-        let mut request = xenon::GetJobStatusesRequest::new();
+        let mut request = x::GetJobStatusesRequest::new();
         request.set_jobs(RepeatedField::from_vec(jobs));
         request.set_scheduler(self.scheduler.clone());
 
@@ -132,7 +132,7 @@ impl Scheduler {
         &self,
         queues: Option<Vec<String>>,
     ) -> Result<Vec<Job>> {
-        let mut request = xenon::SchedulerAndQueues::new();
+        let mut request = x::SchedulerAndQueues::new();
         request.set_scheduler(self.scheduler.clone());
         if let Some(queues) = queues {
             request.set_queues(RepeatedField::from_vec(queues));
@@ -169,7 +169,7 @@ impl Scheduler {
         &self,
         queue: String,
     ) -> Result<QueueStatus> {
-        let mut request = xenon::GetQueueStatusRequest::new();
+        let mut request = x::GetQueueStatusRequest::new();
         request.set_scheduler(self.scheduler.clone());
         request.set_queue(queue);
 
@@ -184,7 +184,7 @@ impl Scheduler {
         &self,
         queues: Option<Vec<String>>,
     ) -> Result<Vec<QueueStatus>> {
-        let mut request = xenon::SchedulerAndQueues::new();
+        let mut request = x::SchedulerAndQueues::new();
         request.set_scheduler(self.scheduler.clone());
         if let Some(queues) = queues {
             request.set_queues(RepeatedField::from_vec(queues));
@@ -215,7 +215,7 @@ impl Scheduler {
         &self,
         description: JobDescription,
     ) -> Result<Job> {
-        let mut request = xenon::SubmitBatchJobRequest::new();
+        let mut request = x::SubmitBatchJobRequest::new();
         request.set_description(description.proto());
         request.set_scheduler(self.scheduler.clone());
 
@@ -232,7 +232,7 @@ impl Scheduler {
         job: Job,
         timeout: Option<u64>,
     ) -> Result<JobStatus> {
-        let mut request = xenon::WaitRequest::new();
+        let mut request = x::WaitRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
         if let Some(timeout) = timeout {
@@ -252,7 +252,7 @@ impl Scheduler {
         job: Job,
         timeout: Option<u64>,
     ) -> Result<JobStatus> {
-        let mut request = xenon::WaitRequest::new();
+        let mut request = x::WaitRequest::new();
         request.set_job(job.proto());
         request.set_scheduler(self.scheduler.clone());
         if let Some(timeout) = timeout {
@@ -286,7 +286,7 @@ impl Job {
     ///
     ///
     ///
-    pub(crate) fn from(job: protobuf::SingularPtrField<xenon::Job>) -> Option<Job> {
+    pub(crate) fn from(job: protobuf::SingularPtrField<x::Job>) -> Option<Job> {
         if let Some(job) = job.into_option() {
             Some(Job::new(job.id))
         } else {
@@ -304,8 +304,8 @@ impl Job {
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> xenon::Job {
-        let mut job = xenon::Job::new();
+    pub(crate) fn proto(self) -> x::Job {
+        let mut job = x::Job::new();
         job.set_id(self.id);
 
         job
@@ -340,8 +340,8 @@ impl JobDescription {
     ///
     ///
     ///
-    pub(crate) fn proto(self) -> xenon::JobDescription {
-        let mut description = xenon::JobDescription::new();
+    pub(crate) fn proto(self) -> x::JobDescription {
+        let mut description = x::JobDescription::new();
         if let Some(arguments) = self.arguments {
             description.set_arguments(RepeatedField::from_vec(arguments));
         }
@@ -417,7 +417,7 @@ impl JobStatus {
     ///
     ///
     ///
-    pub(crate) fn from(status: xenon::JobStatus) -> JobStatus {
+    pub(crate) fn from(status: x::JobStatus) -> JobStatus {
         let error_type = JobErrorType::from(status.error_type);
 
         JobStatus {
@@ -451,8 +451,8 @@ impl JobErrorType {
     ///
     ///
     ///
-    pub(crate) fn from(error_type: xenon::JobStatus_ErrorType) -> JobErrorType {
-        use xenon::JobStatus_ErrorType::*;
+    pub(crate) fn from(error_type: x::JobStatus_ErrorType) -> JobErrorType {
+        use x::JobStatus_ErrorType::*;
         use JobErrorType::*;
 
         match error_type {
@@ -481,7 +481,7 @@ impl QueueStatus {
     ///
     ///
     ///
-    pub(crate) fn from(status: xenon::QueueStatus) -> QueueStatus {
+    pub(crate) fn from(status: x::QueueStatus) -> QueueStatus {
         let error_type = QueueErrorType::from(status.error_type);
 
         QueueStatus::new(status.name, status.error_message, error_type)
@@ -520,8 +520,8 @@ impl QueueErrorType {
     ///
     ///
     ///
-    pub(crate) fn from(error_type: xenon::QueueStatus_ErrorType) -> QueueErrorType {
-        use xenon::QueueStatus_ErrorType::*;
+    pub(crate) fn from(error_type: x::QueueStatus_ErrorType) -> QueueErrorType {
+        use x::QueueStatus_ErrorType::*;
         use QueueErrorType::*;
 
         match error_type {

@@ -1,12 +1,12 @@
 mod common;
-use xenon_rs::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
+use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
 
 type Map<T> = std::collections::HashMap<String, T>;
 
 #[test]
 fn canceljob_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let job_description = JobDescription {
         arguments: Some(vec![
             String::from("10")
@@ -70,7 +70,7 @@ fn getdefaultqueuename_default_ok() {
 #[test]
 fn getjobstatus_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let job_description = JobDescription {
         arguments: Some(vec![
             String::from("3")
@@ -132,7 +132,7 @@ fn getjobstatuses_none_empty() {
 #[test]
 fn getjobstatuses_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let job_description = JobDescription {
         arguments: Some(vec![
             String::from("3")
@@ -333,7 +333,7 @@ fn isopen_closed_false() {
 #[test]
 fn submitbatchjob_valid_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let mut environment = Map::<String>::new();
     environment.insert(String::from("NAME"), String::from("Xenon!"));
 
@@ -369,7 +369,7 @@ fn submitbatchjob_valid_ok() {
 #[test]
 fn waituntildone_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let mut environment = Map::<String>::new();
     environment.insert(String::from("NAME"), String::from("Xenon!"));
 
@@ -420,7 +420,7 @@ fn waituntildone_nonexisting_err() {
 #[test]
 fn waituntilrunning_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    
+
     let job_description = JobDescription {
         arguments: Some(vec![
             String::from("10")

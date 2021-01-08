@@ -10,20 +10,23 @@ license = "MIT"
 edition = "2018"
 exclude = [
     ".github/*",
+    "scripts/*",
+    ".editorconfig",
     ".gitignore",
     ".travis.yml",
-    "Dockerfile",
     "docker-compose.yml",
     "rustfmt.toml",
-    "scripts/*",
 ]
+
+[lib]
+name = "xenon"
 
 [dependencies]
 anyhow = "1.0"
 futures = "0.3"
-grpcio = { version = "0.6", features = ["openssl"] }
+grpcio = { version = "0.7", features = ["openssl"] }
 log = "0.4"
-protobuf = "2.17"
+protobuf = "2.20"
 
 [dev-dependencies]
 actix-rt = "1.1"

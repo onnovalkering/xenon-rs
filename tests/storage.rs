@@ -1,8 +1,8 @@
 mod common;
 use rand::random;
 use std::collections::HashSet;
-use xenon_rs::credentials::Credential;
-use xenon_rs::storage::{FileSystemPath, FileSystemPermission};
+use xenon::credentials::Credential;
+use xenon::storage::{FileSystemPath, FileSystemPermission};
 
 #[actix_rt::test]
 async fn appendtofile_existing_ok() {

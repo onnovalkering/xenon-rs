@@ -2,9 +2,9 @@ use anyhow::Result;
 use log::LevelFilter;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use std::sync::Arc;
-use xenon_rs::compute::Scheduler;
-use xenon_rs::credentials::Credential;
-use xenon_rs::storage::FileSystem;
+use xenon::compute::Scheduler;
+use xenon::credentials::Credential;
+use xenon::storage::FileSystem;
 
 type Map<T> = std::collections::HashMap<String, T>;
 
@@ -19,7 +19,7 @@ pub fn build_channel() -> Channel {
 ///
 ///
 ///
-#[allow(dead_code)] 
+#[allow(dead_code)]
 pub fn create_sftp_filesystem() -> Result<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
@@ -92,9 +92,9 @@ pub fn new_credential() -> Credential {
 }
 
 ///
-/// 
-/// 
-#[allow(dead_code)] 
+///
+///
+#[allow(dead_code)]
 pub fn show_log() {
     let _ = env_logger::builder()
         .filter_level(LevelFilter::Debug)
@@ -102,9 +102,9 @@ pub fn show_log() {
 }
 
 ///
-/// 
-/// 
-#[allow(dead_code)] 
+///
+///
+#[allow(dead_code)]
 pub fn hide_log() {
     let _ = env_logger::builder()
         .filter_level(LevelFilter::Error)
