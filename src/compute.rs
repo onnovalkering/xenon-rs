@@ -315,7 +315,7 @@ impl Job {
 ///
 ///
 ///
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, Default, PartialEq)]
 pub struct JobDescription {
     pub arguments: Option<Vec<String>>,
     pub executable: Option<String>,

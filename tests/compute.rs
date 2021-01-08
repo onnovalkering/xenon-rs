@@ -12,21 +12,7 @@ fn canceljob_existing_ok() {
             String::from("10")
         ]),
         executable: Some(String::from("sleep")),
-        working_directory: None,
-        environment: None,
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let job = scheduler.submit_batch_job(job_description);
@@ -76,21 +62,7 @@ fn getjobstatus_existing_ok() {
             String::from("3")
         ]),
         executable: Some(String::from("sleep")),
-        working_directory: None,
-        environment: None,
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let job = scheduler.submit_batch_job(job_description);
@@ -138,21 +110,7 @@ fn getjobstatuses_existing_ok() {
             String::from("3")
         ]),
         executable: Some(String::from("sleep")),
-        working_directory: None,
-        environment: None,
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let job = scheduler.submit_batch_job(job_description);
@@ -344,21 +302,8 @@ fn submitbatchjob_valid_ok() {
             String::from("$NAME")
         ]),
         executable: Some(String::from("bash")),
-        working_directory: None,
         environment: Some(environment),
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let result = scheduler.submit_batch_job(job_description);
@@ -380,21 +325,8 @@ fn waituntildone_existing_ok() {
             String::from("$NAME")
         ]),
         executable: Some(String::from("bash")),
-        working_directory: None,
         environment: Some(environment),
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let job = scheduler.submit_batch_job(job_description);
@@ -426,21 +358,7 @@ fn waituntilrunning_existing_ok() {
             String::from("10")
         ]),
         executable: Some(String::from("sleep")),
-        working_directory: None,
-        environment: None,
-        queue: None,
-        max_runtime: None,
-        stderr: None,
-        stdin: None,
-        stdout: None,
-        max_memory: None,
-        scheduler_arguments: None,
-        tasks: None,
-        cores_per_tasks: None,
-        tasks_per_node: None,
-        start_per_task: None,
-        start_time: None,
-        temp_space: None,
+        ..Default::default()
     };
 
     let job = scheduler.submit_batch_job(job_description);
