@@ -1,6 +1,6 @@
 [package]
 name = "xenon-rs"
-version = "0.2.0"
+version = "0.3.0"
 description = "Rust bindings to the Xenon middleware (gRPC)."
 authors = ["Onno Valkering"]
 repository = "https://github.com/onnovalkering/xenon-rs"

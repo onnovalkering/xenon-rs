@@ -2,7 +2,7 @@
 
 All notable changes to `xenon-rs` will be documented in this file.
 
-## [0.3.0] - xxxx-yy-zz
+## [0.3.0] - 2021-03-03
 ### Added
 - Support for macOS (build, generate gRPC interface, and CI).
 
