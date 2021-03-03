@@ -32,6 +32,30 @@ impl Credential {
         let certificate = CertificateCredential::new(certificate, username, passphrase);
         Credential::Certificate(certificate)
     }
+
+    ///
+    ///
+    ///
+    pub fn is_password(
+        &self
+    ) -> bool {
+        match self {
+            Credential::Certificate(_) => false,
+            Credential::Password(_) => true,
+        }
+    }
+
+    ///
+    ///
+    ///
+    pub fn is_certificate(
+        &self,
+    ) -> bool {
+        match self {
+            Credential::Certificate(_) => true,
+            Credential::Password(_) => false,
+        }
+    }
 }
 
 ///
@@ -116,10 +140,8 @@ mod tests {
         let password = String::from("password");
 
         let credential = Credential::new_password(username, password);
-        match credential {
-            Credential::Certificate(_) => panic!(),
-            Credential::Password(_) => {}
-        }
+        assert!(credential.is_password());
+        assert!(!credential.is_certificate());
     }
 
     #[test]
@@ -129,10 +151,8 @@ mod tests {
         let passphrase = String::from("passphrase");
 
         let credential = Credential::new_certificate(certificate, username, passphrase);
-        match credential {
-            Credential::Certificate(_) => {},
-            Credential::Password(_) => panic!()
-        }
+        assert!(!credential.is_password());
+        assert!(credential.is_certificate());
     }
 
     #[test]
@@ -153,8 +173,24 @@ mod tests {
             assert_eq!(cc_proto.get_certfile(), &certificate);
             assert_eq!(cc_proto.get_username(), &username);
             assert_eq!(cc_proto.get_passphrase(), &passphrase);
-        } else {
-            panic!()
+        }
+    }
+
+    #[test]
+    fn password_proto_ok() {
+        let username = String::from("username");
+        let password = String::from("password");
+
+        let credential = Credential::new_password(
+            username.clone(),
+            password.clone()
+        );
+
+        if let Credential::Password(cp) = credential {
+            let cp_proto = cp.proto();
+
+            assert_eq!(cp_proto.get_username(), &username);
+            assert_eq!(cp_proto.get_password(), &password);
         }
     }
 }
