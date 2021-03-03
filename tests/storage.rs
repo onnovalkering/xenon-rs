@@ -5,7 +5,7 @@ use xenon::credentials::Credential;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
 use std::path::PathBuf;
 
-#[actix_rt::test]
+#[tokio::test]
 async fn appendtofile_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -18,7 +18,7 @@ async fn appendtofile_existing_ok() {
     assert!(result.is_ok())
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn appendtofile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -298,7 +298,7 @@ fn isopen_closed_false() {
     assert_eq!(result.unwrap(), false);
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn list_existing_ok() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -310,7 +310,7 @@ async fn list_existing_ok() {
     assert!(files.len() > 0);
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn list_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -320,7 +320,7 @@ async fn list_nonexisting_err() {
     assert!(result.is_err());
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn readfromfile_existing_buffer() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
@@ -334,7 +334,7 @@ async fn readfromfile_existing_buffer() {
     assert_eq!(buffer, common::get_slurmjob_file());
 }
 
-#[actix_rt::test]
+#[tokio::test]
 async fn readfromfile_nonexisting_err() {
     let filesystem = common::create_sftp_filesystem().unwrap();
 
