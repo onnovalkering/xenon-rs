@@ -8,9 +8,7 @@ fn canceljob_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("10")
-        ]),
+        arguments: Some(vec![String::from("10")]),
         executable: Some(String::from("sleep")),
         ..Default::default()
     };
@@ -58,9 +56,7 @@ fn getjobstatus_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("3")
-        ]),
+        arguments: Some(vec![String::from("3")]),
         executable: Some(String::from("sleep")),
         ..Default::default()
     };
@@ -106,9 +102,7 @@ fn getjobstatuses_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("3")
-        ]),
+        arguments: Some(vec![String::from("3")]),
         executable: Some(String::from("sleep")),
         ..Default::default()
     };
@@ -296,11 +290,7 @@ fn submitbatchjob_valid_ok() {
     environment.insert(String::from("NAME"), String::from("Xenon!"));
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("-c"),
-            String::from("echo"),
-            String::from("$NAME")
-        ]),
+        arguments: Some(vec![String::from("-c"), String::from("echo"), String::from("$NAME")]),
         executable: Some(String::from("bash")),
         environment: Some(environment),
         ..Default::default()
@@ -319,11 +309,7 @@ fn waituntildone_existing_ok() {
     environment.insert(String::from("NAME"), String::from("Xenon!"));
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("-c"),
-            String::from("echo"),
-            String::from("$NAME")
-        ]),
+        arguments: Some(vec![String::from("-c"), String::from("echo"), String::from("$NAME")]),
         executable: Some(String::from("bash")),
         environment: Some(environment),
         ..Default::default()
@@ -354,9 +340,7 @@ fn waituntilrunning_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
 
     let job_description = JobDescription {
-        arguments: Some(vec![
-            String::from("10")
-        ]),
+        arguments: Some(vec![String::from("10")]),
         executable: Some(String::from("sleep")),
         ..Default::default()
     };

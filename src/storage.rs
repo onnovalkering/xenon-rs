@@ -1,8 +1,8 @@
-use anyhow::Result;
 use crate::credentials::Credential;
 use crate::xenon as x;
 use crate::xenon_grpc::FileSystemServiceClient;
-use futures::{StreamExt, SinkExt};
+use anyhow::Result;
+use futures::{SinkExt, StreamExt};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -304,7 +304,6 @@ impl FileSystem {
         let directory = self.client.get_working_directory(&self.filesystem)?;
         let directory = FileSystemPath::from(directory);
 
-
         Ok(directory)
     }
 
@@ -335,7 +334,9 @@ impl FileSystem {
         request.set_recursive(recursive);
 
         let reciever = self.client.list(&request)?;
-        let files = reciever.collect::<Vec<Result<x::PathAttributes, grpcio::Error>>>().await;
+        let files = reciever
+            .collect::<Vec<Result<x::PathAttributes, grpcio::Error>>>()
+            .await;
 
         let mut files = files.into_iter();
 
@@ -344,17 +345,13 @@ impl FileSystem {
             let file = files.next().unwrap();
             match file {
                 Ok(f) => vec![FileSystemAttributes::from(f)],
-                Err(_) => {
-                    bail!("Couldn't list files in path.")
-                }
+                Err(_) => bail!("Couldn't list files in path."),
             }
         } else {
             files
                 .into_iter()
                 .filter(|f| f.is_ok())
-                .map(|f| {
-                    FileSystemAttributes::from(f.unwrap())
-                })
+                .map(|f| FileSystemAttributes::from(f.unwrap()))
                 .collect()
         };
 
@@ -639,7 +636,6 @@ mod tests {
     use super::*;
     use crate::xenon as x;
 
-
     #[test]
     fn filesystempermission_fromproto_ok() {
         let none = x::PosixFilePermission::NONE;
@@ -656,16 +652,37 @@ mod tests {
         assert_eq!(FileSystemPermission::from(none), FileSystemPermission::None);
 
         assert_eq!(FileSystemPermission::from(owner_read), FileSystemPermission::OwnerRead);
-        assert_eq!(FileSystemPermission::from(owner_write), FileSystemPermission::OwnerWrite);
-        assert_eq!(FileSystemPermission::from(owner_execute), FileSystemPermission::OwnerExecute);
+        assert_eq!(
+            FileSystemPermission::from(owner_write),
+            FileSystemPermission::OwnerWrite
+        );
+        assert_eq!(
+            FileSystemPermission::from(owner_execute),
+            FileSystemPermission::OwnerExecute
+        );
 
         assert_eq!(FileSystemPermission::from(group_read), FileSystemPermission::GroupRead);
-        assert_eq!(FileSystemPermission::from(group_write), FileSystemPermission::GroupWrite);
-        assert_eq!(FileSystemPermission::from(group_execute), FileSystemPermission::GroupExecute);
+        assert_eq!(
+            FileSystemPermission::from(group_write),
+            FileSystemPermission::GroupWrite
+        );
+        assert_eq!(
+            FileSystemPermission::from(group_execute),
+            FileSystemPermission::GroupExecute
+        );
 
-        assert_eq!(FileSystemPermission::from(others_read), FileSystemPermission::OthersRead);
-        assert_eq!(FileSystemPermission::from(others_write), FileSystemPermission::OthersWrite);
-        assert_eq!(FileSystemPermission::from(others_execute), FileSystemPermission::OthersExecute);
+        assert_eq!(
+            FileSystemPermission::from(others_read),
+            FileSystemPermission::OthersRead
+        );
+        assert_eq!(
+            FileSystemPermission::from(others_write),
+            FileSystemPermission::OthersWrite
+        );
+        assert_eq!(
+            FileSystemPermission::from(others_execute),
+            FileSystemPermission::OthersExecute
+        );
     }
 
     #[test]

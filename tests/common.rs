@@ -1,6 +1,6 @@
 use anyhow::Result;
-use log::LevelFilter;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
+use log::LevelFilter;
 use std::sync::Arc;
 use xenon::compute::Scheduler;
 use xenon::credentials::Credential;
@@ -96,9 +96,7 @@ pub fn new_credential() -> Credential {
 ///
 #[allow(dead_code)]
 pub fn show_log() {
-    let _ = env_logger::builder()
-        .filter_level(LevelFilter::Debug)
-        .init();
+    let _ = env_logger::builder().filter_level(LevelFilter::Debug).init();
 }
 
 ///
@@ -106,9 +104,5 @@ pub fn show_log() {
 ///
 #[allow(dead_code)]
 pub fn hide_log() {
-    let _ = env_logger::builder()
-        .filter_level(LevelFilter::Error)
-        .init();
+    let _ = env_logger::builder().filter_level(LevelFilter::Error).init();
 }
-
-

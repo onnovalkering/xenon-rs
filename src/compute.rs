@@ -1,7 +1,7 @@
-use anyhow::Result;
 use crate::credentials::Credential;
 use crate::xenon as x;
 use crate::xenon_grpc::SchedulerServiceClient;
+use anyhow::Result;
 use grpcio::Channel;
 use protobuf::RepeatedField;
 

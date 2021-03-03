@@ -1,9 +1,9 @@
 mod common;
 use rand::random;
 use std::collections::HashSet;
+use std::path::PathBuf;
 use xenon::credentials::Credential;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
-use std::path::PathBuf;
 
 #[tokio::test]
 async fn appendtofile_existing_ok() {

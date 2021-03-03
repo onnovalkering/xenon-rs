@@ -36,9 +36,7 @@ impl Credential {
     ///
     ///
     ///
-    pub fn is_password(
-        &self
-    ) -> bool {
+    pub fn is_password(&self) -> bool {
         match self {
             Credential::Certificate(_) => false,
             Credential::Password(_) => true,
@@ -48,9 +46,7 @@ impl Credential {
     ///
     ///
     ///
-    pub fn is_certificate(
-        &self,
-    ) -> bool {
+    pub fn is_certificate(&self) -> bool {
         match self {
             Credential::Certificate(_) => true,
             Credential::Password(_) => false,
@@ -129,7 +125,6 @@ impl PasswordCredential {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -161,11 +156,7 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(
-            certificate.clone(),
-            username.clone(),
-            passphrase.clone()
-        );
+        let credential = Credential::new_certificate(certificate.clone(), username.clone(), passphrase.clone());
 
         if let Credential::Certificate(cc) = credential {
             let cc_proto = cc.proto();
@@ -181,10 +172,7 @@ mod tests {
         let username = String::from("username");
         let password = String::from("password");
 
-        let credential = Credential::new_password(
-            username.clone(),
-            password.clone()
-        );
+        let credential = Credential::new_password(username.clone(), password.clone());
 
         if let Credential::Password(cp) = credential {
             let cp_proto = cp.proto();
