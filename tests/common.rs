@@ -1,12 +1,11 @@
 use anyhow::Result;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
 use log::LevelFilter;
+use maplit::hashmap;
 use std::sync::Arc;
 use xenon::compute::Scheduler;
 use xenon::credentials::Credential;
 use xenon::storage::FileSystem;
-
-type Map<T> = std::collections::HashMap<String, T>;
 
 ///
 ///
@@ -24,18 +23,16 @@ pub fn create_sftp_filesystem() -> Result<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
 
-    let mut properties = Map::<String>::new();
-    properties.insert(
-        String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking"),
-        String::from("false"),
-    );
+    let properties = hashmap!{
+        "xenon.adaptors.filesystems.sftp.strictHostKeyChecking" => "false",
+    };
 
     Ok(FileSystem::create(
         String::from("sftp"),
         channel,
         credential,
         String::from("slurm:22"),
-        properties,
+        Some(properties),
     )?)
 }
 
@@ -46,18 +43,16 @@ pub fn create_slurm_scheduler() -> Result<Scheduler> {
     let channel = build_channel();
     let credential = new_credential();
 
-    let mut properties = Map::<String>::new();
-    properties.insert(
-        String::from("xenon.adaptors.schedulers.ssh.strictHostKeyChecking"),
-        String::from("false"),
-    );
+    let properties = hashmap!{
+        "xenon.adaptors.schedulers.ssh.strictHostKeyChecking" => "false",
+    };
 
     Ok(Scheduler::create(
         String::from("slurm"),
         channel,
         credential,
         String::from("ssh://slurm:22"),
-        properties,
+        Some(properties),
     )?)
 }
 

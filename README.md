@@ -14,6 +14,7 @@ The interface mimicks that of [PyXenon](https://pyxenon.readthedocs.io) as close
 ```rust
 use anyhow::Result;
 use grpcio::{Channel, ChannelBuilder, EnvBuilder};
+use maplit::hashmap;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -26,19 +27,21 @@ fn main() -> Result<()> {
   let channel = ChannelBuilder::new(env).connect("localhost:50051"); 
 
   // Connect to the remote server
-  let credential = Credential::new_password(String::from("user"), String::from("password"));
-  let properties = HashMap::new();
+  let credential = Credential::new_password("xenon", "javagat");
+  let properties = hashmap!{
+      "xenon.adaptors.filesystems.sftp.strictHostKeyChecking" => "false",
+  };
   let filesystem = FileSystem::create(
-      String::from("sftp"),
+      "sftp",
       channel,
       credential,
-      String::from("remote-server:22"),
-      properties,
+      "remote-server:22",
+      Some(properties),
   )?;
 
   // Create a new file
-  let new_file = FileSystemPath::new(PathBuf::from("example.txt"));
-  filesystem.create_file(&new_file)
+  let new_file = FileSystemPath::new("example.txt");
+  filesystem.create_file(&new_file)?;
 }
 ```
 

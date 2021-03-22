@@ -13,9 +13,9 @@ impl Credential {
     ///
     ///
     ///
-    pub fn new_password(
-        username: String,
-        password: String,
+    pub fn new_password<S: Into<String>>(
+        username: S,
+        password: S,
     ) -> Credential {
         let password = PasswordCredential::new(username, password);
         Credential::Password(password)
@@ -24,10 +24,10 @@ impl Credential {
     ///
     ///
     ///
-    pub fn new_certificate(
-        certificate: String,
-        username: String,
-        passphrase: String,
+    pub fn new_certificate<S: Into<String>>(
+        certificate: S,
+        username: S,
+        passphrase: Option<S>,
     ) -> Credential {
         let certificate = CertificateCredential::new(certificate, username, passphrase);
         Credential::Certificate(certificate)
@@ -60,7 +60,7 @@ impl Credential {
 #[derive(Clone)]
 pub struct CertificateCredential {
     pub certificate: String,
-    pub passphrase: String,
+    pub passphrase: Option<String>,
     pub username: String,
 }
 
@@ -68,15 +68,15 @@ impl CertificateCredential {
     ///
     ///
     ///
-    pub fn new(
-        certificate: String,
-        username: String,
-        passphrase: String,
-    ) -> CertificateCredential {
+    pub fn new<S: Into<String>>(
+        certificate: S,
+        username: S,
+        passphrase: Option<S>,
+    ) -> Self {
         CertificateCredential {
-            certificate,
-            passphrase,
-            username,
+            certificate: certificate.into(),
+            passphrase: passphrase.map(S::into),
+            username: username.into(),
         }
     }
 
@@ -85,9 +85,11 @@ impl CertificateCredential {
     ///
     pub(crate) fn proto(self) -> x::CertificateCredential {
         let mut credential = x::CertificateCredential::new();
-        credential.set_certfile(self.certificate);
-        credential.set_passphrase(self.passphrase);
         credential.set_username(self.username);
+        credential.set_certfile(self.certificate);
+        if let Some(passphrase) = self.passphrase {
+            credential.set_passphrase(passphrase);
+        }
 
         credential
     }
@@ -106,11 +108,14 @@ impl PasswordCredential {
     ///
     ///
     ///
-    pub fn new(
-        username: String,
-        password: String,
+    pub fn new<S: Into<String>>(
+        username: S,
+        password: S,
     ) -> PasswordCredential {
-        PasswordCredential { password, username }
+        PasswordCredential {
+            password: password.into(),
+            username: username.into(),
+        }
     }
 
     ///
@@ -156,7 +161,7 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(certificate.clone(), username.clone(), passphrase.clone());
+        let credential = Credential::new_certificate(&certificate, &username, &passphrase);
 
         if let Credential::Certificate(cc) = credential {
             let cc_proto = cc.proto();
@@ -172,7 +177,7 @@ mod tests {
         let username = String::from("username");
         let password = String::from("password");
 
-        let credential = Credential::new_password(username.clone(), password.clone());
+        let credential = Credential::new_password(&username, &password);
 
         if let Credential::Password(cp) = credential {
             let cp_proto = cp.proto();

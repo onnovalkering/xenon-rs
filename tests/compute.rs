@@ -1,7 +1,7 @@
 mod common;
 use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
-
-type Map<T> = std::collections::HashMap<String, T>;
+use std::collections::HashMap;
+use maplit::hashmap;
 
 #[test]
 fn canceljob_existing_ok() {
@@ -171,7 +171,7 @@ fn getproperties_default_ok() {
 
     let result = scheduler.get_properties();
 
-    let mut expected = Map::<String>::new();
+    let mut expected = HashMap::<String, String>::new();
     expected.insert(
         String::from("xenon.adaptors.schedulers.ssh.strictHostKeyChecking"),
         String::from("false"),
@@ -285,9 +285,9 @@ fn isopen_closed_false() {
 #[test]
 fn submitbatchjob_valid_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-
-    let mut environment = Map::<String>::new();
-    environment.insert(String::from("NAME"), String::from("Xenon!"));
+    let environment = hashmap!{
+        String::from("NAME") => String::from("Xenon!")
+    };
 
     let job_description = JobDescription {
         arguments: Some(vec![String::from("-c"), String::from("echo"), String::from("$NAME")]),
@@ -304,9 +304,9 @@ fn submitbatchjob_valid_ok() {
 #[test]
 fn waituntildone_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-
-    let mut environment = Map::<String>::new();
-    environment.insert(String::from("NAME"), String::from("Xenon!"));
+    let environment = hashmap!{
+        String::from("NAME") => String::from("Xenon!")
+    };
 
     let job_description = JobDescription {
         arguments: Some(vec![String::from("-c"), String::from("echo"), String::from("$NAME")]),

@@ -6,8 +6,7 @@ use futures::{SinkExt, StreamExt};
 use grpcio::{Channel, WriteFlags};
 use std::collections::HashSet;
 use std::path::PathBuf;
-
-type Map<T> = std::collections::HashMap<String, T>;
+use std::collections::HashMap;
 
 ///
 ///
@@ -24,15 +23,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn append_to_file(
+    pub async fn append_to_file<B: Into<Vec<u8>>>(
         &self,
-        buffer: Vec<u8>,
+        buffer: B,
         path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::AppendToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
-        request.set_buffer(buffer);
+        request.set_buffer(buffer.into());
 
         let (mut sink, receiver) = self.client.append_to_file()?;
 
@@ -98,20 +97,33 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create(
-        adaptor: String,
+    pub fn create<AS, LS, PS1, PS2>(
+        adaptor: AS,
         channel: Channel,
         credential: Credential,
-        location: String,
-        properties: Map<String>,
-    ) -> Result<FileSystem> {
+        location: LS,
+        properties: Option<HashMap<PS1, PS2>>,
+    ) -> Result<FileSystem>
+        where
+            AS: Into<String>,
+            LS: Into<String>,
+            PS1: Into<String>,
+            PS2: Into<String>,
+    {
+        let adaptor = adaptor.into();
         let client = FileSystemServiceClient::new(channel);
 
         // Construct create request message.
         let mut request = x::CreateFileSystemRequest::new();
         request.set_adaptor(adaptor.clone());
-        request.set_location(location);
-        request.set_properties(properties);
+        request.set_location(location.into());
+        if let Some(p) = properties {
+            let mut properties = HashMap::new();
+            for (k, v) in p {
+                properties.insert(String::from(k.into()), String::from(v.into()));
+            }
+            request.set_properties(properties);
+        }
         match credential {
             Credential::Password(password) => request.set_password_credential(password.proto()),
             Credential::Certificate(certificate) => request.set_certificate_credential(certificate.proto()),
@@ -258,7 +270,7 @@ impl FileSystem {
                 certificate_credential(credential) => Ok(Some(Credential::new_certificate(
                     credential.certfile,
                     credential.username,
-                    credential.passphrase,
+                    Some(credential.passphrase),
                 ))),
                 password_credential(credential) => {
                     Ok(Some(Credential::new_password(credential.username, credential.password)))
@@ -291,7 +303,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_properties(&self) -> Result<Map<String>> {
+    pub fn get_fs_properties(&self) -> Result<HashMap<String, String>> {
         let response = self.client.get_properties(&self.filesystem)?;
 
         Ok(response.properties)
@@ -450,15 +462,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn write_to_file(
+    pub async fn write_to_file<B: Into<Vec<u8>>>(
         &self,
-        buffer: Vec<u8>,
+        buffer: B,
         path: &FileSystemPath,
     ) -> Result<()> {
         let mut request = x::WriteToFileRequest::new();
         request.set_filesystem(self.filesystem.clone());
         request.set_path(path.proto());
-        request.set_buffer(buffer);
+        request.set_buffer(buffer.into());
 
         let (mut sink, receiver) = self.client.write_to_file()?;
         sink.send((request, WriteFlags::default())).await?;
@@ -547,16 +559,15 @@ impl FileSystemPath {
     ///
     ///
     ///
-    pub fn new(path: PathBuf) -> Self {
-        FileSystemPath { path }
+    pub fn new<P: Into<PathBuf>>(path: P) -> Self {
+        FileSystemPath { path: path.into() }
     }
 
     ///
     ///
     ///
     pub(crate) fn from(path: x::Path) -> Self {
-        let pathbuf = PathBuf::from(path.path);
-        FileSystemPath::new(pathbuf)
+        FileSystemPath::new(path.path)
     }
 
     ///

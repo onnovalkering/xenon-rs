@@ -4,6 +4,7 @@ use crate::xenon_grpc::SchedulerServiceClient;
 use anyhow::Result;
 use grpcio::Channel;
 use protobuf::RepeatedField;
+use std::collections::HashMap;
 
 type Map<T> = std::collections::HashMap<String, T>;
 
@@ -50,20 +51,33 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn create(
-        adaptor: String,
+    pub fn create<AS, LS, PS1, PS2>(
+        adaptor: AS,
         channel: Channel,
         credential: Credential,
-        location: String,
-        properties: Map<String>,
-    ) -> Result<Scheduler> {
+        location: LS,
+        properties: Option<HashMap<PS1, PS2>>,
+    ) -> Result<Scheduler>
+    where
+        AS: Into<String>,
+        LS: Into<String>,
+        PS1: Into<String>,
+        PS2: Into<String>,
+    {
+        let adaptor = adaptor.into();
         let client = SchedulerServiceClient::new(channel);
 
         // Construct create request message.
         let mut request = x::CreateSchedulerRequest::new();
         request.set_adaptor(adaptor.clone());
-        request.set_location(location);
-        request.set_properties(properties);
+        request.set_location(location.into());
+        if let Some(p) = properties {
+            let mut properties = HashMap::new();
+            for (k, v) in p {
+                properties.insert(String::from(k.into()), String::from(v.into()));
+            }
+            request.set_properties(properties);
+        }
         match credential {
             Credential::Password(password) => request.set_password_credential(password.proto()),
             Credential::Certificate(certificate) => request.set_certificate_credential(certificate.proto()),
@@ -165,13 +179,13 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_queue_status(
+    pub fn get_queue_status<S: Into<String>>(
         &self,
-        queue: String,
+        queue: S,
     ) -> Result<QueueStatus> {
         let mut request = x::GetQueueStatusRequest::new();
         request.set_scheduler(self.scheduler.clone());
-        request.set_queue(queue);
+        request.set_queue(queue.into());
 
         let response = self.client.get_queue_status(&request)?;
         Ok(QueueStatus::from(response))
@@ -297,8 +311,8 @@ impl Job {
     ///
     ///
     ///
-    pub fn new(id: String) -> Job {
-        Job { id }
+    pub fn new<S: Into<String>>(id: S) -> Job {
+        Job { id: id.into() }
     }
 
     ///
