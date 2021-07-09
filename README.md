@@ -6,7 +6,7 @@
 
 This crate contains Rust bindings to the Xenon middleware (gRPC).
 
-[Documentation](https://docs.rs/crate/xenon-rs)
+[Documentation](https://docs.rs/xenon-rs/latest/xenon)
 
 ## Usage
 The interface mimicks that of [PyXenon](https://pyxenon.readthedocs.io) as closely as possible.
