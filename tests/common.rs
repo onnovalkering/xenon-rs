@@ -23,7 +23,7 @@ pub fn create_sftp_filesystem() -> Result<FileSystem> {
     let channel = build_channel();
     let credential = new_credential();
 
-    let properties = hashmap!{
+    let properties = hashmap! {
         "xenon.adaptors.filesystems.sftp.strictHostKeyChecking" => "false",
     };
 
@@ -43,7 +43,7 @@ pub fn create_slurm_scheduler() -> Result<Scheduler> {
     let channel = build_channel();
     let credential = new_credential();
 
-    let properties = hashmap!{
+    let properties = hashmap! {
         "xenon.adaptors.schedulers.ssh.strictHostKeyChecking" => "false",
     };
 

@@ -4,9 +4,9 @@ use crate::xenon_grpc::FileSystemServiceClient;
 use anyhow::Result;
 use futures::{SinkExt, StreamExt};
 use grpcio::{Channel, WriteFlags};
+use std::collections::HashMap;
 use std::collections::HashSet;
 use std::path::PathBuf;
-use std::collections::HashMap;
 
 ///
 ///
@@ -104,11 +104,11 @@ impl FileSystem {
         location: LS,
         properties: Option<HashMap<PS1, PS2>>,
     ) -> Result<FileSystem>
-        where
-            AS: Into<String>,
-            LS: Into<String>,
-            PS1: Into<String>,
-            PS2: Into<String>,
+    where
+        AS: Into<String>,
+        LS: Into<String>,
+        PS1: Into<String>,
+        PS2: Into<String>,
     {
         let adaptor = adaptor.into();
         let client = FileSystemServiceClient::new(channel);

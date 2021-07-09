@@ -1,7 +1,7 @@
 mod common;
-use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
-use std::collections::HashMap;
 use maplit::hashmap;
+use std::collections::HashMap;
+use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus};
 
 #[test]
 fn canceljob_existing_ok() {
@@ -285,7 +285,7 @@ fn isopen_closed_false() {
 #[test]
 fn submitbatchjob_valid_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    let environment = hashmap!{
+    let environment = hashmap! {
         String::from("NAME") => String::from("Xenon!")
     };
 
@@ -304,7 +304,7 @@ fn submitbatchjob_valid_ok() {
 #[test]
 fn waituntildone_existing_ok() {
     let scheduler = common::create_slurm_scheduler().unwrap();
-    let environment = hashmap!{
+    let environment = hashmap! {
         String::from("NAME") => String::from("Xenon!")
     };
 

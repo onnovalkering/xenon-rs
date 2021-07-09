@@ -4,10 +4,7 @@
 // https://github.com/rust-lang/rust-clippy/issues/702
 #![allow(unknown_lints)]
 #![allow(clippy::all)]
-
 #![allow(unused_attributes)]
-#![rustfmt::skip]
-
 #![allow(box_pointers)]
 #![allow(dead_code)]
 #![allow(missing_docs)]
@@ -23,7 +20,7 @@
 /// of protobuf runtime.
 // const _PROTOBUF_VERSION_CHECK: () = ::protobuf::VERSION_2_22_0;
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Empty {
     // special fields
     pub unknown_fields: ::protobuf::UnknownFields,
@@ -47,13 +44,16 @@ impl ::protobuf::Message for Empty {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -68,7 +68,10 @@ impl ::protobuf::Message for Empty {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -104,14 +107,11 @@ impl ::protobuf::Message for Empty {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let fields = ::std::vec::Vec::new();
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Empty>(
-                "Empty",
-                fields,
-                file_descriptor_proto()
-            )
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Empty>("Empty", fields, file_descriptor_proto())
         })
     }
 
@@ -128,7 +128,10 @@ impl ::protobuf::Clear for Empty {
 }
 
 impl ::std::fmt::Debug for Empty {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -139,7 +142,7 @@ impl ::protobuf::reflect::ProtobufValue for Empty {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Properties {
     // message fields
     pub properties: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
@@ -161,7 +164,6 @@ impl Properties {
 
     // repeated .xenon.Properties.PropertiesEntry properties = 1;
 
-
     pub fn get_properties(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.properties
     }
@@ -170,7 +172,10 @@ impl Properties {
     }
 
     // Param is passed by value, moved
-    pub fn set_properties(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_properties(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.properties = v;
     }
 
@@ -190,16 +195,22 @@ impl ::protobuf::Message for Properties {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.properties)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.properties)?;
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -209,14 +220,23 @@ impl ::protobuf::Message for Properties {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(1, &self.properties);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(1, &self.properties);
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(1, &self.properties, os)?;
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(1, &self.properties, os)?;
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -252,18 +272,23 @@ impl ::protobuf::Message for Properties {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "properties",
-                |m: &Properties| { &m.properties },
-                |m: &mut Properties| { &mut m.properties },
+                |m: &Properties| &m.properties,
+                |m: &mut Properties| &mut m.properties,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<Properties>(
                 "Properties",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -282,7 +307,10 @@ impl ::protobuf::Clear for Properties {
 }
 
 impl ::std::fmt::Debug for Properties {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -293,7 +321,7 @@ impl ::protobuf::reflect::ProtobufValue for Properties {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct PropertyDescription {
     // message fields
     pub name: ::std::string::String,
@@ -318,7 +346,6 @@ impl PropertyDescription {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -327,7 +354,10 @@ impl PropertyDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -344,7 +374,6 @@ impl PropertyDescription {
 
     // string description = 2;
 
-
     pub fn get_description(&self) -> &str {
         &self.description
     }
@@ -353,7 +382,10 @@ impl PropertyDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_description(&mut self, v: ::std::string::String) {
+    pub fn set_description(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.description = v;
     }
 
@@ -370,7 +402,6 @@ impl PropertyDescription {
 
     // string default_value = 3;
 
-
     pub fn get_default_value(&self) -> &str {
         &self.default_value
     }
@@ -379,7 +410,10 @@ impl PropertyDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_value(&mut self, v: ::std::string::String) {
+    pub fn set_default_value(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.default_value = v;
     }
 
@@ -396,7 +430,6 @@ impl PropertyDescription {
 
     // .xenon.PropertyDescription.Type type = 4;
 
-
     pub fn get_field_type(&self) -> PropertyDescription_Type {
         self.field_type
     }
@@ -405,7 +438,10 @@ impl PropertyDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_field_type(&mut self, v: PropertyDescription_Type) {
+    pub fn set_field_type(
+        &mut self,
+        v: PropertyDescription_Type,
+    ) {
         self.field_type = v;
     }
 }
@@ -415,25 +451,32 @@ impl ::protobuf::Message for PropertyDescription {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.description)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.default_value)?;
-                },
-                4 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.field_type, 4, &mut self.unknown_fields)?
-                },
+                }
+                4 => ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.field_type,
+                    4,
+                    &mut self.unknown_fields,
+                )?,
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -460,7 +503,10 @@ impl ::protobuf::Message for PropertyDescription {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -508,33 +554,46 @@ impl ::protobuf::Message for PropertyDescription {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "name",
-                |m: &PropertyDescription| { &m.name },
-                |m: &mut PropertyDescription| { &mut m.name },
+                |m: &PropertyDescription| &m.name,
+                |m: &mut PropertyDescription| &mut m.name,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "description",
-                |m: &PropertyDescription| { &m.description },
-                |m: &mut PropertyDescription| { &mut m.description },
+                |m: &PropertyDescription| &m.description,
+                |m: &mut PropertyDescription| &mut m.description,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "default_value",
-                |m: &PropertyDescription| { &m.default_value },
-                |m: &mut PropertyDescription| { &mut m.default_value },
+                |m: &PropertyDescription| &m.default_value,
+                |m: &mut PropertyDescription| &mut m.default_value,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<PropertyDescription_Type>>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<PropertyDescription_Type>,
+            >(
                 "type",
-                |m: &PropertyDescription| { &m.field_type },
-                |m: &mut PropertyDescription| { &mut m.field_type },
+                |m: &PropertyDescription| &m.field_type,
+                |m: &mut PropertyDescription| &mut m.field_type,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<PropertyDescription>(
                 "PropertyDescription",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -556,7 +615,10 @@ impl ::protobuf::Clear for PropertyDescription {
 }
 
 impl ::std::fmt::Debug for PropertyDescription {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -567,7 +629,7 @@ impl ::protobuf::reflect::ProtobufValue for PropertyDescription {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum PropertyDescription_Type {
     STRING = 0,
     BOOLEAN = 1,
@@ -592,7 +654,7 @@ impl ::protobuf::ProtobufEnum for PropertyDescription_Type {
             4 => ::std::option::Option::Some(PropertyDescription_Type::LONG),
             5 => ::std::option::Option::Some(PropertyDescription_Type::SIZE),
             6 => ::std::option::Option::Some(PropertyDescription_Type::NATURAL),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -612,13 +674,15 @@ impl ::protobuf::ProtobufEnum for PropertyDescription_Type {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<PropertyDescription_Type>("PropertyDescription.Type", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<PropertyDescription_Type>(
+                "PropertyDescription.Type",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for PropertyDescription_Type {
-}
+impl ::std::marker::Copy for PropertyDescription_Type {}
 
 impl ::std::default::Default for PropertyDescription_Type {
     fn default() -> Self {
@@ -632,7 +696,7 @@ impl ::protobuf::reflect::ProtobufValue for PropertyDescription_Type {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct PropertyDescriptions {
     // message fields
     pub properties: ::protobuf::RepeatedField<PropertyDescription>,
@@ -654,7 +718,6 @@ impl PropertyDescriptions {
 
     // repeated .xenon.PropertyDescription properties = 1;
 
-
     pub fn get_properties(&self) -> &[PropertyDescription] {
         &self.properties
     }
@@ -663,7 +726,10 @@ impl PropertyDescriptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_properties(&mut self, v: ::protobuf::RepeatedField<PropertyDescription>) {
+    pub fn set_properties(
+        &mut self,
+        v: ::protobuf::RepeatedField<PropertyDescription>,
+    ) {
         self.properties = v;
     }
 
@@ -684,20 +750,23 @@ impl ::protobuf::Message for PropertyDescriptions {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.properties)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -710,18 +779,21 @@ impl ::protobuf::Message for PropertyDescriptions {
         for value in &self.properties {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.properties {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -757,18 +829,22 @@ impl ::protobuf::Message for PropertyDescriptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<PropertyDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<PropertyDescription>,
+            >(
                 "properties",
-                |m: &PropertyDescriptions| { &m.properties },
-                |m: &mut PropertyDescriptions| { &mut m.properties },
+                |m: &PropertyDescriptions| &m.properties,
+                |m: &mut PropertyDescriptions| &mut m.properties,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<PropertyDescriptions>(
                 "PropertyDescriptions",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -787,7 +863,10 @@ impl ::protobuf::Clear for PropertyDescriptions {
 }
 
 impl ::std::fmt::Debug for PropertyDescriptions {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -798,7 +877,7 @@ impl ::protobuf::reflect::ProtobufValue for PropertyDescriptions {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SchedulerAdaptorDescription {
     // message fields
     pub name: ::std::string::String,
@@ -828,7 +907,6 @@ impl SchedulerAdaptorDescription {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -837,7 +915,10 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -854,7 +935,6 @@ impl SchedulerAdaptorDescription {
 
     // string description = 2;
 
-
     pub fn get_description(&self) -> &str {
         &self.description
     }
@@ -863,7 +943,10 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_description(&mut self, v: ::std::string::String) {
+    pub fn set_description(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.description = v;
     }
 
@@ -880,7 +963,6 @@ impl SchedulerAdaptorDescription {
 
     // repeated string supported_locations = 3;
 
-
     pub fn get_supported_locations(&self) -> &[::std::string::String] {
         &self.supported_locations
     }
@@ -889,7 +971,10 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_locations(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_supported_locations(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.supported_locations = v;
     }
 
@@ -905,7 +990,6 @@ impl SchedulerAdaptorDescription {
 
     // repeated .xenon.PropertyDescription supported_properties = 4;
 
-
     pub fn get_supported_properties(&self) -> &[PropertyDescription] {
         &self.supported_properties
     }
@@ -914,7 +998,10 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_properties(&mut self, v: ::protobuf::RepeatedField<PropertyDescription>) {
+    pub fn set_supported_properties(
+        &mut self,
+        v: ::protobuf::RepeatedField<PropertyDescription>,
+    ) {
         self.supported_properties = v;
     }
 
@@ -930,7 +1017,6 @@ impl SchedulerAdaptorDescription {
 
     // bool is_embedded = 5;
 
-
     pub fn get_is_embedded(&self) -> bool {
         self.is_embedded
     }
@@ -939,12 +1025,14 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_embedded(&mut self, v: bool) {
+    pub fn set_is_embedded(
+        &mut self,
+        v: bool,
+    ) {
         self.is_embedded = v;
     }
 
     // bool supports_interactive = 6;
-
 
     pub fn get_supports_interactive(&self) -> bool {
         self.supports_interactive
@@ -954,12 +1042,14 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_interactive(&mut self, v: bool) {
+    pub fn set_supports_interactive(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_interactive = v;
     }
 
     // bool supports_batch = 7;
-
 
     pub fn get_supports_batch(&self) -> bool {
         self.supports_batch
@@ -969,12 +1059,14 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_batch(&mut self, v: bool) {
+    pub fn set_supports_batch(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_batch = v;
     }
 
     // bool uses_file_system = 8;
-
 
     pub fn get_uses_file_system(&self) -> bool {
         self.uses_file_system
@@ -984,12 +1076,14 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_uses_file_system(&mut self, v: bool) {
+    pub fn set_uses_file_system(
+        &mut self,
+        v: bool,
+    ) {
         self.uses_file_system = v;
     }
 
     // repeated string supported_credentials = 9;
-
 
     pub fn get_supported_credentials(&self) -> &[::std::string::String] {
         &self.supported_credentials
@@ -999,7 +1093,10 @@ impl SchedulerAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_credentials(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_supported_credentials(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.supported_credentials = v;
     }
 
@@ -1020,60 +1117,63 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.description)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.supported_locations)?;
-                },
+                }
                 4 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.supported_properties)?;
-                },
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_embedded = tmp;
-                },
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_interactive = tmp;
-                },
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_batch = tmp;
-                },
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.uses_file_system = tmp;
-                },
+                }
                 9 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.supported_credentials)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -1091,11 +1191,11 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
         }
         for value in &self.supported_locations {
             my_size += ::protobuf::rt::string_size(3, &value);
-        };
+        }
         for value in &self.supported_properties {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if self.is_embedded != false {
             my_size += 2;
         }
@@ -1110,13 +1210,16 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
         }
         for value in &self.supported_credentials {
             my_size += ::protobuf::rt::string_size(9, &value);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -1125,12 +1228,12 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
         }
         for v in &self.supported_locations {
             os.write_string(3, &v)?;
-        };
+        }
         for v in &self.supported_properties {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         if self.is_embedded != false {
             os.write_bool(5, self.is_embedded)?;
         }
@@ -1145,7 +1248,7 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
         }
         for v in &self.supported_credentials {
             os.write_string(9, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -1181,58 +1284,86 @@ impl ::protobuf::Message for SchedulerAdaptorDescription {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "name",
-                |m: &SchedulerAdaptorDescription| { &m.name },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.name },
+                |m: &SchedulerAdaptorDescription| &m.name,
+                |m: &mut SchedulerAdaptorDescription| &mut m.name,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "description",
-                |m: &SchedulerAdaptorDescription| { &m.description },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.description },
+                |m: &SchedulerAdaptorDescription| &m.description,
+                |m: &mut SchedulerAdaptorDescription| &mut m.description,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "supported_locations",
-                |m: &SchedulerAdaptorDescription| { &m.supported_locations },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.supported_locations },
+                |m: &SchedulerAdaptorDescription| &m.supported_locations,
+                |m: &mut SchedulerAdaptorDescription| &mut m.supported_locations,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<PropertyDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<PropertyDescription>,
+            >(
                 "supported_properties",
-                |m: &SchedulerAdaptorDescription| { &m.supported_properties },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.supported_properties },
+                |m: &SchedulerAdaptorDescription| &m.supported_properties,
+                |m: &mut SchedulerAdaptorDescription| &mut m.supported_properties,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_embedded",
-                |m: &SchedulerAdaptorDescription| { &m.is_embedded },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.is_embedded },
+                |m: &SchedulerAdaptorDescription| &m.is_embedded,
+                |m: &mut SchedulerAdaptorDescription| &mut m.is_embedded,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_interactive",
-                |m: &SchedulerAdaptorDescription| { &m.supports_interactive },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.supports_interactive },
+                |m: &SchedulerAdaptorDescription| &m.supports_interactive,
+                |m: &mut SchedulerAdaptorDescription| &mut m.supports_interactive,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_batch",
-                |m: &SchedulerAdaptorDescription| { &m.supports_batch },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.supports_batch },
+                |m: &SchedulerAdaptorDescription| &m.supports_batch,
+                |m: &mut SchedulerAdaptorDescription| &mut m.supports_batch,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "uses_file_system",
-                |m: &SchedulerAdaptorDescription| { &m.uses_file_system },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.uses_file_system },
+                |m: &SchedulerAdaptorDescription| &m.uses_file_system,
+                |m: &mut SchedulerAdaptorDescription| &mut m.uses_file_system,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "supported_credentials",
-                |m: &SchedulerAdaptorDescription| { &m.supported_credentials },
-                |m: &mut SchedulerAdaptorDescription| { &mut m.supported_credentials },
+                |m: &SchedulerAdaptorDescription| &m.supported_credentials,
+                |m: &mut SchedulerAdaptorDescription| &mut m.supported_credentials,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SchedulerAdaptorDescription>(
                 "SchedulerAdaptorDescription",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -1259,7 +1390,10 @@ impl ::protobuf::Clear for SchedulerAdaptorDescription {
 }
 
 impl ::std::fmt::Debug for SchedulerAdaptorDescription {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -1270,7 +1404,7 @@ impl ::protobuf::reflect::ProtobufValue for SchedulerAdaptorDescription {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SchedulerAdaptorDescriptions {
     // message fields
     pub descriptions: ::protobuf::RepeatedField<SchedulerAdaptorDescription>,
@@ -1292,7 +1426,6 @@ impl SchedulerAdaptorDescriptions {
 
     // repeated .xenon.SchedulerAdaptorDescription descriptions = 1;
 
-
     pub fn get_descriptions(&self) -> &[SchedulerAdaptorDescription] {
         &self.descriptions
     }
@@ -1301,7 +1434,10 @@ impl SchedulerAdaptorDescriptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_descriptions(&mut self, v: ::protobuf::RepeatedField<SchedulerAdaptorDescription>) {
+    pub fn set_descriptions(
+        &mut self,
+        v: ::protobuf::RepeatedField<SchedulerAdaptorDescription>,
+    ) {
         self.descriptions = v;
     }
 
@@ -1322,20 +1458,23 @@ impl ::protobuf::Message for SchedulerAdaptorDescriptions {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.descriptions)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -1348,18 +1487,21 @@ impl ::protobuf::Message for SchedulerAdaptorDescriptions {
         for value in &self.descriptions {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.descriptions {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -1395,18 +1537,22 @@ impl ::protobuf::Message for SchedulerAdaptorDescriptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<SchedulerAdaptorDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<SchedulerAdaptorDescription>,
+            >(
                 "descriptions",
-                |m: &SchedulerAdaptorDescriptions| { &m.descriptions },
-                |m: &mut SchedulerAdaptorDescriptions| { &mut m.descriptions },
+                |m: &SchedulerAdaptorDescriptions| &m.descriptions,
+                |m: &mut SchedulerAdaptorDescriptions| &mut m.descriptions,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SchedulerAdaptorDescriptions>(
                 "SchedulerAdaptorDescriptions",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -1425,7 +1571,10 @@ impl ::protobuf::Clear for SchedulerAdaptorDescriptions {
 }
 
 impl ::std::fmt::Debug for SchedulerAdaptorDescriptions {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -1436,7 +1585,7 @@ impl ::protobuf::reflect::ProtobufValue for SchedulerAdaptorDescriptions {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct FileSystemAdaptorDescription {
     // message fields
     pub name: ::std::string::String,
@@ -1471,7 +1620,6 @@ impl FileSystemAdaptorDescription {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -1480,7 +1628,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -1497,7 +1648,6 @@ impl FileSystemAdaptorDescription {
 
     // string description = 2;
 
-
     pub fn get_description(&self) -> &str {
         &self.description
     }
@@ -1506,7 +1656,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_description(&mut self, v: ::std::string::String) {
+    pub fn set_description(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.description = v;
     }
 
@@ -1523,7 +1676,6 @@ impl FileSystemAdaptorDescription {
 
     // repeated string supported_locations = 3;
 
-
     pub fn get_supported_locations(&self) -> &[::std::string::String] {
         &self.supported_locations
     }
@@ -1532,7 +1684,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_locations(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_supported_locations(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.supported_locations = v;
     }
 
@@ -1548,7 +1703,6 @@ impl FileSystemAdaptorDescription {
 
     // repeated .xenon.PropertyDescription supported_properties = 4;
 
-
     pub fn get_supported_properties(&self) -> &[PropertyDescription] {
         &self.supported_properties
     }
@@ -1557,7 +1711,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_properties(&mut self, v: ::protobuf::RepeatedField<PropertyDescription>) {
+    pub fn set_supported_properties(
+        &mut self,
+        v: ::protobuf::RepeatedField<PropertyDescription>,
+    ) {
         self.supported_properties = v;
     }
 
@@ -1573,7 +1730,6 @@ impl FileSystemAdaptorDescription {
 
     // bool supports_third_party_copy = 5;
 
-
     pub fn get_supports_third_party_copy(&self) -> bool {
         self.supports_third_party_copy
     }
@@ -1582,12 +1738,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_third_party_copy(&mut self, v: bool) {
+    pub fn set_supports_third_party_copy(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_third_party_copy = v;
     }
 
     // bool can_create_symboliclinks = 6;
-
 
     pub fn get_can_create_symboliclinks(&self) -> bool {
         self.can_create_symboliclinks
@@ -1597,12 +1755,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_can_create_symboliclinks(&mut self, v: bool) {
+    pub fn set_can_create_symboliclinks(
+        &mut self,
+        v: bool,
+    ) {
         self.can_create_symboliclinks = v;
     }
 
     // bool can_read_symboliclinks = 7;
-
 
     pub fn get_can_read_symboliclinks(&self) -> bool {
         self.can_read_symboliclinks
@@ -1612,12 +1772,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_can_read_symboliclinks(&mut self, v: bool) {
+    pub fn set_can_read_symboliclinks(
+        &mut self,
+        v: bool,
+    ) {
         self.can_read_symboliclinks = v;
     }
 
     // bool is_connectionless = 8;
-
 
     pub fn get_is_connectionless(&self) -> bool {
         self.is_connectionless
@@ -1627,12 +1789,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_connectionless(&mut self, v: bool) {
+    pub fn set_is_connectionless(
+        &mut self,
+        v: bool,
+    ) {
         self.is_connectionless = v;
     }
 
     // repeated string supported_credentials = 9;
-
 
     pub fn get_supported_credentials(&self) -> &[::std::string::String] {
         &self.supported_credentials
@@ -1642,7 +1806,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supported_credentials(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_supported_credentials(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.supported_credentials = v;
     }
 
@@ -1658,7 +1825,6 @@ impl FileSystemAdaptorDescription {
 
     // bool supports_reading_posix_permissions = 10;
 
-
     pub fn get_supports_reading_posix_permissions(&self) -> bool {
         self.supports_reading_posix_permissions
     }
@@ -1667,12 +1833,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_reading_posix_permissions(&mut self, v: bool) {
+    pub fn set_supports_reading_posix_permissions(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_reading_posix_permissions = v;
     }
 
     // bool supports_setting_posix_permissions = 11;
-
 
     pub fn get_supports_setting_posix_permissions(&self) -> bool {
         self.supports_setting_posix_permissions
@@ -1682,12 +1850,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_setting_posix_permissions(&mut self, v: bool) {
+    pub fn set_supports_setting_posix_permissions(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_setting_posix_permissions = v;
     }
 
     // bool supports_rename = 12;
-
 
     pub fn get_supports_rename(&self) -> bool {
         self.supports_rename
@@ -1697,12 +1867,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_supports_rename(&mut self, v: bool) {
+    pub fn set_supports_rename(
+        &mut self,
+        v: bool,
+    ) {
         self.supports_rename = v;
     }
 
     // bool can_append = 13;
-
 
     pub fn get_can_append(&self) -> bool {
         self.can_append
@@ -1712,12 +1884,14 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_can_append(&mut self, v: bool) {
+    pub fn set_can_append(
+        &mut self,
+        v: bool,
+    ) {
         self.can_append = v;
     }
 
     // bool needs_size_beforehand = 14;
-
 
     pub fn get_needs_size_beforehand(&self) -> bool {
         self.needs_size_beforehand
@@ -1727,7 +1901,10 @@ impl FileSystemAdaptorDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_needs_size_beforehand(&mut self, v: bool) {
+    pub fn set_needs_size_beforehand(
+        &mut self,
+        v: bool,
+    ) {
         self.needs_size_beforehand = v;
     }
 }
@@ -1738,95 +1915,98 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.description)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.supported_locations)?;
-                },
+                }
                 4 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.supported_properties)?;
-                },
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_third_party_copy = tmp;
-                },
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.can_create_symboliclinks = tmp;
-                },
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.can_read_symboliclinks = tmp;
-                },
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_connectionless = tmp;
-                },
+                }
                 9 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.supported_credentials)?;
-                },
+                }
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_reading_posix_permissions = tmp;
-                },
+                }
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_setting_posix_permissions = tmp;
-                },
+                }
                 12 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.supports_rename = tmp;
-                },
+                }
                 13 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.can_append = tmp;
-                },
+                }
                 14 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.needs_size_beforehand = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -1844,11 +2024,11 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
         }
         for value in &self.supported_locations {
             my_size += ::protobuf::rt::string_size(3, &value);
-        };
+        }
         for value in &self.supported_properties {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         if self.supports_third_party_copy != false {
             my_size += 2;
         }
@@ -1863,7 +2043,7 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
         }
         for value in &self.supported_credentials {
             my_size += ::protobuf::rt::string_size(9, &value);
-        };
+        }
         if self.supports_reading_posix_permissions != false {
             my_size += 2;
         }
@@ -1884,7 +2064,10 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -1893,12 +2076,12 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
         }
         for v in &self.supported_locations {
             os.write_string(3, &v)?;
-        };
+        }
         for v in &self.supported_properties {
             os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         if self.supports_third_party_copy != false {
             os.write_bool(5, self.supports_third_party_copy)?;
         }
@@ -1913,7 +2096,7 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
         }
         for v in &self.supported_credentials {
             os.write_string(9, &v)?;
-        };
+        }
         if self.supports_reading_posix_permissions != false {
             os.write_bool(10, self.supports_reading_posix_permissions)?;
         }
@@ -1964,83 +2147,126 @@ impl ::protobuf::Message for FileSystemAdaptorDescription {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "name",
-                |m: &FileSystemAdaptorDescription| { &m.name },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.name },
+                |m: &FileSystemAdaptorDescription| &m.name,
+                |m: &mut FileSystemAdaptorDescription| &mut m.name,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "description",
-                |m: &FileSystemAdaptorDescription| { &m.description },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.description },
+                |m: &FileSystemAdaptorDescription| &m.description,
+                |m: &mut FileSystemAdaptorDescription| &mut m.description,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "supported_locations",
-                |m: &FileSystemAdaptorDescription| { &m.supported_locations },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supported_locations },
+                |m: &FileSystemAdaptorDescription| &m.supported_locations,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supported_locations,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<PropertyDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<PropertyDescription>,
+            >(
                 "supported_properties",
-                |m: &FileSystemAdaptorDescription| { &m.supported_properties },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supported_properties },
+                |m: &FileSystemAdaptorDescription| &m.supported_properties,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supported_properties,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_third_party_copy",
-                |m: &FileSystemAdaptorDescription| { &m.supports_third_party_copy },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supports_third_party_copy },
+                |m: &FileSystemAdaptorDescription| &m.supports_third_party_copy,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supports_third_party_copy,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "can_create_symboliclinks",
-                |m: &FileSystemAdaptorDescription| { &m.can_create_symboliclinks },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.can_create_symboliclinks },
+                |m: &FileSystemAdaptorDescription| &m.can_create_symboliclinks,
+                |m: &mut FileSystemAdaptorDescription| &mut m.can_create_symboliclinks,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "can_read_symboliclinks",
-                |m: &FileSystemAdaptorDescription| { &m.can_read_symboliclinks },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.can_read_symboliclinks },
+                |m: &FileSystemAdaptorDescription| &m.can_read_symboliclinks,
+                |m: &mut FileSystemAdaptorDescription| &mut m.can_read_symboliclinks,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_connectionless",
-                |m: &FileSystemAdaptorDescription| { &m.is_connectionless },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.is_connectionless },
+                |m: &FileSystemAdaptorDescription| &m.is_connectionless,
+                |m: &mut FileSystemAdaptorDescription| &mut m.is_connectionless,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "supported_credentials",
-                |m: &FileSystemAdaptorDescription| { &m.supported_credentials },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supported_credentials },
+                |m: &FileSystemAdaptorDescription| &m.supported_credentials,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supported_credentials,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_reading_posix_permissions",
-                |m: &FileSystemAdaptorDescription| { &m.supports_reading_posix_permissions },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supports_reading_posix_permissions },
+                |m: &FileSystemAdaptorDescription| &m.supports_reading_posix_permissions,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supports_reading_posix_permissions,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_setting_posix_permissions",
-                |m: &FileSystemAdaptorDescription| { &m.supports_setting_posix_permissions },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supports_setting_posix_permissions },
+                |m: &FileSystemAdaptorDescription| &m.supports_setting_posix_permissions,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supports_setting_posix_permissions,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "supports_rename",
-                |m: &FileSystemAdaptorDescription| { &m.supports_rename },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.supports_rename },
+                |m: &FileSystemAdaptorDescription| &m.supports_rename,
+                |m: &mut FileSystemAdaptorDescription| &mut m.supports_rename,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "can_append",
-                |m: &FileSystemAdaptorDescription| { &m.can_append },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.can_append },
+                |m: &FileSystemAdaptorDescription| &m.can_append,
+                |m: &mut FileSystemAdaptorDescription| &mut m.can_append,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "needs_size_beforehand",
-                |m: &FileSystemAdaptorDescription| { &m.needs_size_beforehand },
-                |m: &mut FileSystemAdaptorDescription| { &mut m.needs_size_beforehand },
+                |m: &FileSystemAdaptorDescription| &m.needs_size_beforehand,
+                |m: &mut FileSystemAdaptorDescription| &mut m.needs_size_beforehand,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileSystemAdaptorDescription>(
                 "FileSystemAdaptorDescription",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2072,7 +2298,10 @@ impl ::protobuf::Clear for FileSystemAdaptorDescription {
 }
 
 impl ::std::fmt::Debug for FileSystemAdaptorDescription {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -2083,7 +2312,7 @@ impl ::protobuf::reflect::ProtobufValue for FileSystemAdaptorDescription {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct FileSystemAdaptorDescriptions {
     // message fields
     pub descriptions: ::protobuf::RepeatedField<FileSystemAdaptorDescription>,
@@ -2105,7 +2334,6 @@ impl FileSystemAdaptorDescriptions {
 
     // repeated .xenon.FileSystemAdaptorDescription descriptions = 1;
 
-
     pub fn get_descriptions(&self) -> &[FileSystemAdaptorDescription] {
         &self.descriptions
     }
@@ -2114,7 +2342,10 @@ impl FileSystemAdaptorDescriptions {
     }
 
     // Param is passed by value, moved
-    pub fn set_descriptions(&mut self, v: ::protobuf::RepeatedField<FileSystemAdaptorDescription>) {
+    pub fn set_descriptions(
+        &mut self,
+        v: ::protobuf::RepeatedField<FileSystemAdaptorDescription>,
+    ) {
         self.descriptions = v;
     }
 
@@ -2135,20 +2366,23 @@ impl ::protobuf::Message for FileSystemAdaptorDescriptions {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.descriptions)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -2161,18 +2395,21 @@ impl ::protobuf::Message for FileSystemAdaptorDescriptions {
         for value in &self.descriptions {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.descriptions {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -2208,18 +2445,22 @@ impl ::protobuf::Message for FileSystemAdaptorDescriptions {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystemAdaptorDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystemAdaptorDescription>,
+            >(
                 "descriptions",
-                |m: &FileSystemAdaptorDescriptions| { &m.descriptions },
-                |m: &mut FileSystemAdaptorDescriptions| { &mut m.descriptions },
+                |m: &FileSystemAdaptorDescriptions| &m.descriptions,
+                |m: &mut FileSystemAdaptorDescriptions| &mut m.descriptions,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileSystemAdaptorDescriptions>(
                 "FileSystemAdaptorDescriptions",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2238,7 +2479,10 @@ impl ::protobuf::Clear for FileSystemAdaptorDescriptions {
 }
 
 impl ::std::fmt::Debug for FileSystemAdaptorDescriptions {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -2249,7 +2493,7 @@ impl ::protobuf::reflect::ProtobufValue for FileSystemAdaptorDescriptions {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct AdaptorName {
     // message fields
     pub name: ::std::string::String,
@@ -2271,7 +2515,6 @@ impl AdaptorName {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -2280,7 +2523,10 @@ impl AdaptorName {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -2301,16 +2547,19 @@ impl ::protobuf::Message for AdaptorName {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -2328,7 +2577,10 @@ impl ::protobuf::Message for AdaptorName {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -2367,18 +2619,20 @@ impl ::protobuf::Message for AdaptorName {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &AdaptorName| { &m.name },
-                |m: &mut AdaptorName| { &mut m.name },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "name", |m: &AdaptorName| &m.name, |m: &mut AdaptorName| &mut m.name
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<AdaptorName>(
                 "AdaptorName",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2397,7 +2651,10 @@ impl ::protobuf::Clear for AdaptorName {
 }
 
 impl ::std::fmt::Debug for AdaptorName {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -2408,7 +2665,7 @@ impl ::protobuf::reflect::ProtobufValue for AdaptorName {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct AdaptorNames {
     // message fields
     pub name: ::protobuf::RepeatedField<::std::string::String>,
@@ -2430,7 +2687,6 @@ impl AdaptorNames {
 
     // repeated string name = 1;
 
-
     pub fn get_name(&self) -> &[::std::string::String] {
         &self.name
     }
@@ -2439,7 +2695,10 @@ impl AdaptorNames {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_name(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.name = v;
     }
 
@@ -2459,16 +2718,19 @@ impl ::protobuf::Message for AdaptorNames {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -2480,16 +2742,19 @@ impl ::protobuf::Message for AdaptorNames {
         let mut my_size = 0;
         for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.name {
             os.write_string(1, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -2525,18 +2790,20 @@ impl ::protobuf::Message for AdaptorNames {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &AdaptorNames| { &m.name },
-                |m: &mut AdaptorNames| { &mut m.name },
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "name", |m: &AdaptorNames| &m.name, |m: &mut AdaptorNames| &mut m.name
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<AdaptorNames>(
                 "AdaptorNames",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2555,7 +2822,10 @@ impl ::protobuf::Clear for AdaptorNames {
 }
 
 impl ::std::fmt::Debug for AdaptorNames {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -2566,7 +2836,7 @@ impl ::protobuf::reflect::ProtobufValue for AdaptorNames {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CertificateCredential {
     // message fields
     pub certfile: ::std::string::String,
@@ -2590,7 +2860,6 @@ impl CertificateCredential {
 
     // string certfile = 1;
 
-
     pub fn get_certfile(&self) -> &str {
         &self.certfile
     }
@@ -2599,7 +2868,10 @@ impl CertificateCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_certfile(&mut self, v: ::std::string::String) {
+    pub fn set_certfile(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.certfile = v;
     }
 
@@ -2616,7 +2888,6 @@ impl CertificateCredential {
 
     // string passphrase = 2;
 
-
     pub fn get_passphrase(&self) -> &str {
         &self.passphrase
     }
@@ -2625,7 +2896,10 @@ impl CertificateCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_passphrase(&mut self, v: ::std::string::String) {
+    pub fn set_passphrase(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.passphrase = v;
     }
 
@@ -2642,7 +2916,6 @@ impl CertificateCredential {
 
     // string username = 3;
 
-
     pub fn get_username(&self) -> &str {
         &self.username
     }
@@ -2651,7 +2924,10 @@ impl CertificateCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_username(&mut self, v: ::std::string::String) {
+    pub fn set_username(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.username = v;
     }
 
@@ -2672,22 +2948,25 @@ impl ::protobuf::Message for CertificateCredential {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.certfile)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.passphrase)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.username)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -2711,7 +2990,10 @@ impl ::protobuf::Message for CertificateCredential {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.certfile.is_empty() {
             os.write_string(1, &self.certfile)?;
         }
@@ -2756,28 +3038,38 @@ impl ::protobuf::Message for CertificateCredential {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "certfile",
-                |m: &CertificateCredential| { &m.certfile },
-                |m: &mut CertificateCredential| { &mut m.certfile },
+                |m: &CertificateCredential| &m.certfile,
+                |m: &mut CertificateCredential| &mut m.certfile,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "passphrase",
-                |m: &CertificateCredential| { &m.passphrase },
-                |m: &mut CertificateCredential| { &mut m.passphrase },
+                |m: &CertificateCredential| &m.passphrase,
+                |m: &mut CertificateCredential| &mut m.passphrase,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "username",
-                |m: &CertificateCredential| { &m.username },
-                |m: &mut CertificateCredential| { &mut m.username },
+                |m: &CertificateCredential| &m.username,
+                |m: &mut CertificateCredential| &mut m.username,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CertificateCredential>(
                 "CertificateCredential",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2798,7 +3090,10 @@ impl ::protobuf::Clear for CertificateCredential {
 }
 
 impl ::std::fmt::Debug for CertificateCredential {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -2809,7 +3104,7 @@ impl ::protobuf::reflect::ProtobufValue for CertificateCredential {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct PasswordCredential {
     // message fields
     pub username: ::std::string::String,
@@ -2832,7 +3127,6 @@ impl PasswordCredential {
 
     // string username = 1;
 
-
     pub fn get_username(&self) -> &str {
         &self.username
     }
@@ -2841,7 +3135,10 @@ impl PasswordCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_username(&mut self, v: ::std::string::String) {
+    pub fn set_username(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.username = v;
     }
 
@@ -2858,7 +3155,6 @@ impl PasswordCredential {
 
     // string password = 2;
 
-
     pub fn get_password(&self) -> &str {
         &self.password
     }
@@ -2867,7 +3163,10 @@ impl PasswordCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_password(&mut self, v: ::std::string::String) {
+    pub fn set_password(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.password = v;
     }
 
@@ -2888,19 +3187,22 @@ impl ::protobuf::Message for PasswordCredential {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.username)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.password)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -2921,7 +3223,10 @@ impl ::protobuf::Message for PasswordCredential {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.username.is_empty() {
             os.write_string(1, &self.username)?;
         }
@@ -2963,23 +3268,30 @@ impl ::protobuf::Message for PasswordCredential {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "username",
-                |m: &PasswordCredential| { &m.username },
-                |m: &mut PasswordCredential| { &mut m.username },
+                |m: &PasswordCredential| &m.username,
+                |m: &mut PasswordCredential| &mut m.username,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "password",
-                |m: &PasswordCredential| { &m.password },
-                |m: &mut PasswordCredential| { &mut m.password },
+                |m: &PasswordCredential| &m.password,
+                |m: &mut PasswordCredential| &mut m.password,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<PasswordCredential>(
                 "PasswordCredential",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -2999,7 +3311,10 @@ impl ::protobuf::Clear for PasswordCredential {
 }
 
 impl ::std::fmt::Debug for PasswordCredential {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -3010,7 +3325,7 @@ impl ::protobuf::reflect::ProtobufValue for PasswordCredential {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct DefaultCredential {
     // message fields
     pub username: ::std::string::String,
@@ -3032,7 +3347,6 @@ impl DefaultCredential {
 
     // string username = 1;
 
-
     pub fn get_username(&self) -> &str {
         &self.username
     }
@@ -3041,7 +3355,10 @@ impl DefaultCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_username(&mut self, v: ::std::string::String) {
+    pub fn set_username(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.username = v;
     }
 
@@ -3062,16 +3379,19 @@ impl ::protobuf::Message for DefaultCredential {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.username)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -3089,7 +3409,10 @@ impl ::protobuf::Message for DefaultCredential {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.username.is_empty() {
             os.write_string(1, &self.username)?;
         }
@@ -3128,18 +3451,22 @@ impl ::protobuf::Message for DefaultCredential {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "username",
-                |m: &DefaultCredential| { &m.username },
-                |m: &mut DefaultCredential| { &mut m.username },
+                |m: &DefaultCredential| &m.username,
+                |m: &mut DefaultCredential| &mut m.username,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<DefaultCredential>(
                 "DefaultCredential",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -3158,7 +3485,10 @@ impl ::protobuf::Clear for DefaultCredential {
 }
 
 impl ::std::fmt::Debug for DefaultCredential {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -3169,7 +3499,7 @@ impl ::protobuf::reflect::ProtobufValue for DefaultCredential {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct KeytabCredential {
     // message fields
     pub username: ::std::string::String,
@@ -3192,7 +3522,6 @@ impl KeytabCredential {
 
     // string username = 1;
 
-
     pub fn get_username(&self) -> &str {
         &self.username
     }
@@ -3201,7 +3530,10 @@ impl KeytabCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_username(&mut self, v: ::std::string::String) {
+    pub fn set_username(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.username = v;
     }
 
@@ -3218,7 +3550,6 @@ impl KeytabCredential {
 
     // string keytabfile = 2;
 
-
     pub fn get_keytabfile(&self) -> &str {
         &self.keytabfile
     }
@@ -3227,7 +3558,10 @@ impl KeytabCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytabfile(&mut self, v: ::std::string::String) {
+    pub fn set_keytabfile(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.keytabfile = v;
     }
 
@@ -3248,19 +3582,22 @@ impl ::protobuf::Message for KeytabCredential {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.username)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.keytabfile)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -3281,7 +3618,10 @@ impl ::protobuf::Message for KeytabCredential {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.username.is_empty() {
             os.write_string(1, &self.username)?;
         }
@@ -3323,23 +3663,30 @@ impl ::protobuf::Message for KeytabCredential {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "username",
-                |m: &KeytabCredential| { &m.username },
-                |m: &mut KeytabCredential| { &mut m.username },
+                |m: &KeytabCredential| &m.username,
+                |m: &mut KeytabCredential| &mut m.username,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "keytabfile",
-                |m: &KeytabCredential| { &m.keytabfile },
-                |m: &mut KeytabCredential| { &mut m.keytabfile },
+                |m: &KeytabCredential| &m.keytabfile,
+                |m: &mut KeytabCredential| &mut m.keytabfile,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<KeytabCredential>(
                 "KeytabCredential",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -3359,7 +3706,10 @@ impl ::protobuf::Clear for KeytabCredential {
 }
 
 impl ::std::fmt::Debug for KeytabCredential {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -3370,7 +3720,7 @@ impl ::protobuf::reflect::ProtobufValue for KeytabCredential {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct UserCredential {
     // message oneof groups
     pub entry: ::std::option::Option<UserCredential_oneof_entry>,
@@ -3385,7 +3735,7 @@ impl<'a> ::std::default::Default for &'a UserCredential {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum UserCredential_oneof_entry {
     certificate_credential(CertificateCredential),
     password_credential(PasswordCredential),
@@ -3399,7 +3749,6 @@ impl UserCredential {
     }
 
     // .xenon.CertificateCredential certificate_credential = 1;
-
 
     pub fn get_certificate_credential(&self) -> &CertificateCredential {
         match self.entry {
@@ -3419,7 +3768,10 @@ impl UserCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_certificate_credential(&mut self, v: CertificateCredential) {
+    pub fn set_certificate_credential(
+        &mut self,
+        v: CertificateCredential,
+    ) {
         self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(v))
     }
 
@@ -3427,7 +3779,9 @@ impl UserCredential {
     pub fn mut_certificate_credential(&mut self) -> &mut CertificateCredential {
         if let ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(_)) = self.entry {
         } else {
-            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(CertificateCredential::new()));
+            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(
+                CertificateCredential::new(),
+            ));
         }
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(ref mut v)) => v,
@@ -3449,7 +3803,6 @@ impl UserCredential {
 
     // .xenon.PasswordCredential password_credential = 2;
 
-
     pub fn get_password_credential(&self) -> &PasswordCredential {
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(ref v)) => v,
@@ -3468,7 +3821,10 @@ impl UserCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_password_credential(&mut self, v: PasswordCredential) {
+    pub fn set_password_credential(
+        &mut self,
+        v: PasswordCredential,
+    ) {
         self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(v))
     }
 
@@ -3476,7 +3832,9 @@ impl UserCredential {
     pub fn mut_password_credential(&mut self) -> &mut PasswordCredential {
         if let ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(_)) = self.entry {
         } else {
-            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(PasswordCredential::new()));
+            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(
+                PasswordCredential::new(),
+            ));
         }
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(ref mut v)) => v,
@@ -3498,7 +3856,6 @@ impl UserCredential {
 
     // .xenon.DefaultCredential default_credential = 3;
 
-
     pub fn get_default_credential(&self) -> &DefaultCredential {
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(ref v)) => v,
@@ -3517,7 +3874,10 @@ impl UserCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_credential(&mut self, v: DefaultCredential) {
+    pub fn set_default_credential(
+        &mut self,
+        v: DefaultCredential,
+    ) {
         self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(v))
     }
 
@@ -3525,7 +3885,8 @@ impl UserCredential {
     pub fn mut_default_credential(&mut self) -> &mut DefaultCredential {
         if let ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(_)) = self.entry {
         } else {
-            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(DefaultCredential::new()));
+            self.entry =
+                ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(DefaultCredential::new()));
         }
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(ref mut v)) => v,
@@ -3547,7 +3908,6 @@ impl UserCredential {
 
     // .xenon.KeytabCredential keytab_credential = 4;
 
-
     pub fn get_keytab_credential(&self) -> &KeytabCredential {
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(ref v)) => v,
@@ -3566,7 +3926,10 @@ impl UserCredential {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytab_credential(&mut self, v: KeytabCredential) {
+    pub fn set_keytab_credential(
+        &mut self,
+        v: KeytabCredential,
+    ) {
         self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(v))
     }
 
@@ -3574,7 +3937,8 @@ impl UserCredential {
     pub fn mut_keytab_credential(&mut self) -> &mut KeytabCredential {
         if let ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(_)) = self.entry {
         } else {
-            self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(KeytabCredential::new()));
+            self.entry =
+                ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(KeytabCredential::new()));
         }
         match self.entry {
             ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(ref mut v)) => v,
@@ -3620,7 +3984,10 @@ impl ::protobuf::Message for UserCredential {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -3628,29 +3995,35 @@ impl ::protobuf::Message for UserCredential {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(is.read_message()?));
-                },
+                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::certificate_credential(
+                        is.read_message()?,
+                    ));
+                }
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(is.read_message()?));
-                },
+                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::password_credential(
+                        is.read_message()?,
+                    ));
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(is.read_message()?));
-                },
+                    self.entry =
+                        ::std::option::Option::Some(UserCredential_oneof_entry::default_credential(is.read_message()?));
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.entry = ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(is.read_message()?));
-                },
+                    self.entry =
+                        ::std::option::Option::Some(UserCredential_oneof_entry::keytab_credential(is.read_message()?));
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -3665,19 +4038,19 @@ impl ::protobuf::Message for UserCredential {
                 &UserCredential_oneof_entry::certificate_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &UserCredential_oneof_entry::password_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &UserCredential_oneof_entry::default_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &UserCredential_oneof_entry::keytab_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
             };
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -3685,29 +4058,32 @@ impl ::protobuf::Message for UserCredential {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let ::std::option::Option::Some(ref v) = self.entry {
             match v {
                 &UserCredential_oneof_entry::certificate_credential(ref v) => {
                     os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &UserCredential_oneof_entry::password_credential(ref v) => {
                     os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &UserCredential_oneof_entry::default_credential(ref v) => {
                     os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &UserCredential_oneof_entry::keytab_credential(ref v) => {
                     os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
             };
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -3745,25 +4121,38 @@ impl ::protobuf::Message for UserCredential {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CertificateCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CertificateCredential,
+            >(
                 "certificate_credential",
                 UserCredential::has_certificate_credential,
                 UserCredential::get_certificate_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, PasswordCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                PasswordCredential,
+            >(
                 "password_credential",
                 UserCredential::has_password_credential,
                 UserCredential::get_password_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, DefaultCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                DefaultCredential,
+            >(
                 "default_credential",
                 UserCredential::has_default_credential,
                 UserCredential::get_default_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, KeytabCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                KeytabCredential,
+            >(
                 "keytab_credential",
                 UserCredential::has_keytab_credential,
                 UserCredential::get_keytab_credential,
@@ -3771,7 +4160,7 @@ impl ::protobuf::Message for UserCredential {
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<UserCredential>(
                 "UserCredential",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -3793,7 +4182,10 @@ impl ::protobuf::Clear for UserCredential {
 }
 
 impl ::std::fmt::Debug for UserCredential {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -3804,7 +4196,7 @@ impl ::protobuf::reflect::ProtobufValue for UserCredential {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CredentialMap {
     // message fields
     pub entries: ::std::collections::HashMap<::std::string::String, UserCredential>,
@@ -3821,7 +4213,7 @@ impl<'a> ::std::default::Default for &'a CredentialMap {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum CredentialMap_oneof_fallback {
     certificate_credential(CertificateCredential),
     password_credential(PasswordCredential),
@@ -3836,7 +4228,6 @@ impl CredentialMap {
 
     // repeated .xenon.CredentialMap.EntriesEntry entries = 1;
 
-
     pub fn get_entries(&self) -> &::std::collections::HashMap<::std::string::String, UserCredential> {
         &self.entries
     }
@@ -3845,7 +4236,10 @@ impl CredentialMap {
     }
 
     // Param is passed by value, moved
-    pub fn set_entries(&mut self, v: ::std::collections::HashMap<::std::string::String, UserCredential>) {
+    pub fn set_entries(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, UserCredential>,
+    ) {
         self.entries = v;
     }
 
@@ -3860,7 +4254,6 @@ impl CredentialMap {
     }
 
     // .xenon.CertificateCredential certificate_credential = 2;
-
 
     pub fn get_certificate_credential(&self) -> &CertificateCredential {
         match self.fallback {
@@ -3880,7 +4273,10 @@ impl CredentialMap {
     }
 
     // Param is passed by value, moved
-    pub fn set_certificate_credential(&mut self, v: CertificateCredential) {
+    pub fn set_certificate_credential(
+        &mut self,
+        v: CertificateCredential,
+    ) {
         self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(v))
     }
 
@@ -3888,7 +4284,9 @@ impl CredentialMap {
     pub fn mut_certificate_credential(&mut self) -> &mut CertificateCredential {
         if let ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(_)) = self.fallback {
         } else {
-            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(CertificateCredential::new()));
+            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(
+                CertificateCredential::new(),
+            ));
         }
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(ref mut v)) => v,
@@ -3910,7 +4308,6 @@ impl CredentialMap {
 
     // .xenon.PasswordCredential password_credential = 3;
 
-
     pub fn get_password_credential(&self) -> &PasswordCredential {
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(ref v)) => v,
@@ -3929,7 +4326,10 @@ impl CredentialMap {
     }
 
     // Param is passed by value, moved
-    pub fn set_password_credential(&mut self, v: PasswordCredential) {
+    pub fn set_password_credential(
+        &mut self,
+        v: PasswordCredential,
+    ) {
         self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(v))
     }
 
@@ -3937,7 +4337,9 @@ impl CredentialMap {
     pub fn mut_password_credential(&mut self) -> &mut PasswordCredential {
         if let ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(_)) = self.fallback {
         } else {
-            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(PasswordCredential::new()));
+            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(
+                PasswordCredential::new(),
+            ));
         }
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(ref mut v)) => v,
@@ -3959,7 +4361,6 @@ impl CredentialMap {
 
     // .xenon.DefaultCredential default_credential = 4;
 
-
     pub fn get_default_credential(&self) -> &DefaultCredential {
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(ref v)) => v,
@@ -3978,7 +4379,10 @@ impl CredentialMap {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_credential(&mut self, v: DefaultCredential) {
+    pub fn set_default_credential(
+        &mut self,
+        v: DefaultCredential,
+    ) {
         self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(v))
     }
 
@@ -3986,7 +4390,9 @@ impl CredentialMap {
     pub fn mut_default_credential(&mut self) -> &mut DefaultCredential {
         if let ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(_)) = self.fallback {
         } else {
-            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(DefaultCredential::new()));
+            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(
+                DefaultCredential::new(),
+            ));
         }
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(ref mut v)) => v,
@@ -4008,7 +4414,6 @@ impl CredentialMap {
 
     // .xenon.KeytabCredential keytab_credential = 5;
 
-
     pub fn get_keytab_credential(&self) -> &KeytabCredential {
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(ref v)) => v,
@@ -4027,7 +4432,10 @@ impl CredentialMap {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytab_credential(&mut self, v: KeytabCredential) {
+    pub fn set_keytab_credential(
+        &mut self,
+        v: KeytabCredential,
+    ) {
         self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(v))
     }
 
@@ -4035,7 +4443,8 @@ impl CredentialMap {
     pub fn mut_keytab_credential(&mut self) -> &mut KeytabCredential {
         if let ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(_)) = self.fallback {
         } else {
-            self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(KeytabCredential::new()));
+            self.fallback =
+                ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(KeytabCredential::new()));
         }
         match self.fallback {
             ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(ref mut v)) => v,
@@ -4081,40 +4490,54 @@ impl ::protobuf::Message for CredentialMap {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<UserCredential>>(wire_type, is, &mut self.entries)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeMessage<UserCredential>,
+                    >(wire_type, is, &mut self.entries)?;
+                }
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(is.read_message()?));
-                },
+                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::certificate_credential(
+                        is.read_message()?,
+                    ));
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(is.read_message()?));
-                },
+                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::password_credential(
+                        is.read_message()?,
+                    ));
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(is.read_message()?));
-                },
+                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::default_credential(
+                        is.read_message()?,
+                    ));
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(is.read_message()?));
-                },
+                    self.fallback = ::std::option::Option::Some(CredentialMap_oneof_fallback::keytab_credential(
+                        is.read_message()?,
+                    ));
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -4124,25 +4547,28 @@ impl ::protobuf::Message for CredentialMap {
     #[allow(unused_variables)]
     fn compute_size(&self) -> u32 {
         let mut my_size = 0;
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<UserCredential>>(1, &self.entries);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeMessage<UserCredential>,
+        >(1, &self.entries);
         if let ::std::option::Option::Some(ref v) = self.fallback {
             match v {
                 &CredentialMap_oneof_fallback::certificate_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CredentialMap_oneof_fallback::password_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CredentialMap_oneof_fallback::default_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CredentialMap_oneof_fallback::keytab_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
             };
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -4150,30 +4576,36 @@ impl ::protobuf::Message for CredentialMap {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<UserCredential>>(1, &self.entries, os)?;
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeMessage<UserCredential>,
+        >(1, &self.entries, os)?;
         if let ::std::option::Option::Some(ref v) = self.fallback {
             match v {
                 &CredentialMap_oneof_fallback::certificate_credential(ref v) => {
                     os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CredentialMap_oneof_fallback::password_credential(ref v) => {
                     os.write_tag(3, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CredentialMap_oneof_fallback::default_credential(ref v) => {
                     os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CredentialMap_oneof_fallback::keytab_credential(ref v) => {
                     os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
             };
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -4211,30 +4643,47 @@ impl ::protobuf::Message for CredentialMap {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeMessage<UserCredential>>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeMessage<UserCredential>,
+            >(
                 "entries",
-                |m: &CredentialMap| { &m.entries },
-                |m: &mut CredentialMap| { &mut m.entries },
+                |m: &CredentialMap| &m.entries,
+                |m: &mut CredentialMap| &mut m.entries,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CertificateCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CertificateCredential,
+            >(
                 "certificate_credential",
                 CredentialMap::has_certificate_credential,
                 CredentialMap::get_certificate_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, PasswordCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                PasswordCredential,
+            >(
                 "password_credential",
                 CredentialMap::has_password_credential,
                 CredentialMap::get_password_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, DefaultCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                DefaultCredential,
+            >(
                 "default_credential",
                 CredentialMap::has_default_credential,
                 CredentialMap::get_default_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, KeytabCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                KeytabCredential,
+            >(
                 "keytab_credential",
                 CredentialMap::has_keytab_credential,
                 CredentialMap::get_keytab_credential,
@@ -4242,7 +4691,7 @@ impl ::protobuf::Message for CredentialMap {
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CredentialMap>(
                 "CredentialMap",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -4265,7 +4714,10 @@ impl ::protobuf::Clear for CredentialMap {
 }
 
 impl ::std::fmt::Debug for CredentialMap {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -4276,7 +4728,7 @@ impl ::protobuf::reflect::ProtobufValue for CredentialMap {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Location {
     // message fields
     pub location: ::std::string::String,
@@ -4298,7 +4750,6 @@ impl Location {
 
     // string location = 1;
 
-
     pub fn get_location(&self) -> &str {
         &self.location
     }
@@ -4307,7 +4758,10 @@ impl Location {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: ::std::string::String) {
+    pub fn set_location(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.location = v;
     }
 
@@ -4328,16 +4782,19 @@ impl ::protobuf::Message for Location {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.location)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -4355,7 +4812,10 @@ impl ::protobuf::Message for Location {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.location.is_empty() {
             os.write_string(1, &self.location)?;
         }
@@ -4394,19 +4854,19 @@ impl ::protobuf::Message for Location {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "location",
-                |m: &Location| { &m.location },
-                |m: &mut Location| { &mut m.location },
+                |m: &Location| &m.location,
+                |m: &mut Location| &mut m.location,
             ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Location>(
-                "Location",
-                fields,
-                file_descriptor_proto()
-            )
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Location>("Location", fields, file_descriptor_proto())
         })
     }
 
@@ -4424,7 +4884,10 @@ impl ::protobuf::Clear for Location {
 }
 
 impl ::std::fmt::Debug for Location {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -4435,7 +4898,7 @@ impl ::protobuf::reflect::ProtobufValue for Location {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetCredentialResponse {
     // message oneof groups
     pub credential: ::std::option::Option<GetCredentialResponse_oneof_credential>,
@@ -4450,7 +4913,7 @@ impl<'a> ::std::default::Default for &'a GetCredentialResponse {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum GetCredentialResponse_oneof_credential {
     certificate_credential(CertificateCredential),
     password_credential(PasswordCredential),
@@ -4465,7 +4928,6 @@ impl GetCredentialResponse {
     }
 
     // .xenon.CertificateCredential certificate_credential = 4;
-
 
     pub fn get_certificate_credential(&self) -> &CertificateCredential {
         match self.credential {
@@ -4485,15 +4947,22 @@ impl GetCredentialResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_certificate_credential(&mut self, v: CertificateCredential) {
+    pub fn set_certificate_credential(
+        &mut self,
+        v: CertificateCredential,
+    ) {
         self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_certificate_credential(&mut self) -> &mut CertificateCredential {
-        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(CertificateCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                GetCredentialResponse_oneof_credential::certificate_credential(CertificateCredential::new()),
+            );
         }
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(ref mut v)) => v,
@@ -4515,7 +4984,6 @@ impl GetCredentialResponse {
 
     // .xenon.PasswordCredential password_credential = 5;
 
-
     pub fn get_password_credential(&self) -> &PasswordCredential {
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(ref v)) => v,
@@ -4534,15 +5002,22 @@ impl GetCredentialResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_password_credential(&mut self, v: PasswordCredential) {
+    pub fn set_password_credential(
+        &mut self,
+        v: PasswordCredential,
+    ) {
         self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_password_credential(&mut self) -> &mut PasswordCredential {
-        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(PasswordCredential::new()));
+            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(
+                PasswordCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(ref mut v)) => v,
@@ -4564,7 +5039,6 @@ impl GetCredentialResponse {
 
     // .xenon.DefaultCredential default_credential = 6;
 
-
     pub fn get_default_credential(&self) -> &DefaultCredential {
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(ref v)) => v,
@@ -4583,15 +5057,22 @@ impl GetCredentialResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_credential(&mut self, v: DefaultCredential) {
+    pub fn set_default_credential(
+        &mut self,
+        v: DefaultCredential,
+    ) {
         self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_default_credential(&mut self) -> &mut DefaultCredential {
-        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(DefaultCredential::new()));
+            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(
+                DefaultCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(ref mut v)) => v,
@@ -4613,7 +5094,6 @@ impl GetCredentialResponse {
 
     // .xenon.CredentialMap credential_map = 7;
 
-
     pub fn get_credential_map(&self) -> &CredentialMap {
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(ref v)) => v,
@@ -4632,15 +5112,21 @@ impl GetCredentialResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_credential_map(&mut self, v: CredentialMap) {
+    pub fn set_credential_map(
+        &mut self,
+        v: CredentialMap,
+    ) {
         self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_credential_map(&mut self) -> &mut CredentialMap {
-        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(_)) = self.credential {
+        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(_)) = self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(CredentialMap::new()));
+            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(
+                CredentialMap::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(ref mut v)) => v,
@@ -4662,7 +5148,6 @@ impl GetCredentialResponse {
 
     // .xenon.KeytabCredential keytab_credential = 8;
 
-
     pub fn get_keytab_credential(&self) -> &KeytabCredential {
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(ref v)) => v,
@@ -4681,15 +5166,22 @@ impl GetCredentialResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytab_credential(&mut self, v: KeytabCredential) {
+    pub fn set_keytab_credential(
+        &mut self,
+        v: KeytabCredential,
+    ) {
         self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_keytab_credential(&mut self) -> &mut KeytabCredential {
-        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(KeytabCredential::new()));
+            self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(
+                KeytabCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(ref mut v)) => v,
@@ -4740,7 +5232,10 @@ impl ::protobuf::Message for GetCredentialResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -4748,35 +5243,45 @@ impl ::protobuf::Message for GetCredentialResponse {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::certificate_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        GetCredentialResponse_oneof_credential::certificate_credential(is.read_message()?),
+                    );
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::password_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        GetCredentialResponse_oneof_credential::password_credential(is.read_message()?),
+                    );
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::default_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        GetCredentialResponse_oneof_credential::default_credential(is.read_message()?),
+                    );
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::credential_map(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        GetCredentialResponse_oneof_credential::credential_map(is.read_message()?),
+                    );
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(GetCredentialResponse_oneof_credential::keytab_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        GetCredentialResponse_oneof_credential::keytab_credential(is.read_message()?),
+                    );
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -4791,23 +5296,23 @@ impl ::protobuf::Message for GetCredentialResponse {
                 &GetCredentialResponse_oneof_credential::certificate_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::password_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::default_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::credential_map(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::keytab_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
             };
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -4815,34 +5320,37 @@ impl ::protobuf::Message for GetCredentialResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let ::std::option::Option::Some(ref v) = self.credential {
             match v {
                 &GetCredentialResponse_oneof_credential::certificate_credential(ref v) => {
                     os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::password_credential(ref v) => {
                     os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::default_credential(ref v) => {
                     os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::credential_map(ref v) => {
                     os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &GetCredentialResponse_oneof_credential::keytab_credential(ref v) => {
                     os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
             };
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -4880,30 +5388,46 @@ impl ::protobuf::Message for GetCredentialResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CertificateCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CertificateCredential,
+            >(
                 "certificate_credential",
                 GetCredentialResponse::has_certificate_credential,
                 GetCredentialResponse::get_certificate_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, PasswordCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                PasswordCredential,
+            >(
                 "password_credential",
                 GetCredentialResponse::has_password_credential,
                 GetCredentialResponse::get_password_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, DefaultCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                DefaultCredential,
+            >(
                 "default_credential",
                 GetCredentialResponse::has_default_credential,
                 GetCredentialResponse::get_default_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CredentialMap>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CredentialMap,
+            >(
                 "credential_map",
                 GetCredentialResponse::has_credential_map,
                 GetCredentialResponse::get_credential_map,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, KeytabCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                KeytabCredential,
+            >(
                 "keytab_credential",
                 GetCredentialResponse::has_keytab_credential,
                 GetCredentialResponse::get_keytab_credential,
@@ -4911,7 +5435,7 @@ impl ::protobuf::Message for GetCredentialResponse {
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetCredentialResponse>(
                 "GetCredentialResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -4934,7 +5458,10 @@ impl ::protobuf::Clear for GetCredentialResponse {
 }
 
 impl ::std::fmt::Debug for GetCredentialResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -4945,7 +5472,7 @@ impl ::protobuf::reflect::ProtobufValue for GetCredentialResponse {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CreateFileSystemRequest {
     // message fields
     pub adaptor: ::std::string::String,
@@ -4964,7 +5491,7 @@ impl<'a> ::std::default::Default for &'a CreateFileSystemRequest {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum CreateFileSystemRequest_oneof_credential {
     certificate_credential(CertificateCredential),
     password_credential(PasswordCredential),
@@ -4980,7 +5507,6 @@ impl CreateFileSystemRequest {
 
     // string adaptor = 1;
 
-
     pub fn get_adaptor(&self) -> &str {
         &self.adaptor
     }
@@ -4989,7 +5515,10 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_adaptor(&mut self, v: ::std::string::String) {
+    pub fn set_adaptor(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.adaptor = v;
     }
 
@@ -5006,7 +5535,6 @@ impl CreateFileSystemRequest {
 
     // string location = 2;
 
-
     pub fn get_location(&self) -> &str {
         &self.location
     }
@@ -5015,7 +5543,10 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: ::std::string::String) {
+    pub fn set_location(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.location = v;
     }
 
@@ -5032,7 +5563,6 @@ impl CreateFileSystemRequest {
 
     // repeated .xenon.CreateFileSystemRequest.PropertiesEntry properties = 3;
 
-
     pub fn get_properties(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.properties
     }
@@ -5041,7 +5571,10 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_properties(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_properties(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.properties = v;
     }
 
@@ -5056,7 +5589,6 @@ impl CreateFileSystemRequest {
     }
 
     // .xenon.CertificateCredential certificate_credential = 4;
-
 
     pub fn get_certificate_credential(&self) -> &CertificateCredential {
         match self.credential {
@@ -5076,18 +5608,28 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_certificate_credential(&mut self, v: CertificateCredential) {
-        self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(v))
+    pub fn set_certificate_credential(
+        &mut self,
+        v: CertificateCredential,
+    ) {
+        self.credential =
+            ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_certificate_credential(&mut self) -> &mut CertificateCredential {
-        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(CertificateCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                CreateFileSystemRequest_oneof_credential::certificate_credential(CertificateCredential::new()),
+            );
         }
         match self.credential {
-            ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(ref mut v)) => v,
+            ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(
+                ref mut v,
+            )) => v,
             _ => panic!(),
         }
     }
@@ -5105,7 +5647,6 @@ impl CreateFileSystemRequest {
     }
 
     // .xenon.PasswordCredential password_credential = 5;
-
 
     pub fn get_password_credential(&self) -> &PasswordCredential {
         match self.credential {
@@ -5125,15 +5666,22 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_password_credential(&mut self, v: PasswordCredential) {
+    pub fn set_password_credential(
+        &mut self,
+        v: PasswordCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_password_credential(&mut self) -> &mut PasswordCredential {
-        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(PasswordCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                CreateFileSystemRequest_oneof_credential::password_credential(PasswordCredential::new()),
+            );
         }
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(ref mut v)) => v,
@@ -5155,7 +5703,6 @@ impl CreateFileSystemRequest {
 
     // .xenon.DefaultCredential default_credential = 6;
 
-
     pub fn get_default_credential(&self) -> &DefaultCredential {
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(ref v)) => v,
@@ -5174,15 +5721,22 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_credential(&mut self, v: DefaultCredential) {
+    pub fn set_default_credential(
+        &mut self,
+        v: DefaultCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_default_credential(&mut self) -> &mut DefaultCredential {
-        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(DefaultCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                CreateFileSystemRequest_oneof_credential::default_credential(DefaultCredential::new()),
+            );
         }
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(ref mut v)) => v,
@@ -5204,7 +5758,6 @@ impl CreateFileSystemRequest {
 
     // .xenon.CredentialMap credential_map = 7;
 
-
     pub fn get_credential_map(&self) -> &CredentialMap {
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(ref v)) => v,
@@ -5223,15 +5776,22 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_credential_map(&mut self, v: CredentialMap) {
+    pub fn set_credential_map(
+        &mut self,
+        v: CredentialMap,
+    ) {
         self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_credential_map(&mut self) -> &mut CredentialMap {
-        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(CredentialMap::new()));
+            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(
+                CredentialMap::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(ref mut v)) => v,
@@ -5253,7 +5813,6 @@ impl CreateFileSystemRequest {
 
     // .xenon.KeytabCredential keytab_credential = 8;
 
-
     pub fn get_keytab_credential(&self) -> &KeytabCredential {
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(ref v)) => v,
@@ -5272,15 +5831,22 @@ impl CreateFileSystemRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytab_credential(&mut self, v: KeytabCredential) {
+    pub fn set_keytab_credential(
+        &mut self,
+        v: KeytabCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_keytab_credential(&mut self) -> &mut KeytabCredential {
-        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(KeytabCredential::new()));
+            self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(
+                KeytabCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(ref mut v)) => v,
@@ -5331,52 +5897,68 @@ impl ::protobuf::Message for CreateFileSystemRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.adaptor)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.location)?;
-                },
+                }
                 3 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.properties)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.properties)?;
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::certificate_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateFileSystemRequest_oneof_credential::certificate_credential(is.read_message()?),
+                    );
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::password_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateFileSystemRequest_oneof_credential::password_credential(is.read_message()?),
+                    );
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::default_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateFileSystemRequest_oneof_credential::default_credential(is.read_message()?),
+                    );
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::credential_map(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateFileSystemRequest_oneof_credential::credential_map(is.read_message()?),
+                    );
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateFileSystemRequest_oneof_credential::keytab_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateFileSystemRequest_oneof_credential::keytab_credential(is.read_message()?),
+                    );
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -5392,29 +5974,32 @@ impl ::protobuf::Message for CreateFileSystemRequest {
         if !self.location.is_empty() {
             my_size += ::protobuf::rt::string_size(2, &self.location);
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(3, &self.properties);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(3, &self.properties);
         if let ::std::option::Option::Some(ref v) = self.credential {
             match v {
                 &CreateFileSystemRequest_oneof_credential::certificate_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::password_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::default_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::credential_map(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::keytab_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
             };
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -5422,41 +6007,47 @@ impl ::protobuf::Message for CreateFileSystemRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.adaptor.is_empty() {
             os.write_string(1, &self.adaptor)?;
         }
         if !self.location.is_empty() {
             os.write_string(2, &self.location)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(3, &self.properties, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(3, &self.properties, os)?;
         if let ::std::option::Option::Some(ref v) = self.credential {
             match v {
                 &CreateFileSystemRequest_oneof_credential::certificate_credential(ref v) => {
                     os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::password_credential(ref v) => {
                     os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::default_credential(ref v) => {
                     os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::credential_map(ref v) => {
                     os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateFileSystemRequest_oneof_credential::keytab_credential(ref v) => {
                     os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
             };
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -5494,45 +6085,71 @@ impl ::protobuf::Message for CreateFileSystemRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "adaptor",
-                |m: &CreateFileSystemRequest| { &m.adaptor },
-                |m: &mut CreateFileSystemRequest| { &mut m.adaptor },
+                |m: &CreateFileSystemRequest| &m.adaptor,
+                |m: &mut CreateFileSystemRequest| &mut m.adaptor,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "location",
-                |m: &CreateFileSystemRequest| { &m.location },
-                |m: &mut CreateFileSystemRequest| { &mut m.location },
+                |m: &CreateFileSystemRequest| &m.location,
+                |m: &mut CreateFileSystemRequest| &mut m.location,
             ));
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "properties",
-                |m: &CreateFileSystemRequest| { &m.properties },
-                |m: &mut CreateFileSystemRequest| { &mut m.properties },
+                |m: &CreateFileSystemRequest| &m.properties,
+                |m: &mut CreateFileSystemRequest| &mut m.properties,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CertificateCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CertificateCredential,
+            >(
                 "certificate_credential",
                 CreateFileSystemRequest::has_certificate_credential,
                 CreateFileSystemRequest::get_certificate_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, PasswordCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                PasswordCredential,
+            >(
                 "password_credential",
                 CreateFileSystemRequest::has_password_credential,
                 CreateFileSystemRequest::get_password_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, DefaultCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                DefaultCredential,
+            >(
                 "default_credential",
                 CreateFileSystemRequest::has_default_credential,
                 CreateFileSystemRequest::get_default_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CredentialMap>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CredentialMap,
+            >(
                 "credential_map",
                 CreateFileSystemRequest::has_credential_map,
                 CreateFileSystemRequest::get_credential_map,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, KeytabCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                KeytabCredential,
+            >(
                 "keytab_credential",
                 CreateFileSystemRequest::has_keytab_credential,
                 CreateFileSystemRequest::get_keytab_credential,
@@ -5540,7 +6157,7 @@ impl ::protobuf::Message for CreateFileSystemRequest {
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CreateFileSystemRequest>(
                 "CreateFileSystemRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -5566,7 +6183,10 @@ impl ::protobuf::Clear for CreateFileSystemRequest {
 }
 
 impl ::std::fmt::Debug for CreateFileSystemRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -5577,7 +6197,7 @@ impl ::protobuf::reflect::ProtobufValue for CreateFileSystemRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct FileSystem {
     // message fields
     pub id: ::std::string::String,
@@ -5599,7 +6219,6 @@ impl FileSystem {
 
     // string id = 1;
 
-
     pub fn get_id(&self) -> &str {
         &self.id
     }
@@ -5608,7 +6227,10 @@ impl FileSystem {
     }
 
     // Param is passed by value, moved
-    pub fn set_id(&mut self, v: ::std::string::String) {
+    pub fn set_id(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.id = v;
     }
 
@@ -5629,16 +6251,19 @@ impl ::protobuf::Message for FileSystem {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -5656,7 +6281,10 @@ impl ::protobuf::Message for FileSystem {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.id.is_empty() {
             os.write_string(1, &self.id)?;
         }
@@ -5695,18 +6323,20 @@ impl ::protobuf::Message for FileSystem {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "id",
-                |m: &FileSystem| { &m.id },
-                |m: &mut FileSystem| { &mut m.id },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "id", |m: &FileSystem| &m.id, |m: &mut FileSystem| &mut m.id
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileSystem>(
                 "FileSystem",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -5725,7 +6355,10 @@ impl ::protobuf::Clear for FileSystem {
 }
 
 impl ::std::fmt::Debug for FileSystem {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -5736,7 +6369,7 @@ impl ::protobuf::reflect::ProtobufValue for FileSystem {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct FileSystems {
     // message fields
     pub filesystems: ::protobuf::RepeatedField<FileSystem>,
@@ -5758,7 +6391,6 @@ impl FileSystems {
 
     // repeated .xenon.FileSystem filesystems = 1;
 
-
     pub fn get_filesystems(&self) -> &[FileSystem] {
         &self.filesystems
     }
@@ -5767,7 +6399,10 @@ impl FileSystems {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystems(&mut self, v: ::protobuf::RepeatedField<FileSystem>) {
+    pub fn set_filesystems(
+        &mut self,
+        v: ::protobuf::RepeatedField<FileSystem>,
+    ) {
         self.filesystems = v;
     }
 
@@ -5788,20 +6423,23 @@ impl ::protobuf::Message for FileSystems {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.filesystems)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -5814,18 +6452,21 @@ impl ::protobuf::Message for FileSystems {
         for value in &self.filesystems {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.filesystems {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -5861,18 +6502,22 @@ impl ::protobuf::Message for FileSystems {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystems",
-                |m: &FileSystems| { &m.filesystems },
-                |m: &mut FileSystems| { &mut m.filesystems },
+                |m: &FileSystems| &m.filesystems,
+                |m: &mut FileSystems| &mut m.filesystems,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<FileSystems>(
                 "FileSystems",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -5891,7 +6536,10 @@ impl ::protobuf::Clear for FileSystems {
 }
 
 impl ::std::fmt::Debug for FileSystems {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -5902,7 +6550,7 @@ impl ::protobuf::reflect::ProtobufValue for FileSystems {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Path {
     // message fields
     pub path: ::std::string::String,
@@ -5925,7 +6573,6 @@ impl Path {
 
     // string path = 1;
 
-
     pub fn get_path(&self) -> &str {
         &self.path
     }
@@ -5934,7 +6581,10 @@ impl Path {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: ::std::string::String) {
+    pub fn set_path(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.path = v;
     }
 
@@ -5951,7 +6601,6 @@ impl Path {
 
     // string separator = 2;
 
-
     pub fn get_separator(&self) -> &str {
         &self.separator
     }
@@ -5960,7 +6609,10 @@ impl Path {
     }
 
     // Param is passed by value, moved
-    pub fn set_separator(&mut self, v: ::std::string::String) {
+    pub fn set_separator(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.separator = v;
     }
 
@@ -5981,19 +6633,22 @@ impl ::protobuf::Message for Path {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.separator)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -6014,7 +6669,10 @@ impl ::protobuf::Message for Path {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.path.is_empty() {
             os.write_string(1, &self.path)?;
         }
@@ -6056,24 +6714,21 @@ impl ::protobuf::Message for Path {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "path",
-                |m: &Path| { &m.path },
-                |m: &mut Path| { &mut m.path },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >("path", |m: &Path| &m.path, |m: &mut Path| &mut m.path));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "separator", |m: &Path| &m.separator, |m: &mut Path| &mut m.separator
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "separator",
-                |m: &Path| { &m.separator },
-                |m: &mut Path| { &mut m.separator },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Path>(
-                "Path",
-                fields,
-                file_descriptor_proto()
-            )
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Path>("Path", fields, file_descriptor_proto())
         })
     }
 
@@ -6092,7 +6747,10 @@ impl ::protobuf::Clear for Path {
 }
 
 impl ::std::fmt::Debug for Path {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -6103,7 +6761,7 @@ impl ::protobuf::reflect::ProtobufValue for Path {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct PathRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -6126,9 +6784,10 @@ impl PathRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -6139,7 +6798,10 @@ impl PathRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6159,9 +6821,10 @@ impl PathRequest {
 
     // .xenon.Path path = 2;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -6172,7 +6835,10 @@ impl PathRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6197,28 +6863,31 @@ impl ::protobuf::Message for PathRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.path {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -6241,7 +6910,10 @@ impl ::protobuf::Message for PathRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6287,23 +6959,28 @@ impl ::protobuf::Message for PathRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &PathRequest| { &m.filesystem },
-                |m: &mut PathRequest| { &mut m.filesystem },
+                |m: &PathRequest| &m.filesystem,
+                |m: &mut PathRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
-                "path",
-                |m: &PathRequest| { &m.path },
-                |m: &mut PathRequest| { &mut m.path },
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
+                "path", |m: &PathRequest| &m.path, |m: &mut PathRequest| &mut m.path
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<PathRequest>(
                 "PathRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -6323,7 +7000,10 @@ impl ::protobuf::Clear for PathRequest {
 }
 
 impl ::std::fmt::Debug for PathRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -6334,7 +7014,7 @@ impl ::protobuf::reflect::ProtobufValue for PathRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct DeleteRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -6358,9 +7038,10 @@ impl DeleteRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -6371,7 +7052,10 @@ impl DeleteRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6391,9 +7075,10 @@ impl DeleteRequest {
 
     // .xenon.Path path = 2;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -6404,7 +7089,10 @@ impl DeleteRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6424,7 +7112,6 @@ impl DeleteRequest {
 
     // bool recursive = 3;
 
-
     pub fn get_recursive(&self) -> bool {
         self.recursive
     }
@@ -6433,7 +7120,10 @@ impl DeleteRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_recursive(&mut self, v: bool) {
+    pub fn set_recursive(
+        &mut self,
+        v: bool,
+    ) {
         self.recursive = v;
     }
 }
@@ -6444,35 +7134,38 @@ impl ::protobuf::Message for DeleteRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.path {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.recursive = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -6498,7 +7191,10 @@ impl ::protobuf::Message for DeleteRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6547,28 +7243,38 @@ impl ::protobuf::Message for DeleteRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &DeleteRequest| { &m.filesystem },
-                |m: &mut DeleteRequest| { &mut m.filesystem },
+                |m: &DeleteRequest| &m.filesystem,
+                |m: &mut DeleteRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "path",
-                |m: &DeleteRequest| { &m.path },
-                |m: &mut DeleteRequest| { &mut m.path },
+                |m: &DeleteRequest| &m.path,
+                |m: &mut DeleteRequest| &mut m.path,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "recursive",
-                |m: &DeleteRequest| { &m.recursive },
-                |m: &mut DeleteRequest| { &mut m.recursive },
+                |m: &DeleteRequest| &m.recursive,
+                |m: &mut DeleteRequest| &mut m.recursive,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<DeleteRequest>(
                 "DeleteRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -6589,7 +7295,10 @@ impl ::protobuf::Clear for DeleteRequest {
 }
 
 impl ::std::fmt::Debug for DeleteRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -6600,7 +7309,7 @@ impl ::protobuf::reflect::ProtobufValue for DeleteRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CopyRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -6627,9 +7336,10 @@ impl CopyRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -6640,7 +7350,10 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6660,9 +7373,10 @@ impl CopyRequest {
 
     // .xenon.Path source = 2;
 
-
     pub fn get_source(&self) -> &Path {
-        self.source.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.source
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_source(&mut self) {
         self.source.clear();
@@ -6673,7 +7387,10 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_source(&mut self, v: Path) {
+    pub fn set_source(
+        &mut self,
+        v: Path,
+    ) {
         self.source = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6693,9 +7410,10 @@ impl CopyRequest {
 
     // .xenon.FileSystem destination_filesystem = 3;
 
-
     pub fn get_destination_filesystem(&self) -> &FileSystem {
-        self.destination_filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.destination_filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_destination_filesystem(&mut self) {
         self.destination_filesystem.clear();
@@ -6706,7 +7424,10 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_destination_filesystem(&mut self, v: FileSystem) {
+    pub fn set_destination_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.destination_filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6726,9 +7447,10 @@ impl CopyRequest {
 
     // .xenon.Path destination = 4;
 
-
     pub fn get_destination(&self) -> &Path {
-        self.destination.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.destination
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_destination(&mut self) {
         self.destination.clear();
@@ -6739,7 +7461,10 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_destination(&mut self, v: Path) {
+    pub fn set_destination(
+        &mut self,
+        v: Path,
+    ) {
         self.destination = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -6759,7 +7484,6 @@ impl CopyRequest {
 
     // .xenon.CopyRequest.CopyMode mode = 5;
 
-
     pub fn get_mode(&self) -> CopyRequest_CopyMode {
         self.mode
     }
@@ -6768,12 +7492,14 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_mode(&mut self, v: CopyRequest_CopyMode) {
+    pub fn set_mode(
+        &mut self,
+        v: CopyRequest_CopyMode,
+    ) {
         self.mode = v;
     }
 
     // bool recursive = 6;
-
 
     pub fn get_recursive(&self) -> bool {
         self.recursive
@@ -6783,7 +7509,10 @@ impl CopyRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_recursive(&mut self, v: bool) {
+    pub fn set_recursive(
+        &mut self,
+        v: bool,
+    ) {
         self.recursive = v;
     }
 }
@@ -6794,54 +7523,61 @@ impl ::protobuf::Message for CopyRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.source {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.destination_filesystem {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.destination {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.destination_filesystem)?;
-                },
+                }
                 4 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.destination)?;
-                },
-                5 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.mode, 5, &mut self.unknown_fields)?
-                },
+                }
+                5 => ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.mode,
+                    5,
+                    &mut self.unknown_fields,
+                )?,
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.recursive = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -6878,7 +7614,10 @@ impl ::protobuf::Message for CopyRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -6940,43 +7679,60 @@ impl ::protobuf::Message for CopyRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &CopyRequest| { &m.filesystem },
-                |m: &mut CopyRequest| { &mut m.filesystem },
+                |m: &CopyRequest| &m.filesystem,
+                |m: &mut CopyRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "source",
-                |m: &CopyRequest| { &m.source },
-                |m: &mut CopyRequest| { &mut m.source },
+                |m: &CopyRequest| &m.source,
+                |m: &mut CopyRequest| &mut m.source,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "destination_filesystem",
-                |m: &CopyRequest| { &m.destination_filesystem },
-                |m: &mut CopyRequest| { &mut m.destination_filesystem },
+                |m: &CopyRequest| &m.destination_filesystem,
+                |m: &mut CopyRequest| &mut m.destination_filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "destination",
-                |m: &CopyRequest| { &m.destination },
-                |m: &mut CopyRequest| { &mut m.destination },
+                |m: &CopyRequest| &m.destination,
+                |m: &mut CopyRequest| &mut m.destination,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<CopyRequest_CopyMode>>(
-                "mode",
-                |m: &CopyRequest| { &m.mode },
-                |m: &mut CopyRequest| { &mut m.mode },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<CopyRequest_CopyMode>,
+            >(
+                "mode", |m: &CopyRequest| &m.mode, |m: &mut CopyRequest| &mut m.mode
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "recursive",
-                |m: &CopyRequest| { &m.recursive },
-                |m: &mut CopyRequest| { &mut m.recursive },
+                |m: &CopyRequest| &m.recursive,
+                |m: &mut CopyRequest| &mut m.recursive,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CopyRequest>(
                 "CopyRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -7000,7 +7756,10 @@ impl ::protobuf::Clear for CopyRequest {
 }
 
 impl ::std::fmt::Debug for CopyRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -7011,7 +7770,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyRequest {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum CopyRequest_CopyMode {
     CREATE = 0,
     REPLACE = 1,
@@ -7028,7 +7787,7 @@ impl ::protobuf::ProtobufEnum for CopyRequest_CopyMode {
             0 => ::std::option::Option::Some(CopyRequest_CopyMode::CREATE),
             1 => ::std::option::Option::Some(CopyRequest_CopyMode::REPLACE),
             2 => ::std::option::Option::Some(CopyRequest_CopyMode::IGNORE),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -7044,13 +7803,15 @@ impl ::protobuf::ProtobufEnum for CopyRequest_CopyMode {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<CopyRequest_CopyMode>("CopyRequest.CopyMode", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<CopyRequest_CopyMode>(
+                "CopyRequest.CopyMode",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for CopyRequest_CopyMode {
-}
+impl ::std::marker::Copy for CopyRequest_CopyMode {}
 
 impl ::std::default::Default for CopyRequest_CopyMode {
     fn default() -> Self {
@@ -7064,7 +7825,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyRequest_CopyMode {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct RenameRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -7088,9 +7849,10 @@ impl RenameRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -7101,7 +7863,10 @@ impl RenameRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7121,9 +7886,10 @@ impl RenameRequest {
 
     // .xenon.Path source = 2;
 
-
     pub fn get_source(&self) -> &Path {
-        self.source.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.source
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_source(&mut self) {
         self.source.clear();
@@ -7134,7 +7900,10 @@ impl RenameRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_source(&mut self, v: Path) {
+    pub fn set_source(
+        &mut self,
+        v: Path,
+    ) {
         self.source = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7154,9 +7923,10 @@ impl RenameRequest {
 
     // .xenon.Path target = 3;
 
-
     pub fn get_target(&self) -> &Path {
-        self.target.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.target
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_target(&mut self) {
         self.target.clear();
@@ -7167,7 +7937,10 @@ impl RenameRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_target(&mut self, v: Path) {
+    pub fn set_target(
+        &mut self,
+        v: Path,
+    ) {
         self.target = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7192,36 +7965,39 @@ impl ::protobuf::Message for RenameRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.source {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.target {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.source)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.target)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -7248,7 +8024,10 @@ impl ::protobuf::Message for RenameRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7299,28 +8078,38 @@ impl ::protobuf::Message for RenameRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &RenameRequest| { &m.filesystem },
-                |m: &mut RenameRequest| { &mut m.filesystem },
+                |m: &RenameRequest| &m.filesystem,
+                |m: &mut RenameRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "source",
-                |m: &RenameRequest| { &m.source },
-                |m: &mut RenameRequest| { &mut m.source },
+                |m: &RenameRequest| &m.source,
+                |m: &mut RenameRequest| &mut m.source,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "target",
-                |m: &RenameRequest| { &m.target },
-                |m: &mut RenameRequest| { &mut m.target },
+                |m: &RenameRequest| &m.target,
+                |m: &mut RenameRequest| &mut m.target,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<RenameRequest>(
                 "RenameRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -7341,7 +8130,10 @@ impl ::protobuf::Clear for RenameRequest {
 }
 
 impl ::std::fmt::Debug for RenameRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -7352,7 +8144,7 @@ impl ::protobuf::reflect::ProtobufValue for RenameRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CreateSymbolicLinkRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -7376,9 +8168,10 @@ impl CreateSymbolicLinkRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -7389,7 +8182,10 @@ impl CreateSymbolicLinkRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7409,9 +8205,10 @@ impl CreateSymbolicLinkRequest {
 
     // .xenon.Path link = 2;
 
-
     pub fn get_link(&self) -> &Path {
-        self.link.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.link
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_link(&mut self) {
         self.link.clear();
@@ -7422,7 +8219,10 @@ impl CreateSymbolicLinkRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_link(&mut self, v: Path) {
+    pub fn set_link(
+        &mut self,
+        v: Path,
+    ) {
         self.link = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7442,9 +8242,10 @@ impl CreateSymbolicLinkRequest {
 
     // .xenon.Path target = 3;
 
-
     pub fn get_target(&self) -> &Path {
-        self.target.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.target
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_target(&mut self) {
         self.target.clear();
@@ -7455,7 +8256,10 @@ impl CreateSymbolicLinkRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_target(&mut self, v: Path) {
+    pub fn set_target(
+        &mut self,
+        v: Path,
+    ) {
         self.target = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7480,36 +8284,39 @@ impl ::protobuf::Message for CreateSymbolicLinkRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.link {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.target {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.link)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.target)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -7536,7 +8343,10 @@ impl ::protobuf::Message for CreateSymbolicLinkRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7587,28 +8397,38 @@ impl ::protobuf::Message for CreateSymbolicLinkRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &CreateSymbolicLinkRequest| { &m.filesystem },
-                |m: &mut CreateSymbolicLinkRequest| { &mut m.filesystem },
+                |m: &CreateSymbolicLinkRequest| &m.filesystem,
+                |m: &mut CreateSymbolicLinkRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "link",
-                |m: &CreateSymbolicLinkRequest| { &m.link },
-                |m: &mut CreateSymbolicLinkRequest| { &mut m.link },
+                |m: &CreateSymbolicLinkRequest| &m.link,
+                |m: &mut CreateSymbolicLinkRequest| &mut m.link,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "target",
-                |m: &CreateSymbolicLinkRequest| { &m.target },
-                |m: &mut CreateSymbolicLinkRequest| { &mut m.target },
+                |m: &CreateSymbolicLinkRequest| &m.target,
+                |m: &mut CreateSymbolicLinkRequest| &mut m.target,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CreateSymbolicLinkRequest>(
                 "CreateSymbolicLinkRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -7629,7 +8449,10 @@ impl ::protobuf::Clear for CreateSymbolicLinkRequest {
 }
 
 impl ::std::fmt::Debug for CreateSymbolicLinkRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -7640,7 +8463,7 @@ impl ::protobuf::reflect::ProtobufValue for CreateSymbolicLinkRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CopyOperation {
     // message fields
     pub id: ::std::string::String,
@@ -7662,7 +8485,6 @@ impl CopyOperation {
 
     // string id = 1;
 
-
     pub fn get_id(&self) -> &str {
         &self.id
     }
@@ -7671,7 +8493,10 @@ impl CopyOperation {
     }
 
     // Param is passed by value, moved
-    pub fn set_id(&mut self, v: ::std::string::String) {
+    pub fn set_id(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.id = v;
     }
 
@@ -7692,16 +8517,19 @@ impl ::protobuf::Message for CopyOperation {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -7719,7 +8547,10 @@ impl ::protobuf::Message for CopyOperation {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.id.is_empty() {
             os.write_string(1, &self.id)?;
         }
@@ -7758,18 +8589,20 @@ impl ::protobuf::Message for CopyOperation {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "id",
-                |m: &CopyOperation| { &m.id },
-                |m: &mut CopyOperation| { &mut m.id },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "id", |m: &CopyOperation| &m.id, |m: &mut CopyOperation| &mut m.id
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CopyOperation>(
                 "CopyOperation",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -7788,7 +8621,10 @@ impl ::protobuf::Clear for CopyOperation {
 }
 
 impl ::std::fmt::Debug for CopyOperation {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -7799,7 +8635,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyOperation {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CopyOperationRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -7822,9 +8658,10 @@ impl CopyOperationRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -7835,7 +8672,10 @@ impl CopyOperationRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7855,9 +8695,10 @@ impl CopyOperationRequest {
 
     // .xenon.CopyOperation copy_operation = 2;
 
-
     pub fn get_copy_operation(&self) -> &CopyOperation {
-        self.copy_operation.as_ref().unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
+        self.copy_operation
+            .as_ref()
+            .unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
     }
     pub fn clear_copy_operation(&mut self) {
         self.copy_operation.clear();
@@ -7868,7 +8709,10 @@ impl CopyOperationRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_copy_operation(&mut self, v: CopyOperation) {
+    pub fn set_copy_operation(
+        &mut self,
+        v: CopyOperation,
+    ) {
         self.copy_operation = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -7893,28 +8737,31 @@ impl ::protobuf::Message for CopyOperationRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.copy_operation {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.copy_operation)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -7937,7 +8784,10 @@ impl ::protobuf::Message for CopyOperationRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -7983,23 +8833,30 @@ impl ::protobuf::Message for CopyOperationRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &CopyOperationRequest| { &m.filesystem },
-                |m: &mut CopyOperationRequest| { &mut m.filesystem },
+                |m: &CopyOperationRequest| &m.filesystem,
+                |m: &mut CopyOperationRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CopyOperation>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<CopyOperation>,
+            >(
                 "copy_operation",
-                |m: &CopyOperationRequest| { &m.copy_operation },
-                |m: &mut CopyOperationRequest| { &mut m.copy_operation },
+                |m: &CopyOperationRequest| &m.copy_operation,
+                |m: &mut CopyOperationRequest| &mut m.copy_operation,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CopyOperationRequest>(
                 "CopyOperationRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -8019,7 +8876,10 @@ impl ::protobuf::Clear for CopyOperationRequest {
 }
 
 impl ::std::fmt::Debug for CopyOperationRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -8030,7 +8890,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyOperationRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct WaitUntilDoneRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -8054,9 +8914,10 @@ impl WaitUntilDoneRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -8067,7 +8928,10 @@ impl WaitUntilDoneRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -8087,9 +8951,10 @@ impl WaitUntilDoneRequest {
 
     // .xenon.CopyOperation copy_operation = 2;
 
-
     pub fn get_copy_operation(&self) -> &CopyOperation {
-        self.copy_operation.as_ref().unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
+        self.copy_operation
+            .as_ref()
+            .unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
     }
     pub fn clear_copy_operation(&mut self) {
         self.copy_operation.clear();
@@ -8100,7 +8965,10 @@ impl WaitUntilDoneRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_copy_operation(&mut self, v: CopyOperation) {
+    pub fn set_copy_operation(
+        &mut self,
+        v: CopyOperation,
+    ) {
         self.copy_operation = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -8120,7 +8988,6 @@ impl WaitUntilDoneRequest {
 
     // uint64 timeout = 3;
 
-
     pub fn get_timeout(&self) -> u64 {
         self.timeout
     }
@@ -8129,7 +8996,10 @@ impl WaitUntilDoneRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_timeout(&mut self, v: u64) {
+    pub fn set_timeout(
+        &mut self,
+        v: u64,
+    ) {
         self.timeout = v;
     }
 }
@@ -8140,35 +9010,38 @@ impl ::protobuf::Message for WaitUntilDoneRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.copy_operation {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.copy_operation)?;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.timeout = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -8194,7 +9067,10 @@ impl ::protobuf::Message for WaitUntilDoneRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -8243,28 +9119,38 @@ impl ::protobuf::Message for WaitUntilDoneRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &WaitUntilDoneRequest| { &m.filesystem },
-                |m: &mut WaitUntilDoneRequest| { &mut m.filesystem },
+                |m: &WaitUntilDoneRequest| &m.filesystem,
+                |m: &mut WaitUntilDoneRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CopyOperation>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<CopyOperation>,
+            >(
                 "copy_operation",
-                |m: &WaitUntilDoneRequest| { &m.copy_operation },
-                |m: &mut WaitUntilDoneRequest| { &mut m.copy_operation },
+                |m: &WaitUntilDoneRequest| &m.copy_operation,
+                |m: &mut WaitUntilDoneRequest| &mut m.copy_operation,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "timeout",
-                |m: &WaitUntilDoneRequest| { &m.timeout },
-                |m: &mut WaitUntilDoneRequest| { &mut m.timeout },
+                |m: &WaitUntilDoneRequest| &m.timeout,
+                |m: &mut WaitUntilDoneRequest| &mut m.timeout,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<WaitUntilDoneRequest>(
                 "WaitUntilDoneRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -8285,7 +9171,10 @@ impl ::protobuf::Clear for WaitUntilDoneRequest {
 }
 
 impl ::std::fmt::Debug for WaitUntilDoneRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -8296,7 +9185,7 @@ impl ::protobuf::reflect::ProtobufValue for WaitUntilDoneRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CopyStatus {
     // message fields
     pub copy_operation: ::protobuf::SingularPtrField<CopyOperation>,
@@ -8325,9 +9214,10 @@ impl CopyStatus {
 
     // .xenon.CopyOperation copy_operation = 1;
 
-
     pub fn get_copy_operation(&self) -> &CopyOperation {
-        self.copy_operation.as_ref().unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
+        self.copy_operation
+            .as_ref()
+            .unwrap_or_else(|| <CopyOperation as ::protobuf::Message>::default_instance())
     }
     pub fn clear_copy_operation(&mut self) {
         self.copy_operation.clear();
@@ -8338,7 +9228,10 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_copy_operation(&mut self, v: CopyOperation) {
+    pub fn set_copy_operation(
+        &mut self,
+        v: CopyOperation,
+    ) {
         self.copy_operation = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -8358,7 +9251,6 @@ impl CopyStatus {
 
     // uint64 bytes_copied = 2;
 
-
     pub fn get_bytes_copied(&self) -> u64 {
         self.bytes_copied
     }
@@ -8367,12 +9259,14 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_copied(&mut self, v: u64) {
+    pub fn set_bytes_copied(
+        &mut self,
+        v: u64,
+    ) {
         self.bytes_copied = v;
     }
 
     // uint64 bytes_to_copy = 3;
-
 
     pub fn get_bytes_to_copy(&self) -> u64 {
         self.bytes_to_copy
@@ -8382,12 +9276,14 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_bytes_to_copy(&mut self, v: u64) {
+    pub fn set_bytes_to_copy(
+        &mut self,
+        v: u64,
+    ) {
         self.bytes_to_copy = v;
     }
 
     // bool done = 4;
-
 
     pub fn get_done(&self) -> bool {
         self.done
@@ -8397,12 +9293,14 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_done(&mut self, v: bool) {
+    pub fn set_done(
+        &mut self,
+        v: bool,
+    ) {
         self.done = v;
     }
 
     // bool running = 5;
-
 
     pub fn get_running(&self) -> bool {
         self.running
@@ -8412,12 +9310,14 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_running(&mut self, v: bool) {
+    pub fn set_running(
+        &mut self,
+        v: bool,
+    ) {
         self.running = v;
     }
 
     // string state = 6;
-
 
     pub fn get_state(&self) -> &str {
         &self.state
@@ -8427,7 +9327,10 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_state(&mut self, v: ::std::string::String) {
+    pub fn set_state(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.state = v;
     }
 
@@ -8444,7 +9347,6 @@ impl CopyStatus {
 
     // string error_message = 7;
 
-
     pub fn get_error_message(&self) -> &str {
         &self.error_message
     }
@@ -8453,7 +9355,10 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_message(&mut self, v: ::std::string::String) {
+    pub fn set_error_message(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.error_message = v;
     }
 
@@ -8470,7 +9375,6 @@ impl CopyStatus {
 
     // .xenon.CopyStatus.ErrorType error_type = 8;
 
-
     pub fn get_error_type(&self) -> CopyStatus_ErrorType {
         self.error_type
     }
@@ -8479,7 +9383,10 @@ impl CopyStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_type(&mut self, v: CopyStatus_ErrorType) {
+    pub fn set_error_type(
+        &mut self,
+        v: CopyStatus_ErrorType,
+    ) {
         self.error_type = v;
     }
 }
@@ -8490,57 +9397,64 @@ impl ::protobuf::Message for CopyStatus {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.copy_operation)?;
-                },
+                }
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.bytes_copied = tmp;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.bytes_to_copy = tmp;
-                },
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.done = tmp;
-                },
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.running = tmp;
-                },
+                }
                 6 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.state)?;
-                },
+                }
                 7 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error_message)?;
-                },
-                8 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.error_type, 8, &mut self.unknown_fields)?
-                },
+                }
+                8 => ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.error_type,
+                    8,
+                    &mut self.unknown_fields,
+                )?,
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -8580,7 +9494,10 @@ impl ::protobuf::Message for CopyStatus {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.copy_operation.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -8642,53 +9559,74 @@ impl ::protobuf::Message for CopyStatus {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<CopyOperation>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<CopyOperation>,
+            >(
                 "copy_operation",
-                |m: &CopyStatus| { &m.copy_operation },
-                |m: &mut CopyStatus| { &mut m.copy_operation },
+                |m: &CopyStatus| &m.copy_operation,
+                |m: &mut CopyStatus| &mut m.copy_operation,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "bytes_copied",
-                |m: &CopyStatus| { &m.bytes_copied },
-                |m: &mut CopyStatus| { &mut m.bytes_copied },
+                |m: &CopyStatus| &m.bytes_copied,
+                |m: &mut CopyStatus| &mut m.bytes_copied,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "bytes_to_copy",
-                |m: &CopyStatus| { &m.bytes_to_copy },
-                |m: &mut CopyStatus| { &mut m.bytes_to_copy },
+                |m: &CopyStatus| &m.bytes_to_copy,
+                |m: &mut CopyStatus| &mut m.bytes_to_copy,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                "done",
-                |m: &CopyStatus| { &m.done },
-                |m: &mut CopyStatus| { &mut m.done },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
+                "done", |m: &CopyStatus| &m.done, |m: &mut CopyStatus| &mut m.done
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "running",
-                |m: &CopyStatus| { &m.running },
-                |m: &mut CopyStatus| { &mut m.running },
+                |m: &CopyStatus| &m.running,
+                |m: &mut CopyStatus| &mut m.running,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "state",
-                |m: &CopyStatus| { &m.state },
-                |m: &mut CopyStatus| { &mut m.state },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "state", |m: &CopyStatus| &m.state, |m: &mut CopyStatus| &mut m.state
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "error_message",
-                |m: &CopyStatus| { &m.error_message },
-                |m: &mut CopyStatus| { &mut m.error_message },
+                |m: &CopyStatus| &m.error_message,
+                |m: &mut CopyStatus| &mut m.error_message,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<CopyStatus_ErrorType>>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<CopyStatus_ErrorType>,
+            >(
                 "error_type",
-                |m: &CopyStatus| { &m.error_type },
-                |m: &mut CopyStatus| { &mut m.error_type },
+                |m: &CopyStatus| &m.error_type,
+                |m: &mut CopyStatus| &mut m.error_type,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CopyStatus>(
                 "CopyStatus",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -8714,7 +9652,10 @@ impl ::protobuf::Clear for CopyStatus {
 }
 
 impl ::std::fmt::Debug for CopyStatus {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -8725,7 +9666,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyStatus {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum CopyStatus_ErrorType {
     NONE = 0,
     NOT_FOUND = 1,
@@ -8748,7 +9689,7 @@ impl ::protobuf::ProtobufEnum for CopyStatus_ErrorType {
             3 => ::std::option::Option::Some(CopyStatus_ErrorType::ALREADY_EXISTS),
             4 => ::std::option::Option::Some(CopyStatus_ErrorType::NOT_CONNECTED),
             5 => ::std::option::Option::Some(CopyStatus_ErrorType::XENON),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -8767,13 +9708,15 @@ impl ::protobuf::ProtobufEnum for CopyStatus_ErrorType {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<CopyStatus_ErrorType>("CopyStatus.ErrorType", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<CopyStatus_ErrorType>(
+                "CopyStatus.ErrorType",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for CopyStatus_ErrorType {
-}
+impl ::std::marker::Copy for CopyStatus_ErrorType {}
 
 impl ::std::default::Default for CopyStatus_ErrorType {
     fn default() -> Self {
@@ -8787,7 +9730,7 @@ impl ::protobuf::reflect::ProtobufValue for CopyStatus_ErrorType {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct PathAttributes {
     // message fields
     pub path: ::protobuf::SingularPtrField<Path>,
@@ -8824,9 +9767,10 @@ impl PathAttributes {
 
     // .xenon.Path path = 1;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -8837,7 +9781,10 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -8857,7 +9804,6 @@ impl PathAttributes {
 
     // uint64 creation_time = 2;
 
-
     pub fn get_creation_time(&self) -> u64 {
         self.creation_time
     }
@@ -8866,12 +9812,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_creation_time(&mut self, v: u64) {
+    pub fn set_creation_time(
+        &mut self,
+        v: u64,
+    ) {
         self.creation_time = v;
     }
 
     // string group = 3;
-
 
     pub fn get_group(&self) -> &str {
         &self.group
@@ -8881,7 +9829,10 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_group(&mut self, v: ::std::string::String) {
+    pub fn set_group(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.group = v;
     }
 
@@ -8898,7 +9849,6 @@ impl PathAttributes {
 
     // bool is_directory = 4;
 
-
     pub fn get_is_directory(&self) -> bool {
         self.is_directory
     }
@@ -8907,12 +9857,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_directory(&mut self, v: bool) {
+    pub fn set_is_directory(
+        &mut self,
+        v: bool,
+    ) {
         self.is_directory = v;
     }
 
     // bool is_executable = 5;
-
 
     pub fn get_is_executable(&self) -> bool {
         self.is_executable
@@ -8922,12 +9874,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_executable(&mut self, v: bool) {
+    pub fn set_is_executable(
+        &mut self,
+        v: bool,
+    ) {
         self.is_executable = v;
     }
 
     // bool is_hidden = 6;
-
 
     pub fn get_is_hidden(&self) -> bool {
         self.is_hidden
@@ -8937,12 +9891,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_hidden(&mut self, v: bool) {
+    pub fn set_is_hidden(
+        &mut self,
+        v: bool,
+    ) {
         self.is_hidden = v;
     }
 
     // bool is_other = 7;
-
 
     pub fn get_is_other(&self) -> bool {
         self.is_other
@@ -8952,12 +9908,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_other(&mut self, v: bool) {
+    pub fn set_is_other(
+        &mut self,
+        v: bool,
+    ) {
         self.is_other = v;
     }
 
     // bool is_readable = 8;
-
 
     pub fn get_is_readable(&self) -> bool {
         self.is_readable
@@ -8967,12 +9925,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_readable(&mut self, v: bool) {
+    pub fn set_is_readable(
+        &mut self,
+        v: bool,
+    ) {
         self.is_readable = v;
     }
 
     // bool is_regular = 9;
-
 
     pub fn get_is_regular(&self) -> bool {
         self.is_regular
@@ -8982,12 +9942,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_regular(&mut self, v: bool) {
+    pub fn set_is_regular(
+        &mut self,
+        v: bool,
+    ) {
         self.is_regular = v;
     }
 
     // bool is_symbolic_link = 10;
-
 
     pub fn get_is_symbolic_link(&self) -> bool {
         self.is_symbolic_link
@@ -8997,12 +9959,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_symbolic_link(&mut self, v: bool) {
+    pub fn set_is_symbolic_link(
+        &mut self,
+        v: bool,
+    ) {
         self.is_symbolic_link = v;
     }
 
     // bool is_writable = 11;
-
 
     pub fn get_is_writable(&self) -> bool {
         self.is_writable
@@ -9012,12 +9976,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_is_writable(&mut self, v: bool) {
+    pub fn set_is_writable(
+        &mut self,
+        v: bool,
+    ) {
         self.is_writable = v;
     }
 
     // uint64 last_access_time = 12;
-
 
     pub fn get_last_access_time(&self) -> u64 {
         self.last_access_time
@@ -9027,12 +9993,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_last_access_time(&mut self, v: u64) {
+    pub fn set_last_access_time(
+        &mut self,
+        v: u64,
+    ) {
         self.last_access_time = v;
     }
 
     // uint64 last_modified_time = 13;
-
 
     pub fn get_last_modified_time(&self) -> u64 {
         self.last_modified_time
@@ -9042,12 +10010,14 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_last_modified_time(&mut self, v: u64) {
+    pub fn set_last_modified_time(
+        &mut self,
+        v: u64,
+    ) {
         self.last_modified_time = v;
     }
 
     // string owner = 14;
-
 
     pub fn get_owner(&self) -> &str {
         &self.owner
@@ -9057,7 +10027,10 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_owner(&mut self, v: ::std::string::String) {
+    pub fn set_owner(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.owner = v;
     }
 
@@ -9074,7 +10047,6 @@ impl PathAttributes {
 
     // repeated .xenon.PosixFilePermission permissions = 15;
 
-
     pub fn get_permissions(&self) -> &[PosixFilePermission] {
         &self.permissions
     }
@@ -9083,7 +10055,10 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_permissions(&mut self, v: ::std::vec::Vec<PosixFilePermission>) {
+    pub fn set_permissions(
+        &mut self,
+        v: ::std::vec::Vec<PosixFilePermission>,
+    ) {
         self.permissions = v;
     }
 
@@ -9099,7 +10074,6 @@ impl PathAttributes {
 
     // uint64 size = 16;
 
-
     pub fn get_size(&self) -> u64 {
         self.size
     }
@@ -9108,7 +10082,10 @@ impl PathAttributes {
     }
 
     // Param is passed by value, moved
-    pub fn set_size(&mut self, v: u64) {
+    pub fn set_size(
+        &mut self,
+        v: u64,
+    ) {
         self.size = v;
     }
 }
@@ -9119,113 +10096,120 @@ impl ::protobuf::Message for PathAttributes {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 2 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.creation_time = tmp;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.group)?;
-                },
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_directory = tmp;
-                },
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_executable = tmp;
-                },
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_hidden = tmp;
-                },
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_other = tmp;
-                },
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_readable = tmp;
-                },
+                }
                 9 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_regular = tmp;
-                },
+                }
                 10 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_symbolic_link = tmp;
-                },
+                }
                 11 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.is_writable = tmp;
-                },
+                }
                 12 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.last_access_time = tmp;
-                },
+                }
                 13 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.last_modified_time = tmp;
-                },
+                }
                 14 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.owner)?;
-                },
-                15 => {
-                    ::protobuf::rt::read_repeated_enum_with_unknown_fields_into(wire_type, is, &mut self.permissions, 15, &mut self.unknown_fields)?
-                },
+                }
+                15 => ::protobuf::rt::read_repeated_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.permissions,
+                    15,
+                    &mut self.unknown_fields,
+                )?,
                 16 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.size = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -9280,7 +10264,7 @@ impl ::protobuf::Message for PathAttributes {
         }
         for value in &self.permissions {
             my_size += ::protobuf::rt::enum_size(15, *value);
-        };
+        }
         if self.size != 0 {
             my_size += ::protobuf::rt::value_size(16, self.size, ::protobuf::wire_format::WireTypeVarint);
         }
@@ -9289,7 +10273,10 @@ impl ::protobuf::Message for PathAttributes {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.path.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -9336,7 +10323,7 @@ impl ::protobuf::Message for PathAttributes {
         }
         for v in &self.permissions {
             os.write_enum(15, ::protobuf::ProtobufEnum::value(v))?;
-        };
+        }
         if self.size != 0 {
             os.write_uint64(16, self.size)?;
         }
@@ -9375,93 +10362,142 @@ impl ::protobuf::Message for PathAttributes {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "path",
-                |m: &PathAttributes| { &m.path },
-                |m: &mut PathAttributes| { &mut m.path },
+                |m: &PathAttributes| &m.path,
+                |m: &mut PathAttributes| &mut m.path,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "creation_time",
-                |m: &PathAttributes| { &m.creation_time },
-                |m: &mut PathAttributes| { &mut m.creation_time },
+                |m: &PathAttributes| &m.creation_time,
+                |m: &mut PathAttributes| &mut m.creation_time,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "group",
-                |m: &PathAttributes| { &m.group },
-                |m: &mut PathAttributes| { &mut m.group },
+                |m: &PathAttributes| &m.group,
+                |m: &mut PathAttributes| &mut m.group,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_directory",
-                |m: &PathAttributes| { &m.is_directory },
-                |m: &mut PathAttributes| { &mut m.is_directory },
+                |m: &PathAttributes| &m.is_directory,
+                |m: &mut PathAttributes| &mut m.is_directory,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_executable",
-                |m: &PathAttributes| { &m.is_executable },
-                |m: &mut PathAttributes| { &mut m.is_executable },
+                |m: &PathAttributes| &m.is_executable,
+                |m: &mut PathAttributes| &mut m.is_executable,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_hidden",
-                |m: &PathAttributes| { &m.is_hidden },
-                |m: &mut PathAttributes| { &mut m.is_hidden },
+                |m: &PathAttributes| &m.is_hidden,
+                |m: &mut PathAttributes| &mut m.is_hidden,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_other",
-                |m: &PathAttributes| { &m.is_other },
-                |m: &mut PathAttributes| { &mut m.is_other },
+                |m: &PathAttributes| &m.is_other,
+                |m: &mut PathAttributes| &mut m.is_other,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_readable",
-                |m: &PathAttributes| { &m.is_readable },
-                |m: &mut PathAttributes| { &mut m.is_readable },
+                |m: &PathAttributes| &m.is_readable,
+                |m: &mut PathAttributes| &mut m.is_readable,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_regular",
-                |m: &PathAttributes| { &m.is_regular },
-                |m: &mut PathAttributes| { &mut m.is_regular },
+                |m: &PathAttributes| &m.is_regular,
+                |m: &mut PathAttributes| &mut m.is_regular,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_symbolic_link",
-                |m: &PathAttributes| { &m.is_symbolic_link },
-                |m: &mut PathAttributes| { &mut m.is_symbolic_link },
+                |m: &PathAttributes| &m.is_symbolic_link,
+                |m: &mut PathAttributes| &mut m.is_symbolic_link,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "is_writable",
-                |m: &PathAttributes| { &m.is_writable },
-                |m: &mut PathAttributes| { &mut m.is_writable },
+                |m: &PathAttributes| &m.is_writable,
+                |m: &mut PathAttributes| &mut m.is_writable,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "last_access_time",
-                |m: &PathAttributes| { &m.last_access_time },
-                |m: &mut PathAttributes| { &mut m.last_access_time },
+                |m: &PathAttributes| &m.last_access_time,
+                |m: &mut PathAttributes| &mut m.last_access_time,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "last_modified_time",
-                |m: &PathAttributes| { &m.last_modified_time },
-                |m: &mut PathAttributes| { &mut m.last_modified_time },
+                |m: &PathAttributes| &m.last_modified_time,
+                |m: &mut PathAttributes| &mut m.last_modified_time,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "owner",
-                |m: &PathAttributes| { &m.owner },
-                |m: &mut PathAttributes| { &mut m.owner },
+                |m: &PathAttributes| &m.owner,
+                |m: &mut PathAttributes| &mut m.owner,
             ));
-            fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeEnum<PosixFilePermission>>(
+            fields.push(::protobuf::reflect::accessor::make_vec_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<PosixFilePermission>,
+            >(
                 "permissions",
-                |m: &PathAttributes| { &m.permissions },
-                |m: &mut PathAttributes| { &mut m.permissions },
+                |m: &PathAttributes| &m.permissions,
+                |m: &mut PathAttributes| &mut m.permissions,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "size",
-                |m: &PathAttributes| { &m.size },
-                |m: &mut PathAttributes| { &mut m.size },
+                |m: &PathAttributes| &m.size,
+                |m: &mut PathAttributes| &mut m.size,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<PathAttributes>(
                 "PathAttributes",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -9495,7 +10531,10 @@ impl ::protobuf::Clear for PathAttributes {
 }
 
 impl ::std::fmt::Debug for PathAttributes {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -9506,7 +10545,7 @@ impl ::protobuf::reflect::ProtobufValue for PathAttributes {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SetPosixFilePermissionsRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -9530,9 +10569,10 @@ impl SetPosixFilePermissionsRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -9543,7 +10583,10 @@ impl SetPosixFilePermissionsRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -9563,9 +10606,10 @@ impl SetPosixFilePermissionsRequest {
 
     // .xenon.Path path = 2;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -9576,7 +10620,10 @@ impl SetPosixFilePermissionsRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -9596,7 +10643,6 @@ impl SetPosixFilePermissionsRequest {
 
     // repeated .xenon.PosixFilePermission permissions = 3;
 
-
     pub fn get_permissions(&self) -> &[PosixFilePermission] {
         &self.permissions
     }
@@ -9605,7 +10651,10 @@ impl SetPosixFilePermissionsRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_permissions(&mut self, v: ::std::vec::Vec<PosixFilePermission>) {
+    pub fn set_permissions(
+        &mut self,
+        v: ::std::vec::Vec<PosixFilePermission>,
+    ) {
         self.permissions = v;
     }
 
@@ -9626,31 +10675,38 @@ impl ::protobuf::Message for SetPosixFilePermissionsRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.path {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
-                3 => {
-                    ::protobuf::rt::read_repeated_enum_with_unknown_fields_into(wire_type, is, &mut self.permissions, 3, &mut self.unknown_fields)?
-                },
+                }
+                3 => ::protobuf::rt::read_repeated_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.permissions,
+                    3,
+                    &mut self.unknown_fields,
+                )?,
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -9670,13 +10726,16 @@ impl ::protobuf::Message for SetPosixFilePermissionsRequest {
         }
         for value in &self.permissions {
             my_size += ::protobuf::rt::enum_size(3, *value);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -9689,7 +10748,7 @@ impl ::protobuf::Message for SetPosixFilePermissionsRequest {
         }
         for v in &self.permissions {
             os.write_enum(3, ::protobuf::ProtobufEnum::value(v))?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -9725,28 +10784,38 @@ impl ::protobuf::Message for SetPosixFilePermissionsRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &SetPosixFilePermissionsRequest| { &m.filesystem },
-                |m: &mut SetPosixFilePermissionsRequest| { &mut m.filesystem },
+                |m: &SetPosixFilePermissionsRequest| &m.filesystem,
+                |m: &mut SetPosixFilePermissionsRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "path",
-                |m: &SetPosixFilePermissionsRequest| { &m.path },
-                |m: &mut SetPosixFilePermissionsRequest| { &mut m.path },
+                |m: &SetPosixFilePermissionsRequest| &m.path,
+                |m: &mut SetPosixFilePermissionsRequest| &mut m.path,
             ));
-            fields.push(::protobuf::reflect::accessor::make_vec_accessor::<_, ::protobuf::types::ProtobufTypeEnum<PosixFilePermission>>(
+            fields.push(::protobuf::reflect::accessor::make_vec_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<PosixFilePermission>,
+            >(
                 "permissions",
-                |m: &SetPosixFilePermissionsRequest| { &m.permissions },
-                |m: &mut SetPosixFilePermissionsRequest| { &mut m.permissions },
+                |m: &SetPosixFilePermissionsRequest| &m.permissions,
+                |m: &mut SetPosixFilePermissionsRequest| &mut m.permissions,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SetPosixFilePermissionsRequest>(
                 "SetPosixFilePermissionsRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -9767,7 +10836,10 @@ impl ::protobuf::Clear for SetPosixFilePermissionsRequest {
 }
 
 impl ::std::fmt::Debug for SetPosixFilePermissionsRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -9778,7 +10850,7 @@ impl ::protobuf::reflect::ProtobufValue for SetPosixFilePermissionsRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct ReadFromFileResponse {
     // message fields
     pub buffer: ::std::vec::Vec<u8>,
@@ -9800,7 +10872,6 @@ impl ReadFromFileResponse {
 
     // bytes buffer = 1;
 
-
     pub fn get_buffer(&self) -> &[u8] {
         &self.buffer
     }
@@ -9809,7 +10880,10 @@ impl ReadFromFileResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_buffer(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_buffer(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.buffer = v;
     }
 
@@ -9830,16 +10904,19 @@ impl ::protobuf::Message for ReadFromFileResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.buffer)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -9857,7 +10934,10 @@ impl ::protobuf::Message for ReadFromFileResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.buffer.is_empty() {
             os.write_bytes(1, &self.buffer)?;
         }
@@ -9896,18 +10976,22 @@ impl ::protobuf::Message for ReadFromFileResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "buffer",
-                |m: &ReadFromFileResponse| { &m.buffer },
-                |m: &mut ReadFromFileResponse| { &mut m.buffer },
+                |m: &ReadFromFileResponse| &m.buffer,
+                |m: &mut ReadFromFileResponse| &mut m.buffer,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<ReadFromFileResponse>(
                 "ReadFromFileResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -9926,7 +11010,10 @@ impl ::protobuf::Clear for ReadFromFileResponse {
 }
 
 impl ::std::fmt::Debug for ReadFromFileResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -9937,7 +11024,7 @@ impl ::protobuf::reflect::ProtobufValue for ReadFromFileResponse {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct WriteToFileRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -9962,9 +11049,10 @@ impl WriteToFileRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -9975,7 +11063,10 @@ impl WriteToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -9995,9 +11086,10 @@ impl WriteToFileRequest {
 
     // .xenon.Path path = 2;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -10008,7 +11100,10 @@ impl WriteToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -10028,7 +11123,6 @@ impl WriteToFileRequest {
 
     // bytes buffer = 3;
 
-
     pub fn get_buffer(&self) -> &[u8] {
         &self.buffer
     }
@@ -10037,7 +11131,10 @@ impl WriteToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_buffer(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_buffer(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.buffer = v;
     }
 
@@ -10054,7 +11151,6 @@ impl WriteToFileRequest {
 
     // uint64 size = 4;
 
-
     pub fn get_size(&self) -> u64 {
         self.size
     }
@@ -10063,7 +11159,10 @@ impl WriteToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_size(&mut self, v: u64) {
+    pub fn set_size(
+        &mut self,
+        v: u64,
+    ) {
         self.size = v;
     }
 }
@@ -10074,38 +11173,41 @@ impl ::protobuf::Message for WriteToFileRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.path {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.buffer)?;
-                },
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.size = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -10134,7 +11236,10 @@ impl ::protobuf::Message for WriteToFileRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -10186,33 +11291,46 @@ impl ::protobuf::Message for WriteToFileRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &WriteToFileRequest| { &m.filesystem },
-                |m: &mut WriteToFileRequest| { &mut m.filesystem },
+                |m: &WriteToFileRequest| &m.filesystem,
+                |m: &mut WriteToFileRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "path",
-                |m: &WriteToFileRequest| { &m.path },
-                |m: &mut WriteToFileRequest| { &mut m.path },
+                |m: &WriteToFileRequest| &m.path,
+                |m: &mut WriteToFileRequest| &mut m.path,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "buffer",
-                |m: &WriteToFileRequest| { &m.buffer },
-                |m: &mut WriteToFileRequest| { &mut m.buffer },
+                |m: &WriteToFileRequest| &m.buffer,
+                |m: &mut WriteToFileRequest| &mut m.buffer,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "size",
-                |m: &WriteToFileRequest| { &m.size },
-                |m: &mut WriteToFileRequest| { &mut m.size },
+                |m: &WriteToFileRequest| &m.size,
+                |m: &mut WriteToFileRequest| &mut m.size,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<WriteToFileRequest>(
                 "WriteToFileRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -10234,7 +11352,10 @@ impl ::protobuf::Clear for WriteToFileRequest {
 }
 
 impl ::std::fmt::Debug for WriteToFileRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -10245,7 +11366,7 @@ impl ::protobuf::reflect::ProtobufValue for WriteToFileRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct AppendToFileRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -10269,9 +11390,10 @@ impl AppendToFileRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -10282,7 +11404,10 @@ impl AppendToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -10302,9 +11427,10 @@ impl AppendToFileRequest {
 
     // .xenon.Path path = 2;
 
-
     pub fn get_path(&self) -> &Path {
-        self.path.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.path
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_path(&mut self) {
         self.path.clear();
@@ -10315,7 +11441,10 @@ impl AppendToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_path(&mut self, v: Path) {
+    pub fn set_path(
+        &mut self,
+        v: Path,
+    ) {
         self.path = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -10335,7 +11464,6 @@ impl AppendToFileRequest {
 
     // bytes buffer = 3;
 
-
     pub fn get_buffer(&self) -> &[u8] {
         &self.buffer
     }
@@ -10344,7 +11472,10 @@ impl AppendToFileRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_buffer(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_buffer(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.buffer = v;
     }
 
@@ -10366,31 +11497,34 @@ impl ::protobuf::Message for AppendToFileRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.path {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.path)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.buffer)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -10416,7 +11550,10 @@ impl ::protobuf::Message for AppendToFileRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -10465,28 +11602,38 @@ impl ::protobuf::Message for AppendToFileRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &AppendToFileRequest| { &m.filesystem },
-                |m: &mut AppendToFileRequest| { &mut m.filesystem },
+                |m: &AppendToFileRequest| &m.filesystem,
+                |m: &mut AppendToFileRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
                 "path",
-                |m: &AppendToFileRequest| { &m.path },
-                |m: &mut AppendToFileRequest| { &mut m.path },
+                |m: &AppendToFileRequest| &m.path,
+                |m: &mut AppendToFileRequest| &mut m.path,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "buffer",
-                |m: &AppendToFileRequest| { &m.buffer },
-                |m: &mut AppendToFileRequest| { &mut m.buffer },
+                |m: &AppendToFileRequest| &m.buffer,
+                |m: &mut AppendToFileRequest| &mut m.buffer,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<AppendToFileRequest>(
                 "AppendToFileRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -10507,7 +11654,10 @@ impl ::protobuf::Clear for AppendToFileRequest {
 }
 
 impl ::std::fmt::Debug for AppendToFileRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -10518,7 +11668,7 @@ impl ::protobuf::reflect::ProtobufValue for AppendToFileRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct ListRequest {
     // message fields
     pub filesystem: ::protobuf::SingularPtrField<FileSystem>,
@@ -10542,9 +11692,10 @@ impl ListRequest {
 
     // .xenon.FileSystem filesystem = 1;
 
-
     pub fn get_filesystem(&self) -> &FileSystem {
-        self.filesystem.as_ref().unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
+        self.filesystem
+            .as_ref()
+            .unwrap_or_else(|| <FileSystem as ::protobuf::Message>::default_instance())
     }
     pub fn clear_filesystem(&mut self) {
         self.filesystem.clear();
@@ -10555,7 +11706,10 @@ impl ListRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_filesystem(&mut self, v: FileSystem) {
+    pub fn set_filesystem(
+        &mut self,
+        v: FileSystem,
+    ) {
         self.filesystem = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -10575,9 +11729,10 @@ impl ListRequest {
 
     // .xenon.Path dir = 2;
 
-
     pub fn get_dir(&self) -> &Path {
-        self.dir.as_ref().unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
+        self.dir
+            .as_ref()
+            .unwrap_or_else(|| <Path as ::protobuf::Message>::default_instance())
     }
     pub fn clear_dir(&mut self) {
         self.dir.clear();
@@ -10588,7 +11743,10 @@ impl ListRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_dir(&mut self, v: Path) {
+    pub fn set_dir(
+        &mut self,
+        v: Path,
+    ) {
         self.dir = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -10608,7 +11766,6 @@ impl ListRequest {
 
     // bool recursive = 3;
 
-
     pub fn get_recursive(&self) -> bool {
         self.recursive
     }
@@ -10617,7 +11774,10 @@ impl ListRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_recursive(&mut self, v: bool) {
+    pub fn set_recursive(
+        &mut self,
+        v: bool,
+    ) {
         self.recursive = v;
     }
 }
@@ -10628,35 +11788,38 @@ impl ::protobuf::Message for ListRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.dir {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.filesystem)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.dir)?;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.recursive = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -10682,7 +11845,10 @@ impl ::protobuf::Message for ListRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.filesystem.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -10731,28 +11897,36 @@ impl ::protobuf::Message for ListRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<FileSystem>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<FileSystem>,
+            >(
                 "filesystem",
-                |m: &ListRequest| { &m.filesystem },
-                |m: &mut ListRequest| { &mut m.filesystem },
+                |m: &ListRequest| &m.filesystem,
+                |m: &mut ListRequest| &mut m.filesystem,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Path>>(
-                "dir",
-                |m: &ListRequest| { &m.dir },
-                |m: &mut ListRequest| { &mut m.dir },
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Path>,
+            >(
+                "dir", |m: &ListRequest| &m.dir, |m: &mut ListRequest| &mut m.dir
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "recursive",
-                |m: &ListRequest| { &m.recursive },
-                |m: &mut ListRequest| { &mut m.recursive },
+                |m: &ListRequest| &m.recursive,
+                |m: &mut ListRequest| &mut m.recursive,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<ListRequest>(
                 "ListRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -10773,7 +11947,10 @@ impl ::protobuf::Clear for ListRequest {
 }
 
 impl ::std::fmt::Debug for ListRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -10784,7 +11961,7 @@ impl ::protobuf::reflect::ProtobufValue for ListRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetPathSeparatorResponse {
     // message fields
     pub separator: ::std::string::String,
@@ -10806,7 +11983,6 @@ impl GetPathSeparatorResponse {
 
     // string separator = 1;
 
-
     pub fn get_separator(&self) -> &str {
         &self.separator
     }
@@ -10815,7 +11991,10 @@ impl GetPathSeparatorResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_separator(&mut self, v: ::std::string::String) {
+    pub fn set_separator(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.separator = v;
     }
 
@@ -10836,16 +12015,19 @@ impl ::protobuf::Message for GetPathSeparatorResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.separator)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -10863,7 +12045,10 @@ impl ::protobuf::Message for GetPathSeparatorResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.separator.is_empty() {
             os.write_string(1, &self.separator)?;
         }
@@ -10902,18 +12087,22 @@ impl ::protobuf::Message for GetPathSeparatorResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "separator",
-                |m: &GetPathSeparatorResponse| { &m.separator },
-                |m: &mut GetPathSeparatorResponse| { &mut m.separator },
+                |m: &GetPathSeparatorResponse| &m.separator,
+                |m: &mut GetPathSeparatorResponse| &mut m.separator,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetPathSeparatorResponse>(
                 "GetPathSeparatorResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -10932,7 +12121,10 @@ impl ::protobuf::Clear for GetPathSeparatorResponse {
 }
 
 impl ::std::fmt::Debug for GetPathSeparatorResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -10943,7 +12135,7 @@ impl ::protobuf::reflect::ProtobufValue for GetPathSeparatorResponse {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct CreateSchedulerRequest {
     // message fields
     pub adaptor: ::std::string::String,
@@ -10962,7 +12154,7 @@ impl<'a> ::std::default::Default for &'a CreateSchedulerRequest {
     }
 }
 
-#[derive(Clone,PartialEq,Debug)]
+#[derive(Clone, PartialEq, Debug)]
 pub enum CreateSchedulerRequest_oneof_credential {
     certificate_credential(CertificateCredential),
     password_credential(PasswordCredential),
@@ -10978,7 +12170,6 @@ impl CreateSchedulerRequest {
 
     // string adaptor = 1;
 
-
     pub fn get_adaptor(&self) -> &str {
         &self.adaptor
     }
@@ -10987,7 +12178,10 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_adaptor(&mut self, v: ::std::string::String) {
+    pub fn set_adaptor(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.adaptor = v;
     }
 
@@ -11004,7 +12198,6 @@ impl CreateSchedulerRequest {
 
     // string location = 2;
 
-
     pub fn get_location(&self) -> &str {
         &self.location
     }
@@ -11013,7 +12206,10 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_location(&mut self, v: ::std::string::String) {
+    pub fn set_location(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.location = v;
     }
 
@@ -11030,7 +12226,6 @@ impl CreateSchedulerRequest {
 
     // repeated .xenon.CreateSchedulerRequest.PropertiesEntry properties = 3;
 
-
     pub fn get_properties(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.properties
     }
@@ -11039,7 +12234,10 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_properties(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_properties(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.properties = v;
     }
 
@@ -11054,7 +12252,6 @@ impl CreateSchedulerRequest {
     }
 
     // .xenon.CertificateCredential certificate_credential = 4;
-
 
     pub fn get_certificate_credential(&self) -> &CertificateCredential {
         match self.credential {
@@ -11074,18 +12271,28 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_certificate_credential(&mut self, v: CertificateCredential) {
-        self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(v))
+    pub fn set_certificate_credential(
+        &mut self,
+        v: CertificateCredential,
+    ) {
+        self.credential =
+            ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_certificate_credential(&mut self) -> &mut CertificateCredential {
-        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(CertificateCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                CreateSchedulerRequest_oneof_credential::certificate_credential(CertificateCredential::new()),
+            );
         }
         match self.credential {
-            ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(ref mut v)) => v,
+            ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(ref mut v)) => {
+                v
+            }
             _ => panic!(),
         }
     }
@@ -11103,7 +12310,6 @@ impl CreateSchedulerRequest {
     }
 
     // .xenon.PasswordCredential password_credential = 5;
-
 
     pub fn get_password_credential(&self) -> &PasswordCredential {
         match self.credential {
@@ -11123,15 +12329,22 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_password_credential(&mut self, v: PasswordCredential) {
+    pub fn set_password_credential(
+        &mut self,
+        v: PasswordCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_password_credential(&mut self) -> &mut PasswordCredential {
-        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(PasswordCredential::new()));
+            self.credential = ::std::option::Option::Some(
+                CreateSchedulerRequest_oneof_credential::password_credential(PasswordCredential::new()),
+            );
         }
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(ref mut v)) => v,
@@ -11153,7 +12366,6 @@ impl CreateSchedulerRequest {
 
     // .xenon.DefaultCredential default_credential = 6;
 
-
     pub fn get_default_credential(&self) -> &DefaultCredential {
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(ref v)) => v,
@@ -11172,15 +12384,22 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_default_credential(&mut self, v: DefaultCredential) {
+    pub fn set_default_credential(
+        &mut self,
+        v: DefaultCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_default_credential(&mut self) -> &mut DefaultCredential {
-        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(DefaultCredential::new()));
+            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(
+                DefaultCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(ref mut v)) => v,
@@ -11202,7 +12421,6 @@ impl CreateSchedulerRequest {
 
     // .xenon.CredentialMap credential_map = 7;
 
-
     pub fn get_credential_map(&self) -> &CredentialMap {
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(ref v)) => v,
@@ -11221,15 +12439,21 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_credential_map(&mut self, v: CredentialMap) {
+    pub fn set_credential_map(
+        &mut self,
+        v: CredentialMap,
+    ) {
         self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_credential_map(&mut self) -> &mut CredentialMap {
-        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(_)) = self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(CredentialMap::new()));
+            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(
+                CredentialMap::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(ref mut v)) => v,
@@ -11251,7 +12475,6 @@ impl CreateSchedulerRequest {
 
     // .xenon.KeytabCredential keytab_credential = 8;
 
-
     pub fn get_keytab_credential(&self) -> &KeytabCredential {
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(ref v)) => v,
@@ -11270,15 +12493,22 @@ impl CreateSchedulerRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_keytab_credential(&mut self, v: KeytabCredential) {
+    pub fn set_keytab_credential(
+        &mut self,
+        v: KeytabCredential,
+    ) {
         self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(v))
     }
 
     // Mutable pointer to the field.
     pub fn mut_keytab_credential(&mut self) -> &mut KeytabCredential {
-        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(_)) = self.credential {
+        if let ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(_)) =
+            self.credential
+        {
         } else {
-            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(KeytabCredential::new()));
+            self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(
+                KeytabCredential::new(),
+            ));
         }
         match self.credential {
             ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(ref mut v)) => v,
@@ -11329,52 +12559,68 @@ impl ::protobuf::Message for CreateSchedulerRequest {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.adaptor)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.location)?;
-                },
+                }
                 3 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.properties)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.properties)?;
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::certificate_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateSchedulerRequest_oneof_credential::certificate_credential(is.read_message()?),
+                    );
+                }
                 5 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::password_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateSchedulerRequest_oneof_credential::password_credential(is.read_message()?),
+                    );
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::default_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateSchedulerRequest_oneof_credential::default_credential(is.read_message()?),
+                    );
+                }
                 7 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::credential_map(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateSchedulerRequest_oneof_credential::credential_map(is.read_message()?),
+                    );
+                }
                 8 => {
                     if wire_type != ::protobuf::wire_format::WireTypeLengthDelimited {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
-                    self.credential = ::std::option::Option::Some(CreateSchedulerRequest_oneof_credential::keytab_credential(is.read_message()?));
-                },
+                    self.credential = ::std::option::Option::Some(
+                        CreateSchedulerRequest_oneof_credential::keytab_credential(is.read_message()?),
+                    );
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -11390,29 +12636,32 @@ impl ::protobuf::Message for CreateSchedulerRequest {
         if !self.location.is_empty() {
             my_size += ::protobuf::rt::string_size(2, &self.location);
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(3, &self.properties);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(3, &self.properties);
         if let ::std::option::Option::Some(ref v) = self.credential {
             match v {
                 &CreateSchedulerRequest_oneof_credential::certificate_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::password_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::default_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::credential_map(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::keytab_credential(ref v) => {
                     let len = v.compute_size();
                     my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-                },
+                }
             };
         }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
@@ -11420,41 +12669,47 @@ impl ::protobuf::Message for CreateSchedulerRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.adaptor.is_empty() {
             os.write_string(1, &self.adaptor)?;
         }
         if !self.location.is_empty() {
             os.write_string(2, &self.location)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(3, &self.properties, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(3, &self.properties, os)?;
         if let ::std::option::Option::Some(ref v) = self.credential {
             match v {
                 &CreateSchedulerRequest_oneof_credential::certificate_credential(ref v) => {
                     os.write_tag(4, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::password_credential(ref v) => {
                     os.write_tag(5, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::default_credential(ref v) => {
                     os.write_tag(6, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::credential_map(ref v) => {
                     os.write_tag(7, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
                 &CreateSchedulerRequest_oneof_credential::keytab_credential(ref v) => {
                     os.write_tag(8, ::protobuf::wire_format::WireTypeLengthDelimited)?;
                     os.write_raw_varint32(v.get_cached_size())?;
                     v.write_to_with_cached_sizes(os)?;
-                },
+                }
             };
         }
         os.write_unknown_fields(self.get_unknown_fields())?;
@@ -11492,45 +12747,71 @@ impl ::protobuf::Message for CreateSchedulerRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "adaptor",
-                |m: &CreateSchedulerRequest| { &m.adaptor },
-                |m: &mut CreateSchedulerRequest| { &mut m.adaptor },
+                |m: &CreateSchedulerRequest| &m.adaptor,
+                |m: &mut CreateSchedulerRequest| &mut m.adaptor,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "location",
-                |m: &CreateSchedulerRequest| { &m.location },
-                |m: &mut CreateSchedulerRequest| { &mut m.location },
+                |m: &CreateSchedulerRequest| &m.location,
+                |m: &mut CreateSchedulerRequest| &mut m.location,
             ));
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "properties",
-                |m: &CreateSchedulerRequest| { &m.properties },
-                |m: &mut CreateSchedulerRequest| { &mut m.properties },
+                |m: &CreateSchedulerRequest| &m.properties,
+                |m: &mut CreateSchedulerRequest| &mut m.properties,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CertificateCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CertificateCredential,
+            >(
                 "certificate_credential",
                 CreateSchedulerRequest::has_certificate_credential,
                 CreateSchedulerRequest::get_certificate_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, PasswordCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                PasswordCredential,
+            >(
                 "password_credential",
                 CreateSchedulerRequest::has_password_credential,
                 CreateSchedulerRequest::get_password_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, DefaultCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                DefaultCredential,
+            >(
                 "default_credential",
                 CreateSchedulerRequest::has_default_credential,
                 CreateSchedulerRequest::get_default_credential,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, CredentialMap>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                CredentialMap,
+            >(
                 "credential_map",
                 CreateSchedulerRequest::has_credential_map,
                 CreateSchedulerRequest::get_credential_map,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<_, KeytabCredential>(
+            fields.push(::protobuf::reflect::accessor::make_singular_message_accessor::<
+                _,
+                KeytabCredential,
+            >(
                 "keytab_credential",
                 CreateSchedulerRequest::has_keytab_credential,
                 CreateSchedulerRequest::get_keytab_credential,
@@ -11538,7 +12819,7 @@ impl ::protobuf::Message for CreateSchedulerRequest {
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<CreateSchedulerRequest>(
                 "CreateSchedulerRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -11564,7 +12845,10 @@ impl ::protobuf::Clear for CreateSchedulerRequest {
 }
 
 impl ::std::fmt::Debug for CreateSchedulerRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -11575,7 +12859,7 @@ impl ::protobuf::reflect::ProtobufValue for CreateSchedulerRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Scheduler {
     // message fields
     pub id: ::std::string::String,
@@ -11597,7 +12881,6 @@ impl Scheduler {
 
     // string id = 1;
 
-
     pub fn get_id(&self) -> &str {
         &self.id
     }
@@ -11606,7 +12889,10 @@ impl Scheduler {
     }
 
     // Param is passed by value, moved
-    pub fn set_id(&mut self, v: ::std::string::String) {
+    pub fn set_id(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.id = v;
     }
 
@@ -11627,16 +12913,19 @@ impl ::protobuf::Message for Scheduler {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -11654,7 +12943,10 @@ impl ::protobuf::Message for Scheduler {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.id.is_empty() {
             os.write_string(1, &self.id)?;
         }
@@ -11693,18 +12985,18 @@ impl ::protobuf::Message for Scheduler {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "id",
-                |m: &Scheduler| { &m.id },
-                |m: &mut Scheduler| { &mut m.id },
-            ));
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >("id", |m: &Scheduler| &m.id, |m: &mut Scheduler| &mut m.id));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<Scheduler>(
                 "Scheduler",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -11723,7 +13015,10 @@ impl ::protobuf::Clear for Scheduler {
 }
 
 impl ::std::fmt::Debug for Scheduler {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -11734,7 +13029,7 @@ impl ::protobuf::reflect::ProtobufValue for Scheduler {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Schedulers {
     // message fields
     pub schedulers: ::protobuf::RepeatedField<Scheduler>,
@@ -11756,7 +13051,6 @@ impl Schedulers {
 
     // repeated .xenon.Scheduler schedulers = 1;
 
-
     pub fn get_schedulers(&self) -> &[Scheduler] {
         &self.schedulers
     }
@@ -11765,7 +13059,10 @@ impl Schedulers {
     }
 
     // Param is passed by value, moved
-    pub fn set_schedulers(&mut self, v: ::protobuf::RepeatedField<Scheduler>) {
+    pub fn set_schedulers(
+        &mut self,
+        v: ::protobuf::RepeatedField<Scheduler>,
+    ) {
         self.schedulers = v;
     }
 
@@ -11786,20 +13083,23 @@ impl ::protobuf::Message for Schedulers {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.schedulers)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -11812,18 +13112,21 @@ impl ::protobuf::Message for Schedulers {
         for value in &self.schedulers {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.schedulers {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -11859,18 +13162,22 @@ impl ::protobuf::Message for Schedulers {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "schedulers",
-                |m: &Schedulers| { &m.schedulers },
-                |m: &mut Schedulers| { &mut m.schedulers },
+                |m: &Schedulers| &m.schedulers,
+                |m: &mut Schedulers| &mut m.schedulers,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<Schedulers>(
                 "Schedulers",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -11889,7 +13196,10 @@ impl ::protobuf::Clear for Schedulers {
 }
 
 impl ::std::fmt::Debug for Schedulers {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -11900,7 +13210,7 @@ impl ::protobuf::reflect::ProtobufValue for Schedulers {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct JobDescription {
     // message fields
     pub executable: ::std::string::String,
@@ -11939,7 +13249,6 @@ impl JobDescription {
 
     // string executable = 1;
 
-
     pub fn get_executable(&self) -> &str {
         &self.executable
     }
@@ -11948,7 +13257,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_executable(&mut self, v: ::std::string::String) {
+    pub fn set_executable(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.executable = v;
     }
 
@@ -11965,7 +13277,6 @@ impl JobDescription {
 
     // repeated string arguments = 2;
 
-
     pub fn get_arguments(&self) -> &[::std::string::String] {
         &self.arguments
     }
@@ -11974,7 +13285,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_arguments(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_arguments(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.arguments = v;
     }
 
@@ -11990,7 +13304,6 @@ impl JobDescription {
 
     // string working_directory = 3;
 
-
     pub fn get_working_directory(&self) -> &str {
         &self.working_directory
     }
@@ -11999,7 +13312,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_working_directory(&mut self, v: ::std::string::String) {
+    pub fn set_working_directory(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.working_directory = v;
     }
 
@@ -12016,7 +13332,6 @@ impl JobDescription {
 
     // repeated .xenon.JobDescription.EnvironmentEntry environment = 4;
 
-
     pub fn get_environment(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.environment
     }
@@ -12025,12 +13340,17 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_environment(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_environment(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.environment = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_environment(&mut self) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    pub fn mut_environment(
+        &mut self
+    ) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &mut self.environment
     }
 
@@ -12041,7 +13361,6 @@ impl JobDescription {
 
     // string queue_name = 5;
 
-
     pub fn get_queue_name(&self) -> &str {
         &self.queue_name
     }
@@ -12050,7 +13369,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_queue_name(&mut self, v: ::std::string::String) {
+    pub fn set_queue_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.queue_name = v;
     }
 
@@ -12067,7 +13389,6 @@ impl JobDescription {
 
     // uint32 max_runtime = 6;
 
-
     pub fn get_max_runtime(&self) -> u32 {
         self.max_runtime
     }
@@ -12076,12 +13397,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_max_runtime(&mut self, v: u32) {
+    pub fn set_max_runtime(
+        &mut self,
+        v: u32,
+    ) {
         self.max_runtime = v;
     }
 
     // string stderr = 10;
-
 
     pub fn get_stderr(&self) -> &str {
         &self.stderr
@@ -12091,7 +13414,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_stderr(&mut self, v: ::std::string::String) {
+    pub fn set_stderr(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.stderr = v;
     }
 
@@ -12108,7 +13434,6 @@ impl JobDescription {
 
     // string stdin = 11;
 
-
     pub fn get_stdin(&self) -> &str {
         &self.stdin
     }
@@ -12117,7 +13442,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_stdin(&mut self, v: ::std::string::String) {
+    pub fn set_stdin(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.stdin = v;
     }
 
@@ -12134,7 +13462,6 @@ impl JobDescription {
 
     // string stdout = 12;
 
-
     pub fn get_stdout(&self) -> &str {
         &self.stdout
     }
@@ -12143,7 +13470,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_stdout(&mut self, v: ::std::string::String) {
+    pub fn set_stdout(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.stdout = v;
     }
 
@@ -12160,7 +13490,6 @@ impl JobDescription {
 
     // string name = 14;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -12169,7 +13498,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -12186,7 +13518,6 @@ impl JobDescription {
 
     // uint32 max_memory = 15;
 
-
     pub fn get_max_memory(&self) -> u32 {
         self.max_memory
     }
@@ -12195,12 +13526,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_max_memory(&mut self, v: u32) {
+    pub fn set_max_memory(
+        &mut self,
+        v: u32,
+    ) {
         self.max_memory = v;
     }
 
     // repeated string scheduler_arguments = 16;
-
 
     pub fn get_scheduler_arguments(&self) -> &[::std::string::String] {
         &self.scheduler_arguments
@@ -12210,7 +13543,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler_arguments(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_scheduler_arguments(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.scheduler_arguments = v;
     }
 
@@ -12226,7 +13562,6 @@ impl JobDescription {
 
     // uint32 tasks = 17;
 
-
     pub fn get_tasks(&self) -> u32 {
         self.tasks
     }
@@ -12235,12 +13570,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_tasks(&mut self, v: u32) {
+    pub fn set_tasks(
+        &mut self,
+        v: u32,
+    ) {
         self.tasks = v;
     }
 
     // uint32 cores_per_task = 18;
-
 
     pub fn get_cores_per_task(&self) -> u32 {
         self.cores_per_task
@@ -12250,12 +13587,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_cores_per_task(&mut self, v: u32) {
+    pub fn set_cores_per_task(
+        &mut self,
+        v: u32,
+    ) {
         self.cores_per_task = v;
     }
 
     // uint32 tasks_per_node = 19;
-
 
     pub fn get_tasks_per_node(&self) -> u32 {
         self.tasks_per_node
@@ -12265,12 +13604,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_tasks_per_node(&mut self, v: u32) {
+    pub fn set_tasks_per_node(
+        &mut self,
+        v: u32,
+    ) {
         self.tasks_per_node = v;
     }
 
     // bool start_per_task = 20;
-
 
     pub fn get_start_per_task(&self) -> bool {
         self.start_per_task
@@ -12280,12 +13621,14 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_start_per_task(&mut self, v: bool) {
+    pub fn set_start_per_task(
+        &mut self,
+        v: bool,
+    ) {
         self.start_per_task = v;
     }
 
     // string start_time = 21;
-
 
     pub fn get_start_time(&self) -> &str {
         &self.start_time
@@ -12295,7 +13638,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_start_time(&mut self, v: ::std::string::String) {
+    pub fn set_start_time(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.start_time = v;
     }
 
@@ -12312,7 +13658,6 @@ impl JobDescription {
 
     // uint32 temp_space = 22;
 
-
     pub fn get_temp_space(&self) -> u32 {
         self.temp_space
     }
@@ -12321,7 +13666,10 @@ impl JobDescription {
     }
 
     // Param is passed by value, moved
-    pub fn set_temp_space(&mut self, v: u32) {
+    pub fn set_temp_space(
+        &mut self,
+        v: u32,
+    ) {
         self.temp_space = v;
     }
 }
@@ -12331,95 +13679,101 @@ impl ::protobuf::Message for JobDescription {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.executable)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.arguments)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.working_directory)?;
-                },
+                }
                 4 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.environment)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.environment)?;
+                }
                 5 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.queue_name)?;
-                },
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.max_runtime = tmp;
-                },
+                }
                 10 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.stderr)?;
-                },
+                }
                 11 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.stdin)?;
-                },
+                }
                 12 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.stdout)?;
-                },
+                }
                 14 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 15 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.max_memory = tmp;
-                },
+                }
                 16 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.scheduler_arguments)?;
-                },
+                }
                 17 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.tasks = tmp;
-                },
+                }
                 18 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.cores_per_task = tmp;
-                },
+                }
                 19 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.tasks_per_node = tmp;
-                },
+                }
                 20 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.start_per_task = tmp;
-                },
+                }
                 21 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.start_time)?;
-                },
+                }
                 22 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint32()?;
                     self.temp_space = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -12434,11 +13788,14 @@ impl ::protobuf::Message for JobDescription {
         }
         for value in &self.arguments {
             my_size += ::protobuf::rt::string_size(2, &value);
-        };
+        }
         if !self.working_directory.is_empty() {
             my_size += ::protobuf::rt::string_size(3, &self.working_directory);
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(4, &self.environment);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(4, &self.environment);
         if !self.queue_name.is_empty() {
             my_size += ::protobuf::rt::string_size(5, &self.queue_name);
         }
@@ -12462,7 +13819,7 @@ impl ::protobuf::Message for JobDescription {
         }
         for value in &self.scheduler_arguments {
             my_size += ::protobuf::rt::string_size(16, &value);
-        };
+        }
         if self.tasks != 0 {
             my_size += ::protobuf::rt::value_size(17, self.tasks, ::protobuf::wire_format::WireTypeVarint);
         }
@@ -12486,17 +13843,23 @@ impl ::protobuf::Message for JobDescription {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.executable.is_empty() {
             os.write_string(1, &self.executable)?;
         }
         for v in &self.arguments {
             os.write_string(2, &v)?;
-        };
+        }
         if !self.working_directory.is_empty() {
             os.write_string(3, &self.working_directory)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(4, &self.environment, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(4, &self.environment, os)?;
         if !self.queue_name.is_empty() {
             os.write_string(5, &self.queue_name)?;
         }
@@ -12520,7 +13883,7 @@ impl ::protobuf::Message for JobDescription {
         }
         for v in &self.scheduler_arguments {
             os.write_string(16, &v)?;
-        };
+        }
         if self.tasks != 0 {
             os.write_uint32(17, self.tasks)?;
         }
@@ -12574,103 +13937,159 @@ impl ::protobuf::Message for JobDescription {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "executable",
-                |m: &JobDescription| { &m.executable },
-                |m: &mut JobDescription| { &mut m.executable },
+                |m: &JobDescription| &m.executable,
+                |m: &mut JobDescription| &mut m.executable,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "arguments",
-                |m: &JobDescription| { &m.arguments },
-                |m: &mut JobDescription| { &mut m.arguments },
+                |m: &JobDescription| &m.arguments,
+                |m: &mut JobDescription| &mut m.arguments,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "working_directory",
-                |m: &JobDescription| { &m.working_directory },
-                |m: &mut JobDescription| { &mut m.working_directory },
+                |m: &JobDescription| &m.working_directory,
+                |m: &mut JobDescription| &mut m.working_directory,
             ));
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "environment",
-                |m: &JobDescription| { &m.environment },
-                |m: &mut JobDescription| { &mut m.environment },
+                |m: &JobDescription| &m.environment,
+                |m: &mut JobDescription| &mut m.environment,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "queue_name",
-                |m: &JobDescription| { &m.queue_name },
-                |m: &mut JobDescription| { &mut m.queue_name },
+                |m: &JobDescription| &m.queue_name,
+                |m: &mut JobDescription| &mut m.queue_name,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "max_runtime",
-                |m: &JobDescription| { &m.max_runtime },
-                |m: &mut JobDescription| { &mut m.max_runtime },
+                |m: &JobDescription| &m.max_runtime,
+                |m: &mut JobDescription| &mut m.max_runtime,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "stderr",
-                |m: &JobDescription| { &m.stderr },
-                |m: &mut JobDescription| { &mut m.stderr },
+                |m: &JobDescription| &m.stderr,
+                |m: &mut JobDescription| &mut m.stderr,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "stdin",
-                |m: &JobDescription| { &m.stdin },
-                |m: &mut JobDescription| { &mut m.stdin },
+                |m: &JobDescription| &m.stdin,
+                |m: &mut JobDescription| &mut m.stdin,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "stdout",
-                |m: &JobDescription| { &m.stdout },
-                |m: &mut JobDescription| { &mut m.stdout },
+                |m: &JobDescription| &m.stdout,
+                |m: &mut JobDescription| &mut m.stdout,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "name",
-                |m: &JobDescription| { &m.name },
-                |m: &mut JobDescription| { &mut m.name },
+                |m: &JobDescription| &m.name,
+                |m: &mut JobDescription| &mut m.name,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "max_memory",
-                |m: &JobDescription| { &m.max_memory },
-                |m: &mut JobDescription| { &mut m.max_memory },
+                |m: &JobDescription| &m.max_memory,
+                |m: &mut JobDescription| &mut m.max_memory,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "scheduler_arguments",
-                |m: &JobDescription| { &m.scheduler_arguments },
-                |m: &mut JobDescription| { &mut m.scheduler_arguments },
+                |m: &JobDescription| &m.scheduler_arguments,
+                |m: &mut JobDescription| &mut m.scheduler_arguments,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "tasks",
-                |m: &JobDescription| { &m.tasks },
-                |m: &mut JobDescription| { &mut m.tasks },
+                |m: &JobDescription| &m.tasks,
+                |m: &mut JobDescription| &mut m.tasks,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "cores_per_task",
-                |m: &JobDescription| { &m.cores_per_task },
-                |m: &mut JobDescription| { &mut m.cores_per_task },
+                |m: &JobDescription| &m.cores_per_task,
+                |m: &mut JobDescription| &mut m.cores_per_task,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "tasks_per_node",
-                |m: &JobDescription| { &m.tasks_per_node },
-                |m: &mut JobDescription| { &mut m.tasks_per_node },
+                |m: &JobDescription| &m.tasks_per_node,
+                |m: &mut JobDescription| &mut m.tasks_per_node,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "start_per_task",
-                |m: &JobDescription| { &m.start_per_task },
-                |m: &mut JobDescription| { &mut m.start_per_task },
+                |m: &JobDescription| &m.start_per_task,
+                |m: &mut JobDescription| &mut m.start_per_task,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "start_time",
-                |m: &JobDescription| { &m.start_time },
-                |m: &mut JobDescription| { &mut m.start_time },
+                |m: &JobDescription| &m.start_time,
+                |m: &mut JobDescription| &mut m.start_time,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "temp_space",
-                |m: &JobDescription| { &m.temp_space },
-                |m: &mut JobDescription| { &mut m.temp_space },
+                |m: &JobDescription| &m.temp_space,
+                |m: &mut JobDescription| &mut m.temp_space,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<JobDescription>(
                 "JobDescription",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -12706,7 +14125,10 @@ impl ::protobuf::Clear for JobDescription {
 }
 
 impl ::std::fmt::Debug for JobDescription {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -12717,7 +14139,7 @@ impl ::protobuf::reflect::ProtobufValue for JobDescription {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SubmitBatchJobRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -12740,9 +14162,10 @@ impl SubmitBatchJobRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -12753,7 +14176,10 @@ impl SubmitBatchJobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -12773,9 +14199,10 @@ impl SubmitBatchJobRequest {
 
     // .xenon.JobDescription description = 2;
 
-
     pub fn get_description(&self) -> &JobDescription {
-        self.description.as_ref().unwrap_or_else(|| <JobDescription as ::protobuf::Message>::default_instance())
+        self.description
+            .as_ref()
+            .unwrap_or_else(|| <JobDescription as ::protobuf::Message>::default_instance())
     }
     pub fn clear_description(&mut self) {
         self.description.clear();
@@ -12786,7 +14213,10 @@ impl SubmitBatchJobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_description(&mut self, v: JobDescription) {
+    pub fn set_description(
+        &mut self,
+        v: JobDescription,
+    ) {
         self.description = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -12811,28 +14241,31 @@ impl ::protobuf::Message for SubmitBatchJobRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.description {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.description)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -12855,7 +14288,10 @@ impl ::protobuf::Message for SubmitBatchJobRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -12901,23 +14337,30 @@ impl ::protobuf::Message for SubmitBatchJobRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &SubmitBatchJobRequest| { &m.scheduler },
-                |m: &mut SubmitBatchJobRequest| { &mut m.scheduler },
+                |m: &SubmitBatchJobRequest| &m.scheduler,
+                |m: &mut SubmitBatchJobRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<JobDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<JobDescription>,
+            >(
                 "description",
-                |m: &SubmitBatchJobRequest| { &m.description },
-                |m: &mut SubmitBatchJobRequest| { &mut m.description },
+                |m: &SubmitBatchJobRequest| &m.description,
+                |m: &mut SubmitBatchJobRequest| &mut m.description,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SubmitBatchJobRequest>(
                 "SubmitBatchJobRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -12937,7 +14380,10 @@ impl ::protobuf::Clear for SubmitBatchJobRequest {
 }
 
 impl ::std::fmt::Debug for SubmitBatchJobRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -12948,7 +14394,7 @@ impl ::protobuf::reflect::ProtobufValue for SubmitBatchJobRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SubmitInteractiveJobRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -12972,9 +14418,10 @@ impl SubmitInteractiveJobRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -12985,7 +14432,10 @@ impl SubmitInteractiveJobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -13005,9 +14455,10 @@ impl SubmitInteractiveJobRequest {
 
     // .xenon.JobDescription description = 2;
 
-
     pub fn get_description(&self) -> &JobDescription {
-        self.description.as_ref().unwrap_or_else(|| <JobDescription as ::protobuf::Message>::default_instance())
+        self.description
+            .as_ref()
+            .unwrap_or_else(|| <JobDescription as ::protobuf::Message>::default_instance())
     }
     pub fn clear_description(&mut self) {
         self.description.clear();
@@ -13018,7 +14469,10 @@ impl SubmitInteractiveJobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_description(&mut self, v: JobDescription) {
+    pub fn set_description(
+        &mut self,
+        v: JobDescription,
+    ) {
         self.description = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -13038,7 +14492,6 @@ impl SubmitInteractiveJobRequest {
 
     // bytes stdin = 3;
 
-
     pub fn get_stdin(&self) -> &[u8] {
         &self.stdin
     }
@@ -13047,7 +14500,10 @@ impl SubmitInteractiveJobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_stdin(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_stdin(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.stdin = v;
     }
 
@@ -13069,31 +14525,34 @@ impl ::protobuf::Message for SubmitInteractiveJobRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.description {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.description)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.stdin)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -13119,7 +14578,10 @@ impl ::protobuf::Message for SubmitInteractiveJobRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -13168,28 +14630,38 @@ impl ::protobuf::Message for SubmitInteractiveJobRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &SubmitInteractiveJobRequest| { &m.scheduler },
-                |m: &mut SubmitInteractiveJobRequest| { &mut m.scheduler },
+                |m: &SubmitInteractiveJobRequest| &m.scheduler,
+                |m: &mut SubmitInteractiveJobRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<JobDescription>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<JobDescription>,
+            >(
                 "description",
-                |m: &SubmitInteractiveJobRequest| { &m.description },
-                |m: &mut SubmitInteractiveJobRequest| { &mut m.description },
+                |m: &SubmitInteractiveJobRequest| &m.description,
+                |m: &mut SubmitInteractiveJobRequest| &mut m.description,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "stdin",
-                |m: &SubmitInteractiveJobRequest| { &m.stdin },
-                |m: &mut SubmitInteractiveJobRequest| { &mut m.stdin },
+                |m: &SubmitInteractiveJobRequest| &m.stdin,
+                |m: &mut SubmitInteractiveJobRequest| &mut m.stdin,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SubmitInteractiveJobRequest>(
                 "SubmitInteractiveJobRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -13210,7 +14682,10 @@ impl ::protobuf::Clear for SubmitInteractiveJobRequest {
 }
 
 impl ::std::fmt::Debug for SubmitInteractiveJobRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -13221,7 +14696,7 @@ impl ::protobuf::reflect::ProtobufValue for SubmitInteractiveJobRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Job {
     // message fields
     pub id: ::std::string::String,
@@ -13243,7 +14718,6 @@ impl Job {
 
     // string id = 1;
 
-
     pub fn get_id(&self) -> &str {
         &self.id
     }
@@ -13252,7 +14726,10 @@ impl Job {
     }
 
     // Param is passed by value, moved
-    pub fn set_id(&mut self, v: ::std::string::String) {
+    pub fn set_id(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.id = v;
     }
 
@@ -13273,16 +14750,19 @@ impl ::protobuf::Message for Job {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.id)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -13300,7 +14780,10 @@ impl ::protobuf::Message for Job {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.id.is_empty() {
             os.write_string(1, &self.id)?;
         }
@@ -13339,19 +14822,15 @@ impl ::protobuf::Message for Job {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "id",
-                |m: &Job| { &m.id },
-                |m: &mut Job| { &mut m.id },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Job>(
-                "Job",
-                fields,
-                file_descriptor_proto()
-            )
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >("id", |m: &Job| &m.id, |m: &mut Job| &mut m.id));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Job>("Job", fields, file_descriptor_proto())
         })
     }
 
@@ -13369,7 +14848,10 @@ impl ::protobuf::Clear for Job {
 }
 
 impl ::std::fmt::Debug for Job {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -13380,7 +14862,7 @@ impl ::protobuf::reflect::ProtobufValue for Job {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct JobRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -13403,9 +14885,10 @@ impl JobRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -13416,7 +14899,10 @@ impl JobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -13436,9 +14922,10 @@ impl JobRequest {
 
     // .xenon.Job job = 2;
 
-
     pub fn get_job(&self) -> &Job {
-        self.job.as_ref().unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
+        self.job
+            .as_ref()
+            .unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
     }
     pub fn clear_job(&mut self) {
         self.job.clear();
@@ -13449,7 +14936,10 @@ impl JobRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_job(&mut self, v: Job) {
+    pub fn set_job(
+        &mut self,
+        v: Job,
+    ) {
         self.job = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -13474,28 +14964,31 @@ impl ::protobuf::Message for JobRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.job {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.job)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -13518,7 +15011,10 @@ impl ::protobuf::Message for JobRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -13564,23 +15060,28 @@ impl ::protobuf::Message for JobRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &JobRequest| { &m.scheduler },
-                |m: &mut JobRequest| { &mut m.scheduler },
+                |m: &JobRequest| &m.scheduler,
+                |m: &mut JobRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
-                "job",
-                |m: &JobRequest| { &m.job },
-                |m: &mut JobRequest| { &mut m.job },
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >(
+                "job", |m: &JobRequest| &m.job, |m: &mut JobRequest| &mut m.job
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<JobRequest>(
                 "JobRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -13600,7 +15101,10 @@ impl ::protobuf::Clear for JobRequest {
 }
 
 impl ::std::fmt::Debug for JobRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -13611,7 +15115,7 @@ impl ::protobuf::reflect::ProtobufValue for JobRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Jobs {
     // message fields
     pub jobs: ::protobuf::RepeatedField<Job>,
@@ -13633,7 +15137,6 @@ impl Jobs {
 
     // repeated .xenon.Job jobs = 2;
 
-
     pub fn get_jobs(&self) -> &[Job] {
         &self.jobs
     }
@@ -13642,7 +15145,10 @@ impl Jobs {
     }
 
     // Param is passed by value, moved
-    pub fn set_jobs(&mut self, v: ::protobuf::RepeatedField<Job>) {
+    pub fn set_jobs(
+        &mut self,
+        v: ::protobuf::RepeatedField<Job>,
+    ) {
         self.jobs = v;
     }
 
@@ -13663,20 +15169,23 @@ impl ::protobuf::Message for Jobs {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 2 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.jobs)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -13689,18 +15198,21 @@ impl ::protobuf::Message for Jobs {
         for value in &self.jobs {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.jobs {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -13736,19 +15248,15 @@ impl ::protobuf::Message for Jobs {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
-                "jobs",
-                |m: &Jobs| { &m.jobs },
-                |m: &mut Jobs| { &mut m.jobs },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Jobs>(
-                "Jobs",
-                fields,
-                file_descriptor_proto()
-            )
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >("jobs", |m: &Jobs| &m.jobs, |m: &mut Jobs| &mut m.jobs));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Jobs>("Jobs", fields, file_descriptor_proto())
         })
     }
 
@@ -13766,7 +15274,10 @@ impl ::protobuf::Clear for Jobs {
 }
 
 impl ::std::fmt::Debug for Jobs {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -13777,7 +15288,7 @@ impl ::protobuf::reflect::ProtobufValue for Jobs {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetJobStatusesRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -13800,9 +15311,10 @@ impl GetJobStatusesRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -13813,7 +15325,10 @@ impl GetJobStatusesRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -13833,7 +15348,6 @@ impl GetJobStatusesRequest {
 
     // repeated .xenon.Job jobs = 2;
 
-
     pub fn get_jobs(&self) -> &[Job] {
         &self.jobs
     }
@@ -13842,7 +15356,10 @@ impl GetJobStatusesRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_jobs(&mut self, v: ::protobuf::RepeatedField<Job>) {
+    pub fn set_jobs(
+        &mut self,
+        v: ::protobuf::RepeatedField<Job>,
+    ) {
         self.jobs = v;
     }
 
@@ -13863,28 +15380,31 @@ impl ::protobuf::Message for GetJobStatusesRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.jobs {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.jobs)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -13901,13 +15421,16 @@ impl ::protobuf::Message for GetJobStatusesRequest {
         for value in &self.jobs {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -13917,7 +15440,7 @@ impl ::protobuf::Message for GetJobStatusesRequest {
             os.write_tag(2, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -13953,23 +15476,30 @@ impl ::protobuf::Message for GetJobStatusesRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &GetJobStatusesRequest| { &m.scheduler },
-                |m: &mut GetJobStatusesRequest| { &mut m.scheduler },
+                |m: &GetJobStatusesRequest| &m.scheduler,
+                |m: &mut GetJobStatusesRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >(
                 "jobs",
-                |m: &GetJobStatusesRequest| { &m.jobs },
-                |m: &mut GetJobStatusesRequest| { &mut m.jobs },
+                |m: &GetJobStatusesRequest| &m.jobs,
+                |m: &mut GetJobStatusesRequest| &mut m.jobs,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetJobStatusesRequest>(
                 "GetJobStatusesRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -13989,7 +15519,10 @@ impl ::protobuf::Clear for GetJobStatusesRequest {
 }
 
 impl ::std::fmt::Debug for GetJobStatusesRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -14000,7 +15533,7 @@ impl ::protobuf::reflect::ProtobufValue for GetJobStatusesRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct WaitRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -14024,9 +15557,10 @@ impl WaitRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -14037,7 +15571,10 @@ impl WaitRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -14057,9 +15594,10 @@ impl WaitRequest {
 
     // .xenon.Job job = 2;
 
-
     pub fn get_job(&self) -> &Job {
-        self.job.as_ref().unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
+        self.job
+            .as_ref()
+            .unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
     }
     pub fn clear_job(&mut self) {
         self.job.clear();
@@ -14070,7 +15608,10 @@ impl WaitRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_job(&mut self, v: Job) {
+    pub fn set_job(
+        &mut self,
+        v: Job,
+    ) {
         self.job = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -14090,7 +15631,6 @@ impl WaitRequest {
 
     // uint64 timeout = 3;
 
-
     pub fn get_timeout(&self) -> u64 {
         self.timeout
     }
@@ -14099,7 +15639,10 @@ impl WaitRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_timeout(&mut self, v: u64) {
+    pub fn set_timeout(
+        &mut self,
+        v: u64,
+    ) {
         self.timeout = v;
     }
 }
@@ -14110,35 +15653,38 @@ impl ::protobuf::Message for WaitRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         for v in &self.job {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.job)?;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_uint64()?;
                     self.timeout = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -14164,7 +15710,10 @@ impl ::protobuf::Message for WaitRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -14213,28 +15762,36 @@ impl ::protobuf::Message for WaitRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &WaitRequest| { &m.scheduler },
-                |m: &mut WaitRequest| { &mut m.scheduler },
+                |m: &WaitRequest| &m.scheduler,
+                |m: &mut WaitRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
-                "job",
-                |m: &WaitRequest| { &m.job },
-                |m: &mut WaitRequest| { &mut m.job },
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >(
+                "job", |m: &WaitRequest| &m.job, |m: &mut WaitRequest| &mut m.job
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint64>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint64,
+            >(
                 "timeout",
-                |m: &WaitRequest| { &m.timeout },
-                |m: &mut WaitRequest| { &mut m.timeout },
+                |m: &WaitRequest| &m.timeout,
+                |m: &mut WaitRequest| &mut m.timeout,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<WaitRequest>(
                 "WaitRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -14255,7 +15812,10 @@ impl ::protobuf::Clear for WaitRequest {
 }
 
 impl ::std::fmt::Debug for WaitRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -14266,7 +15826,7 @@ impl ::protobuf::reflect::ProtobufValue for WaitRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Queue {
     // message fields
     pub name: ::std::string::String,
@@ -14288,7 +15848,6 @@ impl Queue {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -14297,7 +15856,10 @@ impl Queue {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -14318,16 +15880,19 @@ impl ::protobuf::Message for Queue {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -14345,7 +15910,10 @@ impl ::protobuf::Message for Queue {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
@@ -14384,19 +15952,15 @@ impl ::protobuf::Message for Queue {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &Queue| { &m.name },
-                |m: &mut Queue| { &mut m.name },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Queue>(
-                "Queue",
-                fields,
-                file_descriptor_proto()
-            )
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >("name", |m: &Queue| &m.name, |m: &mut Queue| &mut m.name));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Queue>("Queue", fields, file_descriptor_proto())
         })
     }
 
@@ -14414,7 +15978,10 @@ impl ::protobuf::Clear for Queue {
 }
 
 impl ::std::fmt::Debug for Queue {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -14425,7 +15992,7 @@ impl ::protobuf::reflect::ProtobufValue for Queue {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Queues {
     // message fields
     pub name: ::protobuf::RepeatedField<::std::string::String>,
@@ -14447,7 +16014,6 @@ impl Queues {
 
     // repeated string name = 1;
 
-
     pub fn get_name(&self) -> &[::std::string::String] {
         &self.name
     }
@@ -14456,7 +16022,10 @@ impl Queues {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_name(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.name = v;
     }
 
@@ -14476,16 +16045,19 @@ impl ::protobuf::Message for Queues {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -14497,16 +16069,19 @@ impl ::protobuf::Message for Queues {
         let mut my_size = 0;
         for value in &self.name {
             my_size += ::protobuf::rt::string_size(1, &value);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.name {
             os.write_string(1, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -14542,19 +16117,15 @@ impl ::protobuf::Message for Queues {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &Queues| { &m.name },
-                |m: &mut Queues| { &mut m.name },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Queues>(
-                "Queues",
-                fields,
-                file_descriptor_proto()
-            )
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >("name", |m: &Queues| &m.name, |m: &mut Queues| &mut m.name));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Queues>("Queues", fields, file_descriptor_proto())
         })
     }
 
@@ -14572,7 +16143,10 @@ impl ::protobuf::Clear for Queues {
 }
 
 impl ::std::fmt::Debug for Queues {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -14583,7 +16157,7 @@ impl ::protobuf::reflect::ProtobufValue for Queues {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SchedulerAndQueues {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -14606,9 +16180,10 @@ impl SchedulerAndQueues {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -14619,7 +16194,10 @@ impl SchedulerAndQueues {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -14639,7 +16217,6 @@ impl SchedulerAndQueues {
 
     // repeated string queues = 2;
 
-
     pub fn get_queues(&self) -> &[::std::string::String] {
         &self.queues
     }
@@ -14648,7 +16225,10 @@ impl SchedulerAndQueues {
     }
 
     // Param is passed by value, moved
-    pub fn set_queues(&mut self, v: ::protobuf::RepeatedField<::std::string::String>) {
+    pub fn set_queues(
+        &mut self,
+        v: ::protobuf::RepeatedField<::std::string::String>,
+    ) {
         self.queues = v;
     }
 
@@ -14669,23 +16249,26 @@ impl ::protobuf::Message for SchedulerAndQueues {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_repeated_string_into(wire_type, is, &mut self.queues)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -14701,13 +16284,16 @@ impl ::protobuf::Message for SchedulerAndQueues {
         }
         for value in &self.queues {
             my_size += ::protobuf::rt::string_size(2, &value);
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -14715,7 +16301,7 @@ impl ::protobuf::Message for SchedulerAndQueues {
         }
         for v in &self.queues {
             os.write_string(2, &v)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -14751,23 +16337,30 @@ impl ::protobuf::Message for SchedulerAndQueues {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &SchedulerAndQueues| { &m.scheduler },
-                |m: &mut SchedulerAndQueues| { &mut m.scheduler },
+                |m: &SchedulerAndQueues| &m.scheduler,
+                |m: &mut SchedulerAndQueues| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "queues",
-                |m: &SchedulerAndQueues| { &m.queues },
-                |m: &mut SchedulerAndQueues| { &mut m.queues },
+                |m: &SchedulerAndQueues| &m.queues,
+                |m: &mut SchedulerAndQueues| &mut m.queues,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SchedulerAndQueues>(
                 "SchedulerAndQueues",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -14787,7 +16380,10 @@ impl ::protobuf::Clear for SchedulerAndQueues {
 }
 
 impl ::std::fmt::Debug for SchedulerAndQueues {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -14798,7 +16394,7 @@ impl ::protobuf::reflect::ProtobufValue for SchedulerAndQueues {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetQueueStatusRequest {
     // message fields
     pub scheduler: ::protobuf::SingularPtrField<Scheduler>,
@@ -14821,9 +16417,10 @@ impl GetQueueStatusRequest {
 
     // .xenon.Scheduler scheduler = 1;
 
-
     pub fn get_scheduler(&self) -> &Scheduler {
-        self.scheduler.as_ref().unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
+        self.scheduler
+            .as_ref()
+            .unwrap_or_else(|| <Scheduler as ::protobuf::Message>::default_instance())
     }
     pub fn clear_scheduler(&mut self) {
         self.scheduler.clear();
@@ -14834,7 +16431,10 @@ impl GetQueueStatusRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler(&mut self, v: Scheduler) {
+    pub fn set_scheduler(
+        &mut self,
+        v: Scheduler,
+    ) {
         self.scheduler = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -14854,7 +16454,6 @@ impl GetQueueStatusRequest {
 
     // string queue = 2;
 
-
     pub fn get_queue(&self) -> &str {
         &self.queue
     }
@@ -14863,7 +16462,10 @@ impl GetQueueStatusRequest {
     }
 
     // Param is passed by value, moved
-    pub fn set_queue(&mut self, v: ::std::string::String) {
+    pub fn set_queue(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.queue = v;
     }
 
@@ -14885,23 +16487,26 @@ impl ::protobuf::Message for GetQueueStatusRequest {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.scheduler)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.queue)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -14923,7 +16528,10 @@ impl ::protobuf::Message for GetQueueStatusRequest {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.scheduler.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -14967,23 +16575,30 @@ impl ::protobuf::Message for GetQueueStatusRequest {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Scheduler>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Scheduler>,
+            >(
                 "scheduler",
-                |m: &GetQueueStatusRequest| { &m.scheduler },
-                |m: &mut GetQueueStatusRequest| { &mut m.scheduler },
+                |m: &GetQueueStatusRequest| &m.scheduler,
+                |m: &mut GetQueueStatusRequest| &mut m.scheduler,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "queue",
-                |m: &GetQueueStatusRequest| { &m.queue },
-                |m: &mut GetQueueStatusRequest| { &mut m.queue },
+                |m: &GetQueueStatusRequest| &m.queue,
+                |m: &mut GetQueueStatusRequest| &mut m.queue,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetQueueStatusRequest>(
                 "GetQueueStatusRequest",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -15003,7 +16618,10 @@ impl ::protobuf::Clear for GetQueueStatusRequest {
 }
 
 impl ::std::fmt::Debug for GetQueueStatusRequest {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -15014,7 +16632,7 @@ impl ::protobuf::reflect::ProtobufValue for GetQueueStatusRequest {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct JobStatus {
     // message fields
     pub job: ::protobuf::SingularPtrField<Job>,
@@ -15044,9 +16662,10 @@ impl JobStatus {
 
     // .xenon.Job job = 1;
 
-
     pub fn get_job(&self) -> &Job {
-        self.job.as_ref().unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
+        self.job
+            .as_ref()
+            .unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
     }
     pub fn clear_job(&mut self) {
         self.job.clear();
@@ -15057,7 +16676,10 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_job(&mut self, v: Job) {
+    pub fn set_job(
+        &mut self,
+        v: Job,
+    ) {
         self.job = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -15077,7 +16699,6 @@ impl JobStatus {
 
     // string state = 2;
 
-
     pub fn get_state(&self) -> &str {
         &self.state
     }
@@ -15086,7 +16707,10 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_state(&mut self, v: ::std::string::String) {
+    pub fn set_state(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.state = v;
     }
 
@@ -15103,7 +16727,6 @@ impl JobStatus {
 
     // bool running = 3;
 
-
     pub fn get_running(&self) -> bool {
         self.running
     }
@@ -15112,12 +16735,14 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_running(&mut self, v: bool) {
+    pub fn set_running(
+        &mut self,
+        v: bool,
+    ) {
         self.running = v;
     }
 
     // bool done = 4;
-
 
     pub fn get_done(&self) -> bool {
         self.done
@@ -15127,14 +16752,18 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_done(&mut self, v: bool) {
+    pub fn set_done(
+        &mut self,
+        v: bool,
+    ) {
         self.done = v;
     }
 
     // repeated .xenon.JobStatus.SchedulerSpecificInformationEntry scheduler_specific_information = 5;
 
-
-    pub fn get_scheduler_specific_information(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    pub fn get_scheduler_specific_information(
+        &self
+    ) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.scheduler_specific_information
     }
     pub fn clear_scheduler_specific_information(&mut self) {
@@ -15142,22 +16771,31 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler_specific_information(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_scheduler_specific_information(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.scheduler_specific_information = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_scheduler_specific_information(&mut self) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    pub fn mut_scheduler_specific_information(
+        &mut self
+    ) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &mut self.scheduler_specific_information
     }
 
     // Take field
-    pub fn take_scheduler_specific_information(&mut self) -> ::std::collections::HashMap<::std::string::String, ::std::string::String> {
-        ::std::mem::replace(&mut self.scheduler_specific_information, ::std::collections::HashMap::new())
+    pub fn take_scheduler_specific_information(
+        &mut self
+    ) -> ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+        ::std::mem::replace(
+            &mut self.scheduler_specific_information,
+            ::std::collections::HashMap::new(),
+        )
     }
 
     // int32 exit_code = 6;
-
 
     pub fn get_exit_code(&self) -> i32 {
         self.exit_code
@@ -15167,12 +16805,14 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_exit_code(&mut self, v: i32) {
+    pub fn set_exit_code(
+        &mut self,
+        v: i32,
+    ) {
         self.exit_code = v;
     }
 
     // string error_message = 7;
-
 
     pub fn get_error_message(&self) -> &str {
         &self.error_message
@@ -15182,7 +16822,10 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_message(&mut self, v: ::std::string::String) {
+    pub fn set_error_message(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.error_message = v;
     }
 
@@ -15199,7 +16842,6 @@ impl JobStatus {
 
     // .xenon.JobStatus.ErrorType error_type = 8;
 
-
     pub fn get_error_type(&self) -> JobStatus_ErrorType {
         self.error_type
     }
@@ -15208,12 +16850,14 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_type(&mut self, v: JobStatus_ErrorType) {
+    pub fn set_error_type(
+        &mut self,
+        v: JobStatus_ErrorType,
+    ) {
         self.error_type = v;
     }
 
     // string name = 9;
-
 
     pub fn get_name(&self) -> &str {
         &self.name
@@ -15223,7 +16867,10 @@ impl JobStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -15245,56 +16892,66 @@ impl ::protobuf::Message for JobStatus {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.job)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.state)?;
-                },
+                }
                 3 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.running = tmp;
-                },
+                }
                 4 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_bool()?;
                     self.done = tmp;
-                },
+                }
                 5 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.scheduler_specific_information)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.scheduler_specific_information)?;
+                }
                 6 => {
                     if wire_type != ::protobuf::wire_format::WireTypeVarint {
                         return ::std::result::Result::Err(::protobuf::rt::unexpected_wire_type(wire_type));
                     }
                     let tmp = is.read_int32()?;
                     self.exit_code = tmp;
-                },
+                }
                 7 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error_message)?;
-                },
-                8 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.error_type, 8, &mut self.unknown_fields)?
-                },
+                }
+                8 => ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.error_type,
+                    8,
+                    &mut self.unknown_fields,
+                )?,
                 9 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -15317,7 +16974,10 @@ impl ::protobuf::Message for JobStatus {
         if self.done != false {
             my_size += 2;
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(5, &self.scheduler_specific_information);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(5, &self.scheduler_specific_information);
         if self.exit_code != 0 {
             my_size += ::protobuf::rt::value_size(6, self.exit_code, ::protobuf::wire_format::WireTypeVarint);
         }
@@ -15335,7 +16995,10 @@ impl ::protobuf::Message for JobStatus {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.job.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -15350,7 +17013,10 @@ impl ::protobuf::Message for JobStatus {
         if self.done != false {
             os.write_bool(4, self.done)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(5, &self.scheduler_specific_information, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(5, &self.scheduler_specific_information, os)?;
         if self.exit_code != 0 {
             os.write_int32(6, self.exit_code)?;
         }
@@ -15398,58 +17064,79 @@ impl ::protobuf::Message for JobStatus {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
-                "job",
-                |m: &JobStatus| { &m.job },
-                |m: &mut JobStatus| { &mut m.job },
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >(
+                "job", |m: &JobStatus| &m.job, |m: &mut JobStatus| &mut m.job
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "state",
-                |m: &JobStatus| { &m.state },
-                |m: &mut JobStatus| { &mut m.state },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "state", |m: &JobStatus| &m.state, |m: &mut JobStatus| &mut m.state
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
                 "running",
-                |m: &JobStatus| { &m.running },
-                |m: &mut JobStatus| { &mut m.running },
+                |m: &JobStatus| &m.running,
+                |m: &mut JobStatus| &mut m.running,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                "done",
-                |m: &JobStatus| { &m.done },
-                |m: &mut JobStatus| { &mut m.done },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >(
+                "done", |m: &JobStatus| &m.done, |m: &mut JobStatus| &mut m.done
             ));
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "scheduler_specific_information",
-                |m: &JobStatus| { &m.scheduler_specific_information },
-                |m: &mut JobStatus| { &mut m.scheduler_specific_information },
+                |m: &JobStatus| &m.scheduler_specific_information,
+                |m: &mut JobStatus| &mut m.scheduler_specific_information,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeInt32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeInt32,
+            >(
                 "exit_code",
-                |m: &JobStatus| { &m.exit_code },
-                |m: &mut JobStatus| { &mut m.exit_code },
+                |m: &JobStatus| &m.exit_code,
+                |m: &mut JobStatus| &mut m.exit_code,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "error_message",
-                |m: &JobStatus| { &m.error_message },
-                |m: &mut JobStatus| { &mut m.error_message },
+                |m: &JobStatus| &m.error_message,
+                |m: &mut JobStatus| &mut m.error_message,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<JobStatus_ErrorType>>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<JobStatus_ErrorType>,
+            >(
                 "error_type",
-                |m: &JobStatus| { &m.error_type },
-                |m: &mut JobStatus| { &mut m.error_type },
+                |m: &JobStatus| &m.error_type,
+                |m: &mut JobStatus| &mut m.error_type,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &JobStatus| { &m.name },
-                |m: &mut JobStatus| { &mut m.name },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "name", |m: &JobStatus| &m.name, |m: &mut JobStatus| &mut m.name
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<JobStatus>(
                 "JobStatus",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -15476,7 +17163,10 @@ impl ::protobuf::Clear for JobStatus {
 }
 
 impl ::std::fmt::Debug for JobStatus {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -15487,7 +17177,7 @@ impl ::protobuf::reflect::ProtobufValue for JobStatus {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum JobStatus_ErrorType {
     NONE = 0,
     NOT_FOUND = 1,
@@ -15512,7 +17202,7 @@ impl ::protobuf::ProtobufEnum for JobStatus_ErrorType {
             4 => ::std::option::Option::Some(JobStatus_ErrorType::XENON),
             5 => ::std::option::Option::Some(JobStatus_ErrorType::IO),
             6 => ::std::option::Option::Some(JobStatus_ErrorType::OTHER),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -15532,13 +17222,15 @@ impl ::protobuf::ProtobufEnum for JobStatus_ErrorType {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<JobStatus_ErrorType>("JobStatus.ErrorType", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<JobStatus_ErrorType>(
+                "JobStatus.ErrorType",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for JobStatus_ErrorType {
-}
+impl ::std::marker::Copy for JobStatus_ErrorType {}
 
 impl ::std::default::Default for JobStatus_ErrorType {
     fn default() -> Self {
@@ -15552,7 +17244,7 @@ impl ::protobuf::reflect::ProtobufValue for JobStatus_ErrorType {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetJobStatusesResponse {
     // message fields
     pub statuses: ::protobuf::RepeatedField<JobStatus>,
@@ -15574,7 +17266,6 @@ impl GetJobStatusesResponse {
 
     // repeated .xenon.JobStatus statuses = 1;
 
-
     pub fn get_statuses(&self) -> &[JobStatus] {
         &self.statuses
     }
@@ -15583,7 +17274,10 @@ impl GetJobStatusesResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_statuses(&mut self, v: ::protobuf::RepeatedField<JobStatus>) {
+    pub fn set_statuses(
+        &mut self,
+        v: ::protobuf::RepeatedField<JobStatus>,
+    ) {
         self.statuses = v;
     }
 
@@ -15604,20 +17298,23 @@ impl ::protobuf::Message for GetJobStatusesResponse {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.statuses)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -15630,18 +17327,21 @@ impl ::protobuf::Message for GetJobStatusesResponse {
         for value in &self.statuses {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.statuses {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -15677,18 +17377,22 @@ impl ::protobuf::Message for GetJobStatusesResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<JobStatus>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<JobStatus>,
+            >(
                 "statuses",
-                |m: &GetJobStatusesResponse| { &m.statuses },
-                |m: &mut GetJobStatusesResponse| { &mut m.statuses },
+                |m: &GetJobStatusesResponse| &m.statuses,
+                |m: &mut GetJobStatusesResponse| &mut m.statuses,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetJobStatusesResponse>(
                 "GetJobStatusesResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -15707,7 +17411,10 @@ impl ::protobuf::Clear for GetJobStatusesResponse {
 }
 
 impl ::std::fmt::Debug for GetJobStatusesResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -15718,7 +17425,7 @@ impl ::protobuf::reflect::ProtobufValue for GetJobStatusesResponse {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct QueueStatus {
     // message fields
     pub name: ::std::string::String,
@@ -15743,7 +17450,6 @@ impl QueueStatus {
 
     // string name = 1;
 
-
     pub fn get_name(&self) -> &str {
         &self.name
     }
@@ -15752,7 +17458,10 @@ impl QueueStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_name(&mut self, v: ::std::string::String) {
+    pub fn set_name(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.name = v;
     }
 
@@ -15769,8 +17478,9 @@ impl QueueStatus {
 
     // repeated .xenon.QueueStatus.SchedulerSpecificInformationEntry scheduler_specific_information = 2;
 
-
-    pub fn get_scheduler_specific_information(&self) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    pub fn get_scheduler_specific_information(
+        &self
+    ) -> &::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &self.scheduler_specific_information
     }
     pub fn clear_scheduler_specific_information(&mut self) {
@@ -15778,22 +17488,31 @@ impl QueueStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_scheduler_specific_information(&mut self, v: ::std::collections::HashMap<::std::string::String, ::std::string::String>) {
+    pub fn set_scheduler_specific_information(
+        &mut self,
+        v: ::std::collections::HashMap<::std::string::String, ::std::string::String>,
+    ) {
         self.scheduler_specific_information = v;
     }
 
     // Mutable pointer to the field.
-    pub fn mut_scheduler_specific_information(&mut self) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+    pub fn mut_scheduler_specific_information(
+        &mut self
+    ) -> &mut ::std::collections::HashMap<::std::string::String, ::std::string::String> {
         &mut self.scheduler_specific_information
     }
 
     // Take field
-    pub fn take_scheduler_specific_information(&mut self) -> ::std::collections::HashMap<::std::string::String, ::std::string::String> {
-        ::std::mem::replace(&mut self.scheduler_specific_information, ::std::collections::HashMap::new())
+    pub fn take_scheduler_specific_information(
+        &mut self
+    ) -> ::std::collections::HashMap<::std::string::String, ::std::string::String> {
+        ::std::mem::replace(
+            &mut self.scheduler_specific_information,
+            ::std::collections::HashMap::new(),
+        )
     }
 
     // string error_message = 3;
-
 
     pub fn get_error_message(&self) -> &str {
         &self.error_message
@@ -15803,7 +17522,10 @@ impl QueueStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_message(&mut self, v: ::std::string::String) {
+    pub fn set_error_message(
+        &mut self,
+        v: ::std::string::String,
+    ) {
         self.error_message = v;
     }
 
@@ -15820,7 +17542,6 @@ impl QueueStatus {
 
     // .xenon.QueueStatus.ErrorType error_type = 4;
 
-
     pub fn get_error_type(&self) -> QueueStatus_ErrorType {
         self.error_type
     }
@@ -15829,7 +17550,10 @@ impl QueueStatus {
     }
 
     // Param is passed by value, moved
-    pub fn set_error_type(&mut self, v: QueueStatus_ErrorType) {
+    pub fn set_error_type(
+        &mut self,
+        v: QueueStatus_ErrorType,
+    ) {
         self.error_type = v;
     }
 }
@@ -15839,25 +17563,35 @@ impl ::protobuf::Message for QueueStatus {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.name)?;
-                },
+                }
                 2 => {
-                    ::protobuf::rt::read_map_into::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(wire_type, is, &mut self.scheduler_specific_information)?;
-                },
+                    ::protobuf::rt::read_map_into::<
+                        ::protobuf::types::ProtobufTypeString,
+                        ::protobuf::types::ProtobufTypeString,
+                    >(wire_type, is, &mut self.scheduler_specific_information)?;
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_string_into(wire_type, is, &mut self.error_message)?;
-                },
-                4 => {
-                    ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(wire_type, is, &mut self.error_type, 4, &mut self.unknown_fields)?
-                },
+                }
+                4 => ::protobuf::rt::read_proto3_enum_with_unknown_fields_into(
+                    wire_type,
+                    is,
+                    &mut self.error_type,
+                    4,
+                    &mut self.unknown_fields,
+                )?,
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -15870,7 +17604,10 @@ impl ::protobuf::Message for QueueStatus {
         if !self.name.is_empty() {
             my_size += ::protobuf::rt::string_size(1, &self.name);
         }
-        my_size += ::protobuf::rt::compute_map_size::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(2, &self.scheduler_specific_information);
+        my_size += ::protobuf::rt::compute_map_size::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(2, &self.scheduler_specific_information);
         if !self.error_message.is_empty() {
             my_size += ::protobuf::rt::string_size(3, &self.error_message);
         }
@@ -15882,11 +17619,17 @@ impl ::protobuf::Message for QueueStatus {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if !self.name.is_empty() {
             os.write_string(1, &self.name)?;
         }
-        ::protobuf::rt::write_map_with_cached_sizes::<::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(2, &self.scheduler_specific_information, os)?;
+        ::protobuf::rt::write_map_with_cached_sizes::<
+            ::protobuf::types::ProtobufTypeString,
+            ::protobuf::types::ProtobufTypeString,
+        >(2, &self.scheduler_specific_information, os)?;
         if !self.error_message.is_empty() {
             os.write_string(3, &self.error_message)?;
         }
@@ -15928,33 +17671,45 @@ impl ::protobuf::Message for QueueStatus {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
-                "name",
-                |m: &QueueStatus| { &m.name },
-                |m: &mut QueueStatus| { &mut m.name },
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
+                "name", |m: &QueueStatus| &m.name, |m: &mut QueueStatus| &mut m.name
             ));
-            fields.push(::protobuf::reflect::accessor::make_map_accessor::<_, ::protobuf::types::ProtobufTypeString, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_map_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "scheduler_specific_information",
-                |m: &QueueStatus| { &m.scheduler_specific_information },
-                |m: &mut QueueStatus| { &mut m.scheduler_specific_information },
+                |m: &QueueStatus| &m.scheduler_specific_information,
+                |m: &mut QueueStatus| &mut m.scheduler_specific_information,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeString>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeString,
+            >(
                 "error_message",
-                |m: &QueueStatus| { &m.error_message },
-                |m: &mut QueueStatus| { &mut m.error_message },
+                |m: &QueueStatus| &m.error_message,
+                |m: &mut QueueStatus| &mut m.error_message,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeEnum<QueueStatus_ErrorType>>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeEnum<QueueStatus_ErrorType>,
+            >(
                 "error_type",
-                |m: &QueueStatus| { &m.error_type },
-                |m: &mut QueueStatus| { &mut m.error_type },
+                |m: &QueueStatus| &m.error_type,
+                |m: &mut QueueStatus| &mut m.error_type,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<QueueStatus>(
                 "QueueStatus",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -15976,7 +17731,10 @@ impl ::protobuf::Clear for QueueStatus {
 }
 
 impl ::std::fmt::Debug for QueueStatus {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -15987,7 +17745,7 @@ impl ::protobuf::reflect::ProtobufValue for QueueStatus {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum QueueStatus_ErrorType {
     NONE = 0,
     NOT_FOUND = 1,
@@ -16010,7 +17768,7 @@ impl ::protobuf::ProtobufEnum for QueueStatus_ErrorType {
             3 => ::std::option::Option::Some(QueueStatus_ErrorType::XENON),
             4 => ::std::option::Option::Some(QueueStatus_ErrorType::IO),
             5 => ::std::option::Option::Some(QueueStatus_ErrorType::OTHER),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -16029,13 +17787,15 @@ impl ::protobuf::ProtobufEnum for QueueStatus_ErrorType {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<QueueStatus_ErrorType>("QueueStatus.ErrorType", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<QueueStatus_ErrorType>(
+                "QueueStatus.ErrorType",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for QueueStatus_ErrorType {
-}
+impl ::std::marker::Copy for QueueStatus_ErrorType {}
 
 impl ::std::default::Default for QueueStatus_ErrorType {
     fn default() -> Self {
@@ -16049,7 +17809,7 @@ impl ::protobuf::reflect::ProtobufValue for QueueStatus_ErrorType {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct QueueStatuses {
     // message fields
     pub statuses: ::protobuf::RepeatedField<QueueStatus>,
@@ -16071,7 +17831,6 @@ impl QueueStatuses {
 
     // repeated .xenon.QueueStatus statuses = 1;
 
-
     pub fn get_statuses(&self) -> &[QueueStatus] {
         &self.statuses
     }
@@ -16080,7 +17839,10 @@ impl QueueStatuses {
     }
 
     // Param is passed by value, moved
-    pub fn set_statuses(&mut self, v: ::protobuf::RepeatedField<QueueStatus>) {
+    pub fn set_statuses(
+        &mut self,
+        v: ::protobuf::RepeatedField<QueueStatus>,
+    ) {
         self.statuses = v;
     }
 
@@ -16101,20 +17863,23 @@ impl ::protobuf::Message for QueueStatuses {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_repeated_message_into(wire_type, is, &mut self.statuses)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -16127,18 +17892,21 @@ impl ::protobuf::Message for QueueStatuses {
         for value in &self.statuses {
             let len = value.compute_size();
             my_size += 1 + ::protobuf::rt::compute_raw_varint32_size(len) + len;
-        };
+        }
         my_size += ::protobuf::rt::unknown_fields_size(self.get_unknown_fields());
         self.cached_size.set(my_size);
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         for v in &self.statuses {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
             v.write_to_with_cached_sizes(os)?;
-        };
+        }
         os.write_unknown_fields(self.get_unknown_fields())?;
         ::std::result::Result::Ok(())
     }
@@ -16174,18 +17942,22 @@ impl ::protobuf::Message for QueueStatuses {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<QueueStatus>>(
+            fields.push(::protobuf::reflect::accessor::make_repeated_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<QueueStatus>,
+            >(
                 "statuses",
-                |m: &QueueStatuses| { &m.statuses },
-                |m: &mut QueueStatuses| { &mut m.statuses },
+                |m: &QueueStatuses| &m.statuses,
+                |m: &mut QueueStatuses| &mut m.statuses,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<QueueStatuses>(
                 "QueueStatuses",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -16204,7 +17976,10 @@ impl ::protobuf::Clear for QueueStatuses {
 }
 
 impl ::std::fmt::Debug for QueueStatuses {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -16215,7 +17990,7 @@ impl ::protobuf::reflect::ProtobufValue for QueueStatuses {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct SubmitInteractiveJobResponse {
     // message fields
     pub job: ::protobuf::SingularPtrField<Job>,
@@ -16239,9 +18014,10 @@ impl SubmitInteractiveJobResponse {
 
     // .xenon.Job job = 1;
 
-
     pub fn get_job(&self) -> &Job {
-        self.job.as_ref().unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
+        self.job
+            .as_ref()
+            .unwrap_or_else(|| <Job as ::protobuf::Message>::default_instance())
     }
     pub fn clear_job(&mut self) {
         self.job.clear();
@@ -16252,7 +18028,10 @@ impl SubmitInteractiveJobResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_job(&mut self, v: Job) {
+    pub fn set_job(
+        &mut self,
+        v: Job,
+    ) {
         self.job = ::protobuf::SingularPtrField::some(v);
     }
 
@@ -16272,7 +18051,6 @@ impl SubmitInteractiveJobResponse {
 
     // bytes stdout = 2;
 
-
     pub fn get_stdout(&self) -> &[u8] {
         &self.stdout
     }
@@ -16281,7 +18059,10 @@ impl SubmitInteractiveJobResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_stdout(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_stdout(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.stdout = v;
     }
 
@@ -16298,7 +18079,6 @@ impl SubmitInteractiveJobResponse {
 
     // bytes stderr = 3;
 
-
     pub fn get_stderr(&self) -> &[u8] {
         &self.stderr
     }
@@ -16307,7 +18087,10 @@ impl SubmitInteractiveJobResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_stderr(&mut self, v: ::std::vec::Vec<u8>) {
+    pub fn set_stderr(
+        &mut self,
+        v: ::std::vec::Vec<u8>,
+    ) {
         self.stderr = v;
     }
 
@@ -16329,26 +18112,29 @@ impl ::protobuf::Message for SubmitInteractiveJobResponse {
             if !v.is_initialized() {
                 return false;
             }
-        };
+        }
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
                 1 => {
                     ::protobuf::rt::read_singular_message_into(wire_type, is, &mut self.job)?;
-                },
+                }
                 2 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.stdout)?;
-                },
+                }
                 3 => {
                     ::protobuf::rt::read_singular_proto3_bytes_into(wire_type, is, &mut self.stderr)?;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -16373,7 +18159,10 @@ impl ::protobuf::Message for SubmitInteractiveJobResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if let Some(ref v) = self.job.as_ref() {
             os.write_tag(1, ::protobuf::wire_format::WireTypeLengthDelimited)?;
             os.write_raw_varint32(v.get_cached_size())?;
@@ -16420,28 +18209,38 @@ impl ::protobuf::Message for SubmitInteractiveJobResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<_, ::protobuf::types::ProtobufTypeMessage<Job>>(
+            fields.push(::protobuf::reflect::accessor::make_singular_ptr_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeMessage<Job>,
+            >(
                 "job",
-                |m: &SubmitInteractiveJobResponse| { &m.job },
-                |m: &mut SubmitInteractiveJobResponse| { &mut m.job },
+                |m: &SubmitInteractiveJobResponse| &m.job,
+                |m: &mut SubmitInteractiveJobResponse| &mut m.job,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "stdout",
-                |m: &SubmitInteractiveJobResponse| { &m.stdout },
-                |m: &mut SubmitInteractiveJobResponse| { &mut m.stdout },
+                |m: &SubmitInteractiveJobResponse| &m.stdout,
+                |m: &mut SubmitInteractiveJobResponse| &mut m.stdout,
             ));
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBytes>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBytes,
+            >(
                 "stderr",
-                |m: &SubmitInteractiveJobResponse| { &m.stderr },
-                |m: &mut SubmitInteractiveJobResponse| { &mut m.stderr },
+                |m: &SubmitInteractiveJobResponse| &m.stderr,
+                |m: &mut SubmitInteractiveJobResponse| &mut m.stderr,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<SubmitInteractiveJobResponse>(
                 "SubmitInteractiveJobResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -16462,7 +18261,10 @@ impl ::protobuf::Clear for SubmitInteractiveJobResponse {
 }
 
 impl ::std::fmt::Debug for SubmitInteractiveJobResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -16473,7 +18275,7 @@ impl ::protobuf::reflect::ProtobufValue for SubmitInteractiveJobResponse {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct Is {
     // message fields
     pub value: bool,
@@ -16495,7 +18297,6 @@ impl Is {
 
     // bool value = 1;
 
-
     pub fn get_value(&self) -> bool {
         self.value
     }
@@ -16504,7 +18305,10 @@ impl Is {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: bool) {
+    pub fn set_value(
+        &mut self,
+        v: bool,
+    ) {
         self.value = v;
     }
 }
@@ -16514,7 +18318,10 @@ impl ::protobuf::Message for Is {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -16524,10 +18331,10 @@ impl ::protobuf::Message for Is {
                     }
                     let tmp = is.read_bool()?;
                     self.value = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -16545,7 +18352,10 @@ impl ::protobuf::Message for Is {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if self.value != false {
             os.write_bool(1, self.value)?;
         }
@@ -16584,19 +18394,15 @@ impl ::protobuf::Message for Is {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeBool>(
-                "value",
-                |m: &Is| { &m.value },
-                |m: &mut Is| { &mut m.value },
-            ));
-            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Is>(
-                "Is",
-                fields,
-                file_descriptor_proto()
-            )
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeBool,
+            >("value", |m: &Is| &m.value, |m: &mut Is| &mut m.value));
+            ::protobuf::reflect::MessageDescriptor::new_pb_name::<Is>("Is", fields, file_descriptor_proto())
         })
     }
 
@@ -16614,7 +18420,10 @@ impl ::protobuf::Clear for Is {
 }
 
 impl ::std::fmt::Debug for Is {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -16625,7 +18434,7 @@ impl ::protobuf::reflect::ProtobufValue for Is {
     }
 }
 
-#[derive(PartialEq,Clone,Default)]
+#[derive(PartialEq, Clone, Default)]
 pub struct GetDefaultRuntimeResponse {
     // message fields
     pub value: u32,
@@ -16647,7 +18456,6 @@ impl GetDefaultRuntimeResponse {
 
     // uint32 value = 1;
 
-
     pub fn get_value(&self) -> u32 {
         self.value
     }
@@ -16656,7 +18464,10 @@ impl GetDefaultRuntimeResponse {
     }
 
     // Param is passed by value, moved
-    pub fn set_value(&mut self, v: u32) {
+    pub fn set_value(
+        &mut self,
+        v: u32,
+    ) {
         self.value = v;
     }
 }
@@ -16666,7 +18477,10 @@ impl ::protobuf::Message for GetDefaultRuntimeResponse {
         true
     }
 
-    fn merge_from(&mut self, is: &mut ::protobuf::CodedInputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn merge_from(
+        &mut self,
+        is: &mut ::protobuf::CodedInputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         while !is.eof()? {
             let (field_number, wire_type) = is.read_tag_unpack()?;
             match field_number {
@@ -16676,10 +18490,10 @@ impl ::protobuf::Message for GetDefaultRuntimeResponse {
                     }
                     let tmp = is.read_uint32()?;
                     self.value = tmp;
-                },
+                }
                 _ => {
                     ::protobuf::rt::read_unknown_or_skip_group(field_number, wire_type, is, self.mut_unknown_fields())?;
-                },
+                }
             };
         }
         ::std::result::Result::Ok(())
@@ -16697,7 +18511,10 @@ impl ::protobuf::Message for GetDefaultRuntimeResponse {
         my_size
     }
 
-    fn write_to_with_cached_sizes(&self, os: &mut ::protobuf::CodedOutputStream<'_>) -> ::protobuf::ProtobufResult<()> {
+    fn write_to_with_cached_sizes(
+        &self,
+        os: &mut ::protobuf::CodedOutputStream<'_>,
+    ) -> ::protobuf::ProtobufResult<()> {
         if self.value != 0 {
             os.write_uint32(1, self.value)?;
         }
@@ -16736,18 +18553,22 @@ impl ::protobuf::Message for GetDefaultRuntimeResponse {
     }
 
     fn descriptor_static() -> &'static ::protobuf::reflect::MessageDescriptor {
-        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> = ::protobuf::rt::LazyV2::INIT;
+        static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::MessageDescriptor> =
+            ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
             let mut fields = ::std::vec::Vec::new();
-            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<_, ::protobuf::types::ProtobufTypeUint32>(
+            fields.push(::protobuf::reflect::accessor::make_simple_field_accessor::<
+                _,
+                ::protobuf::types::ProtobufTypeUint32,
+            >(
                 "value",
-                |m: &GetDefaultRuntimeResponse| { &m.value },
-                |m: &mut GetDefaultRuntimeResponse| { &mut m.value },
+                |m: &GetDefaultRuntimeResponse| &m.value,
+                |m: &mut GetDefaultRuntimeResponse| &mut m.value,
             ));
             ::protobuf::reflect::MessageDescriptor::new_pb_name::<GetDefaultRuntimeResponse>(
                 "GetDefaultRuntimeResponse",
                 fields,
-                file_descriptor_proto()
+                file_descriptor_proto(),
             )
         })
     }
@@ -16766,7 +18587,10 @@ impl ::protobuf::Clear for GetDefaultRuntimeResponse {
 }
 
 impl ::std::fmt::Debug for GetDefaultRuntimeResponse {
-    fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+    fn fmt(
+        &self,
+        f: &mut ::std::fmt::Formatter<'_>,
+    ) -> ::std::fmt::Result {
         ::protobuf::text_format::fmt(self, f)
     }
 }
@@ -16777,7 +18601,7 @@ impl ::protobuf::reflect::ProtobufValue for GetDefaultRuntimeResponse {
     }
 }
 
-#[derive(Clone,PartialEq,Eq,Debug,Hash)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 pub enum PosixFilePermission {
     NONE = 0,
     OWNER_READ = 1,
@@ -16808,7 +18632,7 @@ impl ::protobuf::ProtobufEnum for PosixFilePermission {
             7 => ::std::option::Option::Some(PosixFilePermission::OTHERS_READ),
             8 => ::std::option::Option::Some(PosixFilePermission::OTHERS_WRITE),
             9 => ::std::option::Option::Some(PosixFilePermission::OTHERS_EXECUTE),
-            _ => ::std::option::Option::None
+            _ => ::std::option::Option::None,
         }
     }
 
@@ -16831,13 +18655,15 @@ impl ::protobuf::ProtobufEnum for PosixFilePermission {
     fn enum_descriptor_static() -> &'static ::protobuf::reflect::EnumDescriptor {
         static descriptor: ::protobuf::rt::LazyV2<::protobuf::reflect::EnumDescriptor> = ::protobuf::rt::LazyV2::INIT;
         descriptor.get(|| {
-            ::protobuf::reflect::EnumDescriptor::new_pb_name::<PosixFilePermission>("PosixFilePermission", file_descriptor_proto())
+            ::protobuf::reflect::EnumDescriptor::new_pb_name::<PosixFilePermission>(
+                "PosixFilePermission",
+                file_descriptor_proto(),
+            )
         })
     }
 }
 
-impl ::std::marker::Copy for PosixFilePermission {
-}
+impl ::std::marker::Copy for PosixFilePermission {}
 
 impl ::std::default::Default for PosixFilePermission {
     fn default() -> Self {
@@ -18345,14 +20171,13 @@ static file_descriptor_proto_data: &'static [u8] = b"\
     \x19\x03\x12\x04\xf3\x04'1b\x06proto3\
 ";
 
-static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> = ::protobuf::rt::LazyV2::INIT;
+static file_descriptor_proto_lazy: ::protobuf::rt::LazyV2<::protobuf::descriptor::FileDescriptorProto> =
+    ::protobuf::rt::LazyV2::INIT;
 
 fn parse_descriptor_proto() -> ::protobuf::descriptor::FileDescriptorProto {
     ::protobuf::Message::parse_from_bytes(file_descriptor_proto_data).unwrap()
 }
 
 pub fn file_descriptor_proto() -> &'static ::protobuf::descriptor::FileDescriptorProto {
-    file_descriptor_proto_lazy.get(|| {
-        parse_descriptor_proto()
-    })
+    file_descriptor_proto_lazy.get(|| parse_descriptor_proto())
 }

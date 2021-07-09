@@ -13,10 +13,14 @@ impl Credential {
     ///
     ///
     ///
-    pub fn new_password<S: Into<String>>(
-        username: S,
-        password: S,
-    ) -> Credential {
+    pub fn new_password<S1, S2>(
+        username: S1,
+        password: S2,
+    ) -> Credential
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+    {
         let password = PasswordCredential::new(username, password);
         Credential::Password(password)
     }
@@ -24,11 +28,16 @@ impl Credential {
     ///
     ///
     ///
-    pub fn new_certificate<S: Into<String>>(
-        certificate: S,
-        username: S,
-        passphrase: Option<S>,
-    ) -> Credential {
+    pub fn new_certificate<S1, S2, S3>(
+        certificate: S1,
+        username: S2,
+        passphrase: Option<S3>,
+    ) -> Credential
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+        S3: Into<String>,
+    {
         let certificate = CertificateCredential::new(certificate, username, passphrase);
         Credential::Certificate(certificate)
     }
@@ -68,14 +77,19 @@ impl CertificateCredential {
     ///
     ///
     ///
-    pub fn new<S: Into<String>>(
-        certificate: S,
-        username: S,
-        passphrase: Option<S>,
-    ) -> Self {
+    pub fn new<S1, S2, S3>(
+        certificate: S1,
+        username: S2,
+        passphrase: Option<S3>,
+    ) -> Self
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+        S3: Into<String>,
+    {
         CertificateCredential {
             certificate: certificate.into(),
-            passphrase: passphrase.map(S::into),
+            passphrase: passphrase.map(S3::into),
             username: username.into(),
         }
     }
@@ -108,10 +122,14 @@ impl PasswordCredential {
     ///
     ///
     ///
-    pub fn new<S: Into<String>>(
-        username: S,
-        password: S,
-    ) -> PasswordCredential {
+    pub fn new<S1, S2>(
+        username: S1,
+        password: S2,
+    ) -> PasswordCredential
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+    {
         PasswordCredential {
             password: password.into(),
             username: username.into(),
@@ -150,7 +168,7 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(certificate, username, passphrase);
+        let credential = Credential::new_certificate(certificate, username, Some(passphrase));
         assert!(!credential.is_password());
         assert!(credential.is_certificate());
     }
@@ -161,7 +179,7 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(&certificate, &username, &passphrase);
+        let credential = Credential::new_certificate(&certificate, &username, Some(&passphrase));
 
         if let Credential::Certificate(cc) = credential {
             let cc_proto = cc.proto();
