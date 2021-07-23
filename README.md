@@ -9,34 +9,42 @@ This crate contains Rust bindings to the Xenon middleware (gRPC).
 [Documentation](https://docs.rs/xenon-rs/latest/xenon)
 
 ## Usage
-The interface mimicks that of [PyXenon](https://pyxenon.readthedocs.io) as closely as possible.
+The interface is kept, as much as possible, similar to [Xenon's Java API](https://xenon-middleware.github.io/xenon/versions/3.0.0/javadoc) and [PyXenon](https://pyxenon.readthedocs.io).
 
 ```rust
 use anyhow::Result;
-use maplit::hashmap;
 use std::collections::HashMap;
-use std::path::PathBuf;
-use std::sync::Arc;
 use xenon::credentials::Credential;
 use xenon::storage::{FileSystem, FileSystemPath};
 
-fn main() -> Result<()> {
-  // Connect to the remote server
-  let credential = Credential::new_password("xenon", "javagat");
-  let properties = hashmap!{
-      "xenon.adaptors.filesystems.sftp.strictHostKeyChecking" => "false",
-  };
+#[tokio::main]
+async fn main() -> Result<()> {
+    let location = "remote-server:22";
+    let credential = Credential::new_password("username", "password");
+    let xenon_endpoint = "http://localhost:50051";
 
-  let filesystem = FileSystem::create(
-      "sftp",
-      "localhost:50051",
-      credential,
-      "remote-server:22",
-      properties,
-  )?;
+    // Create a new connection to a remote filesystem.
+    let mut filesystem = FileSystem::create(
+        "sftp", 
+        location, 
+        credential, 
+        xenon_endpoint, 
+        None,
+    ).await?;
 
-  // Create a new file
-  let new_file = FileSystemPath::new("example.txt");
-  filesystem.create_file(&new_file)?;
+    // Create a new file, if it not already exists.
+    let example_file = FileSystemPath::new("example.txt");
+    if !filesystem.exists(&example_file).await? {
+        filesystem.create_file(&example_file).await?;
+    }
+
+    // Append some text to the file.
+    let text = String::from("Hello, world!\n");
+    filesystem.append_to_file(text, &example_file).await?;
+
+    // Close the connection to the remote filesystem.
+    filesystem.close().await?;
+
+    Ok(())
 }
 ```

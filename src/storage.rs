@@ -95,18 +95,17 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn create<S1, S2, S3, S4>(
+    pub async fn create<S1, S2, S3>(
         adaptor: S1,
         location: S2,
         credential: Credential,
         xenon_endpoint: S3,
-        properties: Option<HashMap<S4, S4>>,
+        properties: Option<HashMap<String, String>>,
     ) -> Result<FileSystem>
     where
         S1: Into<String>,
         S2: Into<String>,
         S3: Into<String>,
-        S4: Into<String>,
     {
         let adaptor = adaptor.into();
         let credential = match credential {
@@ -118,17 +117,11 @@ impl FileSystem {
             }
         };
 
-        let properties = properties
-            .unwrap_or_default()
-            .into_iter()
-            .map(|(k, v)| (k.into(), v.into()))
-            .collect();
-
         // Construct create request message.
         let request = x::CreateFileSystemRequest {
             adaptor: adaptor.clone(),
             location: location.into(),
-            properties,
+            properties: properties.unwrap_or_default(),
             credential: Some(credential),
         };
 
