@@ -19,10 +19,10 @@ pub async fn create_sftp_filesystem() -> Result<FileSystem> {
 
     let filesystem = FileSystem::create(
         String::from("sftp"),
-        "http://localhost:50051",
-        credential,
         String::from("slurm:22"),
-        properties,
+        credential,
+        "http://localhost:50051",
+        Some(properties),
     )
     .await?;
 
@@ -574,6 +574,34 @@ async fn setworkingdirectory_nonexisting_err() -> Result<()> {
     let result = filesystem.set_working_directory(&directory).await;
 
     assert!(result.is_err());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn writetofile_existing_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
+
+    let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
+    filesystem.create_file(&path).await?;
+
+    let buffer = String::from("Hello, world!").as_bytes().to_vec();
+    let result = filesystem.write_to_file(buffer, &path).await;
+
+    assert!(result.is_err());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn writetofile_nonexisting_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
+
+    let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
+    let buffer = String::new().as_bytes().to_vec();
+    let result = filesystem.write_to_file(buffer, &path).await;
+
+    assert!(result.is_ok());
 
     Ok(())
 }

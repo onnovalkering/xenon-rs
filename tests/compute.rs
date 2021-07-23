@@ -13,10 +13,10 @@ pub async fn create_slurm_scheduler() -> Result<Scheduler> {
 
     let scheduler = Scheduler::create(
         String::from("slurm"),
-        "http://localhost:50051",
-        credential,
         String::from("ssh://slurm:22"),
-        properties,
+        credential,
+        "http://localhost:50051",
+        Some(properties),
     )
     .await?;
 
@@ -27,7 +27,7 @@ pub async fn create_slurm_scheduler() -> Result<Scheduler> {
 async fn canceljob_existing_ok() -> Result<()> {
     let mut scheduler = create_slurm_scheduler().await?;
     let job_description = JobDescription {
-        arguments: Some(vec![String::from("10")]),
+        arguments: Some(vec![String::from("120")]),
         executable: Some(String::from("sleep")),
         ..Default::default()
     };

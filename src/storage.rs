@@ -97,10 +97,10 @@ impl FileSystem {
     ///
     pub async fn create<S1, S2, S3, S4>(
         adaptor: S1,
-        xenon_endpoint: S2,
+        location: S2,
         credential: Credential,
-        location: S3,
-        properties: HashMap<S4, S4>,
+        xenon_endpoint: S3,
+        properties: Option<HashMap<S4, S4>>,
     ) -> Result<FileSystem>
     where
         S1: Into<String>,
@@ -109,7 +109,6 @@ impl FileSystem {
         S4: Into<String>,
     {
         let adaptor = adaptor.into();
-        let properties = properties.into_iter().map(|(k, v)| (k.into(), v.into())).collect();
         let credential = match credential {
             Credential::Password(password) => {
                 x::create_file_system_request::Credential::PasswordCredential(password.proto())
@@ -118,6 +117,12 @@ impl FileSystem {
                 x::create_file_system_request::Credential::CertificateCredential(certificate.proto())
             }
         };
+
+        let properties = properties
+            .unwrap_or_default()
+            .into_iter()
+            .map(|(k, v)| (k.into(), v.into()))
+            .collect();
 
         // Construct create request message.
         let request = x::CreateFileSystemRequest {
