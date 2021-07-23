@@ -31,13 +31,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       
+      - name: Setup docker
+        uses: docker-practice/actions-setup-docker@master
+        if: matrix.os == 'macos-latest'
+        
       - name: Start services
-        run: |
-          if [ `uname` = 'Darwin' ]; then
-              brew install --cask docker
-          fi
-
-          docker-compose up -d        
+        run: docker-compose up -d 
 
       - name: Build project
         run: cargo build -v
