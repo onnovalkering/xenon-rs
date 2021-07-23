@@ -6,11 +6,13 @@ use xenon::credentials::Credential;
 use xenon::storage::FileSystem;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
 
-///
-///
-///
+
 pub async fn create_sftp_filesystem() -> Result<FileSystem> {
     let credential = Credential::new_password(String::from("xenon"), String::from("javagat"));
+    create_sftp_filesystem_inner(credential).await
+}
+
+pub async fn create_sftp_filesystem_inner(credential: Credential) -> Result<FileSystem> {
     let mut properties = HashMap::new();
     properties.insert(
         String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking"),
@@ -109,10 +111,19 @@ async fn copy_existingremotefs_ok() -> Result<()> {
 }
 
 #[tokio::test]
-async fn create_default_ok() -> Result<()> {
+async fn create_passwordcredential_ok() -> Result<()> {
     let filesystem = create_sftp_filesystem().await;
 
     assert!(filesystem.is_ok());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn create_certificatecredential_ok() -> Result<()> {
+    let credential = Credential::new_certificate("/unsafe_ssh_key", "xenon", "");
+    let scheduler = create_sftp_filesystem_inner(credential).await;
+    assert!(scheduler.is_ok());
 
     Ok(())
 }

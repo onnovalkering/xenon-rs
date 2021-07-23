@@ -3,8 +3,12 @@ use std::collections::HashMap;
 use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus, Scheduler};
 use xenon::credentials::Credential;
 
-pub async fn create_slurm_scheduler() -> Result<Scheduler> {
+async fn create_slurm_scheduler() -> Result<Scheduler> {
     let credential = Credential::new_password(String::from("xenon"), String::from("javagat"));
+    create_slurm_scheduler_inner(credential).await
+}
+
+async fn create_slurm_scheduler_inner(credential: Credential) -> Result<Scheduler> {
     let mut properties = HashMap::new();
     properties.insert(
         String::from("xenon.adaptors.schedulers.ssh.strictHostKeyChecking"),
@@ -58,8 +62,17 @@ async fn canceljob_nonexisting_err() -> Result<()> {
 }
 
 #[tokio::test]
-async fn create_default_ok() -> Result<()> {
+async fn create_passwordcredential_ok() -> Result<()> {
     let scheduler = create_slurm_scheduler().await;
+    assert!(scheduler.is_ok());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn create_certificatecredential_ok() -> Result<()> {
+    let credential = Credential::new_certificate("/unsafe_ssh_key", "xenon", "");
+    let scheduler = create_slurm_scheduler_inner(credential).await;
     assert!(scheduler.is_ok());
 
     Ok(())
