@@ -1,11 +1,17 @@
-version: "3.3"
+version: "3.5"
 services:
-  xenon:
-    image: "onnovalkering/xenon-grpc"
-    ports:
-      - "50051:50051"
-
   slurm:
-    image: "nlesc/xenon-slurm"
+    build:
+      context: .
+      dockerfile: Dockerfile.slurm
     ports:
       - "10022:22"
+
+  xenon:
+    build:
+      context: .
+      dockerfile: Dockerfile.xenon
+    ports:
+      - "50051:50051"
+    privileged: true
+    

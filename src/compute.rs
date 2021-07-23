@@ -1,10 +1,8 @@
 use crate::credentials::Credential;
-use crate::xenon as x;
-use crate::xenon_grpc::SchedulerServiceClient;
+use crate::xenon::{self as x, scheduler_service_client::SchedulerServiceClient};
 use anyhow::Result;
-use grpcio::Channel;
-use protobuf::RepeatedField;
 use std::collections::HashMap;
+use tonic::transport::Channel;
 
 type Map<T> = std::collections::HashMap<String, T>;
 
@@ -13,7 +11,7 @@ type Map<T> = std::collections::HashMap<String, T>;
 ///
 pub struct Scheduler {
     pub adaptor: String,
-    client: SchedulerServiceClient,
+    client: SchedulerServiceClient<Channel>,
     open: bool,
     pub(crate) scheduler: x::Scheduler,
     pub identifier: String,
@@ -23,15 +21,17 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn cancel_job(
-        &self,
+    pub async fn cancel_job(
+        &mut self,
         job: Job,
     ) -> Result<JobStatus> {
-        let mut request = x::JobRequest::new();
-        request.set_job(job.proto());
-        request.set_scheduler(self.scheduler.clone());
+        let request = x::JobRequest {
+            job: Some(job.proto()),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.cancel_job(&request)?;
+        let response = self.client.cancel_job(request).await?;
+        let response = response.into_inner();
 
         Ok(JobStatus::from(response))
     }
@@ -39,9 +39,9 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn close(&mut self) -> Result<()> {
+    pub async fn close(&mut self) -> Result<()> {
         if self.open {
-            self.client.close(&self.scheduler)?;
+            self.client.close(self.scheduler.clone()).await?;
             self.open = false;
         }
 
@@ -51,39 +51,40 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn create<AS, LS, PS1, PS2>(
-        adaptor: AS,
-        channel: Channel,
+    pub async fn create<S1, S2, S3, S4>(
+        adaptor: S1,
+        xenon_endpoint: S2,
         credential: Credential,
-        location: LS,
-        properties: Option<HashMap<PS1, PS2>>,
+        location: S3,
+        properties: HashMap<S4, S4>,
     ) -> Result<Scheduler>
     where
-        AS: Into<String>,
-        LS: Into<String>,
-        PS1: Into<String>,
-        PS2: Into<String>,
+        S1: Into<String>,
+        S2: Into<String>,
+        S3: Into<String>,
+        S4: Into<String>,
     {
         let adaptor = adaptor.into();
-        let client = SchedulerServiceClient::new(channel);
+        let properties = properties.into_iter().map(|(k, v)| (k.into(), v.into())).collect();
+        let credential = match credential {
+            Credential::Password(password) => {
+                x::create_scheduler_request::Credential::PasswordCredential(password.proto())
+            }
+            Credential::Certificate(certificate) => {
+                x::create_scheduler_request::Credential::CertificateCredential(certificate.proto())
+            }
+        };
 
         // Construct create request message.
-        let mut request = x::CreateSchedulerRequest::new();
-        request.set_adaptor(adaptor.clone());
-        request.set_location(location.into());
-        if let Some(p) = properties {
-            let mut properties = HashMap::new();
-            for (k, v) in p {
-                properties.insert(String::from(k.into()), String::from(v.into()));
-            }
-            request.set_properties(properties);
-        }
-        match credential {
-            Credential::Password(password) => request.set_password_credential(password.proto()),
-            Credential::Certificate(certificate) => request.set_certificate_credential(certificate.proto()),
-        }
+        let request = x::CreateSchedulerRequest {
+            adaptor: adaptor.clone(),
+            location: location.into(),
+            properties,
+            credential: Some(credential),
+        };
 
-        let scheduler = client.create(&request)?;
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.into()).await?;
+        let scheduler = client.create(request).await?.into_inner();
         let identifier = scheduler.id.clone();
 
         Ok(Scheduler {
@@ -98,8 +99,9 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_default_queue_name(&self) -> Result<String> {
-        let response = self.client.get_default_queue_name(&self.scheduler)?;
+    pub async fn get_default_queue_name(&mut self) -> Result<String> {
+        let response = self.client.get_default_queue_name(self.scheduler.clone()).await?;
+        let response = response.into_inner();
 
         Ok(response.name)
     }
@@ -107,15 +109,17 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_job_status(
-        &self,
+    pub async fn get_job_status(
+        &mut self,
         job: Job,
     ) -> Result<JobStatus> {
-        let mut request = x::JobRequest::new();
-        request.set_job(job.proto());
-        request.set_scheduler(self.scheduler.clone());
+        let request = x::JobRequest {
+            job: Some(job.proto()),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.get_job_status(&request)?;
+        let response = self.client.get_job_status(request).await?;
+        let response = response.into_inner();
 
         Ok(JobStatus::from(response))
     }
@@ -123,46 +127,49 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_job_statuses(
-        &self,
+    pub async fn get_job_statuses(
+        &mut self,
         jobs: Vec<Job>,
     ) -> Result<Vec<JobStatus>> {
         let jobs = jobs.iter().map(|j| j.clone().proto()).collect();
 
-        let mut request = x::GetJobStatusesRequest::new();
-        request.set_jobs(RepeatedField::from_vec(jobs));
-        request.set_scheduler(self.scheduler.clone());
+        let request = x::GetJobStatusesRequest {
+            jobs,
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.get_job_statuses(&request)?;
+        let response = self.client.get_job_statuses(request).await?;
+        let response = response.into_inner();
+
         let statuses = response.statuses.iter().map(|j| JobStatus::from(j.clone())).collect();
-
         Ok(statuses)
     }
 
     ///
     ///
     ///
-    pub fn get_jobs(
-        &self,
+    pub async fn get_jobs(
+        &mut self,
         queues: Option<Vec<String>>,
     ) -> Result<Vec<Job>> {
-        let mut request = x::SchedulerAndQueues::new();
-        request.set_scheduler(self.scheduler.clone());
-        if let Some(queues) = queues {
-            request.set_queues(RepeatedField::from_vec(queues));
-        }
+        let request = x::SchedulerAndQueues {
+            queues: queues.unwrap_or_default(),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.get_jobs(&request)?;
+        let response = self.client.get_jobs(request).await?;
+        let response = response.into_inner();
+
         let jobs = response.jobs.iter().map(|j| Job::new(j.id.clone())).collect();
-
         Ok(jobs)
     }
 
     ///
     ///
     ///
-    pub fn get_properties(&self) -> Result<Map<String>> {
-        let response = self.client.get_properties(&self.scheduler)?;
+    pub async fn get_properties(&mut self) -> Result<Map<String>> {
+        let response = self.client.get_properties(self.scheduler.clone()).await?;
+        let response = response.into_inner();
 
         Ok(response.properties)
     }
@@ -170,70 +177,78 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn get_queue_names(&self) -> Result<Vec<String>> {
-        let response = self.client.get_queue_names(&self.scheduler)?;
+    pub async fn get_queue_names(&mut self) -> Result<Vec<String>> {
+        let response = self.client.get_queue_names(self.scheduler.clone()).await?;
+        let response = response.into_inner();
 
-        Ok(response.name.into_vec())
+        Ok(response.name)
     }
 
     ///
     ///
     ///
-    pub fn get_queue_status<S: Into<String>>(
-        &self,
+    pub async fn get_queue_status<S: Into<String>>(
+        &mut self,
         queue: S,
     ) -> Result<QueueStatus> {
-        let mut request = x::GetQueueStatusRequest::new();
-        request.set_scheduler(self.scheduler.clone());
-        request.set_queue(queue.into());
+        let request = x::GetQueueStatusRequest {
+            queue: queue.into(),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.get_queue_status(&request)?;
+        let response = self.client.get_queue_status(request).await?;
+        let response = response.into_inner();
+
         Ok(QueueStatus::from(response))
     }
 
     ///
     ///
     ///
-    pub fn get_queue_statuses(
-        &self,
+    pub async fn get_queue_statuses(
+        &mut self,
         queues: Option<Vec<String>>,
     ) -> Result<Vec<QueueStatus>> {
-        let mut request = x::SchedulerAndQueues::new();
-        request.set_scheduler(self.scheduler.clone());
-        if let Some(queues) = queues {
-            request.set_queues(RepeatedField::from_vec(queues));
-        }
+        let request = x::SchedulerAndQueues {
+            queues: queues.unwrap_or_default(),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.get_queue_statuses(&request)?;
+        let response = self.client.get_queue_statuses(request).await?;
+        let response = response.into_inner();
+
         let statuses = response.statuses.iter().map(|s| QueueStatus::from(s.clone())).collect();
-
         Ok(statuses)
     }
 
     ///
     ///
     ///
-    pub fn is_open(&mut self) -> Result<bool> {
+    pub async fn is_open(&mut self) -> Result<bool> {
         if self.open {
-            let response = self.client.is_open(&self.scheduler)?;
+            let response = self.client.is_open(self.scheduler.clone()).await?;
+            let response = response.into_inner();
+
             self.open = response.value
         }
 
         Ok(self.open)
     }
 
-    ///
-    ///
-    ///
-    pub fn submit_batch_job(
-        &self,
+    // ///
+    // ///
+    // ///
+    pub async fn submit_batch_job(
+        &mut self,
         description: JobDescription,
     ) -> Result<Job> {
-        let mut request = x::SubmitBatchJobRequest::new();
-        request.set_description(description.proto());
-        request.set_scheduler(self.scheduler.clone());
+        let request = x::SubmitBatchJobRequest {
+            description: Some(description.proto()),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.submit_batch_job(&request)?;
+        let response = self.client.submit_batch_job(request).await?;
+        let response = response.into_inner();
 
         Ok(Job::new(response.id))
     }
@@ -241,19 +256,19 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn wait_until_done(
-        &self,
+    pub async fn wait_until_done(
+        &mut self,
         job: Job,
         timeout: Option<u64>,
     ) -> Result<JobStatus> {
-        let mut request = x::WaitRequest::new();
-        request.set_job(job.proto());
-        request.set_scheduler(self.scheduler.clone());
-        if let Some(timeout) = timeout {
-            request.set_timeout(timeout);
-        }
+        let request = x::WaitRequest {
+            job: Some(job.proto()),
+            timeout: timeout.unwrap_or_default(),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.wait_until_done(&request)?;
+        let response = self.client.wait_until_done(request).await?;
+        let response = response.into_inner();
 
         Ok(JobStatus::from(response))
     }
@@ -261,30 +276,21 @@ impl Scheduler {
     ///
     ///
     ///
-    pub fn wait_until_running(
-        &self,
+    pub async fn wait_until_running(
+        &mut self,
         job: Job,
         timeout: Option<u64>,
     ) -> Result<JobStatus> {
-        let mut request = x::WaitRequest::new();
-        request.set_job(job.proto());
-        request.set_scheduler(self.scheduler.clone());
-        if let Some(timeout) = timeout {
-            request.set_timeout(timeout);
-        }
+        let request = x::WaitRequest {
+            job: Some(job.proto()),
+            timeout: timeout.unwrap_or_default(),
+            scheduler: Some(self.scheduler.clone()),
+        };
 
-        let response = self.client.wait_until_running(&request)?;
+        let response = self.client.wait_until_running(request).await?;
+        let response = response.into_inner();
 
         Ok(JobStatus::from(response))
-    }
-}
-
-impl Drop for Scheduler {
-    ///
-    ///
-    ///
-    fn drop(&mut self) {
-        self.close().unwrap();
     }
 }
 
@@ -300,8 +306,8 @@ impl Job {
     ///
     ///
     ///
-    pub(crate) fn from(job: protobuf::SingularPtrField<x::Job>) -> Option<Job> {
-        if let Some(job) = job.into_option() {
+    pub(crate) fn from(job: Option<x::Job>) -> Option<Job> {
+        if let Some(job) = job {
             Some(Job::new(job.id))
         } else {
             None
@@ -319,10 +325,7 @@ impl Job {
     ///
     ///
     pub(crate) fn proto(self) -> x::Job {
-        let mut job = x::Job::new();
-        job.set_id(self.id);
-
-        job
+        x::Job { id: self.id }
     }
 }
 
@@ -331,6 +334,7 @@ impl Job {
 ///
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct JobDescription {
+    pub name: Option<String>,
     pub arguments: Option<Vec<String>>,
     pub executable: Option<String>,
     pub working_directory: Option<String>,
@@ -355,60 +359,26 @@ impl JobDescription {
     ///
     ///
     pub(crate) fn proto(self) -> x::JobDescription {
-        let mut description = x::JobDescription::new();
-        if let Some(arguments) = self.arguments {
-            description.set_arguments(RepeatedField::from_vec(arguments));
+        x::JobDescription {
+            name: self.name.unwrap_or_default(),
+            arguments: self.arguments.unwrap_or_default(),
+            executable: self.executable.unwrap_or_default(),
+            working_directory: self.working_directory.unwrap_or_default(),
+            environment: self.environment.unwrap_or_default(),
+            queue_name: self.queue.unwrap_or_default(),
+            max_runtime: self.max_runtime.unwrap_or_default(),
+            stderr: self.stderr.unwrap_or_default(),
+            stdin: self.stdin.unwrap_or_default(),
+            stdout: self.stdout.unwrap_or_default(),
+            max_memory: self.max_memory.unwrap_or_default(),
+            scheduler_arguments: self.scheduler_arguments.unwrap_or_default(),
+            tasks: self.tasks.unwrap_or_default(),
+            cores_per_task: self.cores_per_tasks.unwrap_or_default(),
+            tasks_per_node: self.tasks_per_node.unwrap_or_default(),
+            start_per_task: self.start_per_task.unwrap_or_default(),
+            start_time: self.start_time.unwrap_or_default(),
+            temp_space: self.temp_space.unwrap_or_default(),
         }
-        if let Some(executable) = self.executable {
-            description.set_executable(executable);
-        }
-        if let Some(working_directory) = self.working_directory {
-            description.set_working_directory(working_directory);
-        }
-        if let Some(environment) = self.environment {
-            description.set_environment(environment);
-        }
-        if let Some(queue) = self.queue {
-            description.set_queue_name(queue);
-        }
-        if let Some(max_runtime) = self.max_runtime {
-            description.set_max_runtime(max_runtime);
-        }
-        if let Some(stderr) = self.stderr {
-            description.set_stderr(stderr);
-        }
-        if let Some(stdin) = self.stdin {
-            description.set_stdin(stdin);
-        }
-        if let Some(stdout) = self.stdout {
-            description.set_stdout(stdout);
-        }
-        if let Some(max_memory) = self.max_memory {
-            description.set_max_memory(max_memory);
-        }
-        if let Some(scheduler_arguments) = self.scheduler_arguments {
-            description.set_scheduler_arguments(RepeatedField::from_vec(scheduler_arguments));
-        }
-        if let Some(tasks) = self.tasks {
-            description.set_tasks(tasks);
-        }
-        if let Some(cores_per_tasks) = self.cores_per_tasks {
-            description.set_cores_per_task(cores_per_tasks);
-        }
-        if let Some(tasks_per_node) = self.tasks_per_node {
-            description.set_tasks_per_node(tasks_per_node);
-        }
-        if let Some(start_per_task) = self.start_per_task {
-            description.set_start_per_task(start_per_task);
-        }
-        if let Some(start_time) = self.start_time {
-            description.set_start_time(start_time);
-        }
-        if let Some(temp_space) = self.temp_space {
-            description.set_temp_space(temp_space);
-        }
-
-        description
     }
 }
 
@@ -432,7 +402,8 @@ impl JobStatus {
     ///
     ///
     pub(crate) fn from(status: x::JobStatus) -> JobStatus {
-        let error_type = JobErrorType::from(status.error_type);
+        let error_type = x::job_status::ErrorType::from_i32(status.error_type);
+        let error_type = JobErrorType::from(error_type.unwrap_or_default());
 
         JobStatus {
             done: status.done,
@@ -465,18 +436,17 @@ impl JobErrorType {
     ///
     ///
     ///
-    pub(crate) fn from(error_type: x::JobStatus_ErrorType) -> JobErrorType {
-        use x::JobStatus_ErrorType::*;
-        use JobErrorType::*;
+    pub(crate) fn from(error_type: x::job_status::ErrorType) -> JobErrorType {
+        use x::job_status::ErrorType::*;
 
         match error_type {
-            NONE => None,
-            NOT_FOUND => NotFound,
-            CANCELLED => Cancelled,
-            NOT_CONNECTED => NotConnected,
-            XENON => Xenon,
-            IO => InputOutput,
-            OTHER => Other,
+            None => JobErrorType::None,
+            NotFound => JobErrorType::NotFound,
+            Cancelled => JobErrorType::Cancelled,
+            NotConnected => JobErrorType::NotConnected,
+            Xenon => JobErrorType::Xenon,
+            Io => JobErrorType::InputOutput,
+            Other => JobErrorType::Other,
         }
     }
 }
@@ -496,7 +466,8 @@ impl QueueStatus {
     ///
     ///
     pub(crate) fn from(status: x::QueueStatus) -> QueueStatus {
-        let error_type = QueueErrorType::from(status.error_type);
+        let error_type = x::queue_status::ErrorType::from_i32(status.error_type);
+        let error_type = QueueErrorType::from(error_type.unwrap_or_default());
 
         QueueStatus::new(status.name, status.error_message, error_type)
     }
@@ -534,17 +505,16 @@ impl QueueErrorType {
     ///
     ///
     ///
-    pub(crate) fn from(error_type: x::QueueStatus_ErrorType) -> QueueErrorType {
-        use x::QueueStatus_ErrorType::*;
-        use QueueErrorType::*;
+    pub(crate) fn from(error_type: x::queue_status::ErrorType) -> QueueErrorType {
+        use x::queue_status::ErrorType::*;
 
         match error_type {
-            NONE => None,
-            NOT_FOUND => NotFound,
-            NOT_CONNECTED => NotConnected,
-            XENON => Xenon,
-            IO => InputOutput,
-            OTHER => Other,
+            None => QueueErrorType::None,
+            NotFound => QueueErrorType::NotFound,
+            NotConnected => QueueErrorType::NotConnected,
+            Xenon => QueueErrorType::Xenon,
+            Io => QueueErrorType::InputOutput,
+            Other => QueueErrorType::Other,
         }
     }
 }

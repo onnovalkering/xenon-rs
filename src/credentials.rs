@@ -31,7 +31,7 @@ impl Credential {
     pub fn new_certificate<S1, S2, S3>(
         certificate: S1,
         username: S2,
-        passphrase: Option<S3>,
+        passphrase: S3,
     ) -> Credential
     where
         S1: Into<String>,
@@ -69,7 +69,7 @@ impl Credential {
 #[derive(Clone)]
 pub struct CertificateCredential {
     pub certificate: String,
-    pub passphrase: Option<String>,
+    pub passphrase: String,
     pub username: String,
 }
 
@@ -80,7 +80,7 @@ impl CertificateCredential {
     pub fn new<S1, S2, S3>(
         certificate: S1,
         username: S2,
-        passphrase: Option<S3>,
+        passphrase: S3,
     ) -> Self
     where
         S1: Into<String>,
@@ -89,7 +89,7 @@ impl CertificateCredential {
     {
         CertificateCredential {
             certificate: certificate.into(),
-            passphrase: passphrase.map(S3::into),
+            passphrase: passphrase.into(),
             username: username.into(),
         }
     }
@@ -98,14 +98,11 @@ impl CertificateCredential {
     ///
     ///
     pub(crate) fn proto(self) -> x::CertificateCredential {
-        let mut credential = x::CertificateCredential::new();
-        credential.set_username(self.username);
-        credential.set_certfile(self.certificate);
-        if let Some(passphrase) = self.passphrase {
-            credential.set_passphrase(passphrase);
+        x::CertificateCredential {
+            username: self.username,
+            passphrase: self.passphrase,
+            certfile: self.certificate,
         }
-
-        credential
     }
 }
 
@@ -140,11 +137,10 @@ impl PasswordCredential {
     ///
     ///
     pub(crate) fn proto(self) -> x::PasswordCredential {
-        let mut credential = x::PasswordCredential::new();
-        credential.set_username(self.username);
-        credential.set_password(self.password);
-
-        credential
+        x::PasswordCredential {
+            username: self.username,
+            password: self.password,
+        }
     }
 }
 
@@ -168,7 +164,7 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(certificate, username, Some(passphrase));
+        let credential = Credential::new_certificate(certificate, username, passphrase);
         assert!(!credential.is_password());
         assert!(credential.is_certificate());
     }
@@ -179,14 +175,14 @@ mod tests {
         let username = String::from("username");
         let passphrase = String::from("passphrase");
 
-        let credential = Credential::new_certificate(&certificate, &username, Some(&passphrase));
+        let credential = Credential::new_certificate(&certificate, &username, &passphrase);
 
         if let Credential::Certificate(cc) = credential {
             let cc_proto = cc.proto();
 
-            assert_eq!(cc_proto.get_certfile(), &certificate);
-            assert_eq!(cc_proto.get_username(), &username);
-            assert_eq!(cc_proto.get_passphrase(), &passphrase);
+            assert_eq!(cc_proto.certfile, certificate);
+            assert_eq!(cc_proto.username, username);
+            assert_eq!(cc_proto.passphrase, passphrase);
         }
     }
 
@@ -200,8 +196,8 @@ mod tests {
         if let Credential::Password(cp) = credential {
             let cp_proto = cp.proto();
 
-            assert_eq!(cp_proto.get_username(), &username);
-            assert_eq!(cp_proto.get_password(), &password);
+            assert_eq!(cp_proto.username, username);
+            assert_eq!(cp_proto.password, password);
         }
     }
 }

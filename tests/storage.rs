@@ -1,229 +1,318 @@
-mod common;
+use anyhow::Result;
 use rand::random;
+use std::collections::HashMap;
 use std::collections::HashSet;
 use xenon::credentials::Credential;
+use xenon::storage::FileSystem;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
 
+///
+///
+///
+pub async fn create_sftp_filesystem() -> Result<FileSystem> {
+    let credential = Credential::new_password(String::from("xenon"), String::from("javagat"));
+    let mut properties = HashMap::new();
+    properties.insert(
+        String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking"),
+        String::from("false"),
+    );
+
+    let filesystem = FileSystem::create(
+        String::from("sftp"),
+        "http://localhost:50051",
+        credential,
+        String::from("slurm:22"),
+        properties,
+    )
+    .await?;
+
+    Ok(filesystem)
+}
+
+///
+///
+///
+pub fn get_slurmjob_file() -> Vec<u8> {
+    let slurmjob = concat!(
+        "#!/bin/bash\n",
+        "#SBATCH --job-name test-slurm\n",
+        "#SBATCH --output test-slurm.out\n",
+        "#SBATCH --error test-slurm.err\n",
+        "#SBATCH --time 0:30:00\n",
+        "#SBATCH --partition mypartition\n",
+        "#SBATCH --ntasks 1\n",
+        "\n",
+        "date\n",
+        "hostname\n",
+        "sleep 15\n",
+        "date\n"
+    );
+
+    slurmjob.as_bytes().to_vec()
+}
+
 #[tokio::test]
-async fn appendtofile_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn appendtofile_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_file(&path).unwrap();
+    filesystem.create_file(&path).await?;
 
     let buffer = String::from("Hello, world!").as_bytes().to_vec();
     let result = filesystem.append_to_file(buffer, &path).await;
 
-    assert!(result.is_ok())
+    assert!(result.is_ok());
+
+    Ok(())
 }
 
 #[tokio::test]
-async fn appendtofile_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn appendtofile_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
     let buffer = String::new().as_bytes().to_vec();
     let result = filesystem.append_to_file(buffer, &path).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn copy_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn copy_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let source = FileSystemPath::new("test-slurm.job");
     let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem.copy(&source, &destination, None, false, 5000);
+    let result = filesystem.copy(&source, &destination, None, false, 5000).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn copy_existingremotefs_ok() {
-    let filesystem1 = common::create_sftp_filesystem().unwrap();
-    let filesystem2 = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn copy_existingremotefs_ok() -> Result<()> {
+    let mut filesystem1 = create_sftp_filesystem().await?;
+    let filesystem2 = create_sftp_filesystem().await?;
 
     let source = FileSystemPath::new("test-slurm.job");
     let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem1.copy(&source, &destination, Some(filesystem2), false, 5000);
+    let result = filesystem1
+        .copy(&source, &destination, Some(filesystem2), false, 5000)
+        .await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn create_default_ok() {
-    let filesystem = common::create_sftp_filesystem();
+#[tokio::test]
+async fn create_default_ok() -> Result<()> {
+    let filesystem = create_sftp_filesystem().await;
 
     assert!(filesystem.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn createdirectories_existing_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createdirectories_existing_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("filesystem-test-fixture/links");
-    let result = filesystem.create_directories(&path);
+    let result = filesystem.create_directories(&path).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn createdirectories_nonexisting_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createdirectories_nonexisting_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new(format!("directory_{}/sub/sub", random::<u16>()));
-    let result = filesystem.create_directories(&path);
+    let result = filesystem.create_directories(&path).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn createdirectory_existing_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createdirectory_existing_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("filesystem-test-fixture");
-    let result = filesystem.create_directory(&path);
+    let result = filesystem.create_directory(&path).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn createdirectory_nonexisting_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createdirectory_nonexisting_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new(format!("directory_{}", random::<u16>()));
-    let result = filesystem.create_directory(&path);
+    let result = filesystem.create_directory(&path).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn createfile_existing_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createfile_existing_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("test-slurm.job");
-    let result = filesystem.create_file(&path);
+    let result = filesystem.create_file(&path).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn createfile_nonexisting_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createfile_nonexisting_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let result = filesystem.create_file(&path);
+    let result = filesystem.create_file(&path).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn createsymboliclink_existing_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createsymboliclink_existing_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new("test-slurm.job");
     let target = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.create_symbolic_link(&link, &target);
+    let result = filesystem.create_symbolic_link(&link, &target).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn createsymboliclink_nonexisting_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createsymboliclink_nonexisting_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
     let target = FileSystemPath::new("test-slurm.job");
-    filesystem.create_symbolic_link(&link, &target).unwrap();
+    filesystem.create_symbolic_link(&link, &target).await?;
 
-    let result = filesystem.read_symbolic_link(&link);
+    let result = filesystem.read_symbolic_link(&link).await;
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
+
+    Ok(())
 }
 
-#[test]
-fn createsymboliclink_nonexistingtarget_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn createsymboliclink_nonexistingtarget_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
     let target = FileSystemPath::new("nonexisting.txt");
-    filesystem.create_symbolic_link(&link, &target).unwrap();
+    filesystem.create_symbolic_link(&link, &target).await?;
 
-    let result = filesystem.read_symbolic_link(&link);
+    let result = filesystem.read_symbolic_link(&link).await;
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
+
+    Ok(())
 }
 
-#[test]
-fn delete_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn delete_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.delete(&path, false);
+    let result = filesystem.delete(&path, false).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn delete_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn delete_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.delete(&path, false);
+    let result = filesystem.delete(&path, false).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn exists_existing_true() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn exists_existing_true() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("test-slurm.job");
-    let result = filesystem.exists(&path);
+    let result = filesystem.exists(&path).await;
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), true);
+
+    Ok(())
 }
 
-#[test]
-fn exists_nonexisting_false() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn exists_nonexisting_false() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.exists(&path);
+    let result = filesystem.exists(&path).await;
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), false);
+
+    Ok(())
 }
 
-#[test]
-fn getattributes_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getattributes_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("test-slurm.job");
-    let result = filesystem.exists(&path);
+    let result = filesystem.exists(&path).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn getattributes_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getattributes_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.get_attributes(&path);
+    let result = filesystem.get_attributes(&path).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn getfscredential_default_password() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getfscredential_default_password() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_credential();
+    let result = filesystem.get_fs_credential().await;
 
     assert!(result.is_ok());
     let credential = result.unwrap();
@@ -236,70 +325,84 @@ fn getfscredential_default_password() {
     } else {
         unreachable!();
     }
+
+    Ok(())
 }
 
-#[test]
-fn getfslocation_default_location() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getfslocation_default_location() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_location();
+    let result = filesystem.get_fs_location().await;
     assert!(result.is_ok());
     let location = result.unwrap();
 
     assert_eq!(location, String::from("slurm:22"));
+
+    Ok(())
 }
 
-#[test]
-fn getfsproperties_default_properties() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getfsproperties_default_properties() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_properties();
+    let result = filesystem.get_fs_properties().await;
     assert!(result.is_ok());
     let properties = result.unwrap();
-    assert!(properties.contains_key(&String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking")))
+    assert!(properties.contains_key(&String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking")));
+
+    Ok(())
 }
 
-#[test]
-fn getfsseparator_default_separator() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn getfsseparator_default_separator() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_separator();
+    let result = filesystem.get_fs_separator().await;
     assert!(result.is_ok());
     let separator = result.unwrap();
 
     assert_eq!(separator, String::from("/"));
-}
 
-#[test]
-fn getworkingdirectory_default_path() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
-
-    let result = filesystem.get_working_directory();
-    assert!(result.is_ok());
-}
-
-#[test]
-fn isopen_open_true() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
-
-    let result = filesystem.is_open();
-    assert!(result.is_ok());
-    assert_eq!(result.unwrap(), true);
-}
-
-#[test]
-fn isopen_closed_false() {
-    let mut filesystem = common::create_sftp_filesystem().unwrap();
-    filesystem.close().unwrap();
-
-    let result = filesystem.is_open();
-    assert!(result.is_ok());
-    assert_eq!(result.unwrap(), false);
+    Ok(())
 }
 
 #[tokio::test]
-async fn list_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn getworkingdirectory_default_path() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
+
+    let result = filesystem.get_working_directory().await;
+    assert!(result.is_ok());
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn isopen_open_true() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
+
+    let result = filesystem.is_open().await;
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), true);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn isopen_closed_false() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
+    filesystem.close().await?;
+
+    let result = filesystem.is_open().await;
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), false);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn list_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("/home/xenon");
     let result = filesystem.list(&path, false).await;
@@ -307,148 +410,170 @@ async fn list_existing_ok() {
     assert!(result.is_ok());
     let files = result.unwrap();
     assert!(files.len() > 0);
+
+    Ok(())
 }
 
 #[tokio::test]
-async fn list_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn list_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("/nonexisting");
     let result = filesystem.list(&path, false).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
 #[tokio::test]
-async fn readfromfile_existing_buffer() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn readfromfile_existing_buffer() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("test-slurm.job");
     let result = filesystem.read_from_file(&path).await;
 
     assert!(result.is_ok());
-    let result = result.unwrap();
-    assert!(result.is_some());
     let buffer = result.unwrap();
-    assert_eq!(buffer, common::get_slurmjob_file());
+    assert_eq!(buffer, get_slurmjob_file());
+
+    Ok(())
 }
 
 #[tokio::test]
-async fn readfromfile_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+async fn readfromfile_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
     let result = filesystem.read_from_file(&path).await;
 
-    assert!(result.is_ok());
-    let result = result.unwrap();
-    assert!(result.is_none());
+    assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn readsymboliclink_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn readsymboliclink_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
     let target = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_symbolic_link(&link, &target).unwrap();
+    filesystem.create_symbolic_link(&link, &target).await?;
 
-    let result = filesystem.read_symbolic_link(&link);
+    let result = filesystem.read_symbolic_link(&link).await;
 
     assert!(result.is_ok());
     assert!(result.unwrap().path.ends_with(&target.path));
+
+    Ok(())
 }
 
-#[test]
-fn readsymboliclink_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn readsymboliclink_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.read_symbolic_link(&link);
+    let result = filesystem.read_symbolic_link(&link).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn readsymboliclink_nonsymboliclink_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn readsymboliclink_nonsymboliclink_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let link = FileSystemPath::new("test-slurm.job");
-    let result = filesystem.read_symbolic_link(&link);
+    let result = filesystem.read_symbolic_link(&link).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn rename_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn rename_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let source = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    filesystem.create_file(&source).unwrap();
+    filesystem.create_file(&source).await?;
 
     let destination = FileSystemPath::new(format!("file_{}.txt", random::<u16>()));
-    let result = filesystem.rename(&source, &destination);
+    let result = filesystem.rename(&source, &destination).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn rename_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn rename_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let source = FileSystemPath::new("nonexisting.txt");
     let destination = FileSystemPath::new("nonexisting.txt");
-    let result = filesystem.rename(&source, &destination);
+    let result = filesystem.rename(&source, &destination).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn setpermissions_existing_ok() {
+#[tokio::test]
+async fn setpermissions_existing_ok() -> Result<()> {
     use FileSystemPermission::*;
-    let filesystem = common::create_sftp_filesystem().unwrap();
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("test-slurm.job");
     let mut permissions = HashSet::<FileSystemPermission>::new();
     permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
-    let result = filesystem.set_permissions(&path, permissions.clone());
+    let result = filesystem.set_permissions(&path, permissions.clone()).await;
 
     assert!(result.is_ok());
-    let attributes = filesystem.get_attributes(&path).unwrap();
+    let attributes = filesystem.get_attributes(&path).await?;
     assert_eq!(permissions, attributes.permissions);
+
+    Ok(())
 }
 
-#[test]
-fn setpermissions_nonexisting_err() {
+#[tokio::test]
+async fn setpermissions_nonexisting_err() -> Result<()> {
     use FileSystemPermission::*;
-    let filesystem = common::create_sftp_filesystem().unwrap();
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let path = FileSystemPath::new("nonexisting.txt");
     let mut permissions = HashSet::<FileSystemPermission>::new();
     permissions.extend(vec![OwnerRead, OwnerWrite, OwnerExecute]);
 
-    let result = filesystem.set_permissions(&path, permissions);
+    let result = filesystem.set_permissions(&path, permissions).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }
 
-#[test]
-fn setworkingdirectory_existing_ok() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn setworkingdirectory_existing_ok() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let directory = FileSystemPath::new("/home/xenon/filesystem-test-fixture");
-    let result = filesystem.set_working_directory(&directory);
+    let result = filesystem.set_working_directory(&directory).await;
 
     assert!(result.is_ok());
+
+    Ok(())
 }
 
-#[test]
-fn setworkingdirectory_nonexisting_err() {
-    let filesystem = common::create_sftp_filesystem().unwrap();
+#[tokio::test]
+async fn setworkingdirectory_nonexisting_err() -> Result<()> {
+    let mut filesystem = create_sftp_filesystem().await?;
 
     let directory = FileSystemPath::new("/nonexisting");
-    let result = filesystem.set_working_directory(&directory);
+    let result = filesystem.set_working_directory(&directory).await;
 
     assert!(result.is_err());
+
+    Ok(())
 }

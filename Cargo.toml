@@ -10,10 +10,8 @@ license = "MIT"
 edition = "2018"
 exclude = [
     ".github/*",
-    "scripts/*",
     ".editorconfig",
     ".gitignore",
-    ".travis.yml",
     "docker-compose.yml",
     "rustfmt.toml",
 ]
@@ -21,15 +19,17 @@ exclude = [
 [lib]
 name = "xenon"
 
+[build-dependencies]
+tonic-build = "0.5"
+
 [dependencies]
-anyhow = "1.0"
+anyhow = "1"
 futures = "0.3"
-grpcio = { version = "0.8", features = ["openssl"] }
+futures-util = "0.3"
 log = "0.4"
-protobuf = "2.22"
+prost = "0.8"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+tonic = "0.5"
 
 [dev-dependencies]
-tokio = { version = "1.2", features = ["rt", "macros"] }
-env_logger = "0.8"
-maplit = "1"
 rand = "0.8"

@@ -1,19 +1,19 @@
 use crate::credentials::Credential;
-use crate::xenon as x;
-use crate::xenon_grpc::FileSystemServiceClient;
+use crate::xenon::{self as x, file_system_service_client::FileSystemServiceClient};
 use anyhow::Result;
-use futures::{SinkExt, StreamExt};
-use grpcio::{Channel, WriteFlags};
-use std::collections::HashMap;
-use std::collections::HashSet;
+use futures::StreamExt;
+use futures_util::stream;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
+use tonic::transport::Channel;
+use tonic::Status;
 
 ///
 ///
 ///
 pub struct FileSystem {
     pub adaptor: String,
-    client: FileSystemServiceClient,
+    client: FileSystemServiceClient<Channel>,
     open: bool,
     pub(crate) filesystem: x::FileSystem,
     pub identifier: String,
@@ -24,21 +24,18 @@ impl FileSystem {
     ///
     ///
     pub async fn append_to_file<B: Into<Vec<u8>>>(
-        &self,
+        &mut self,
         buffer: B,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::AppendToFileRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
-        request.set_buffer(buffer.into());
+        let request = x::AppendToFileRequest {
+            buffer: buffer.into(),
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        let (mut sink, receiver) = self.client.append_to_file()?;
-
-        sink.send((request, WriteFlags::default())).await?;
-
-        sink.close().await?;
-        receiver.await?;
+        let request = stream::iter(vec![request]);
+        self.client.append_to_file(request).await?;
 
         Ok(())
     }
@@ -46,11 +43,11 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn close(&mut self) -> Result<()> {
+    pub async fn close(&mut self) -> Result<()> {
         if self.open {
             debug!("Closing filesystem: {}", self.identifier);
 
-            self.client.close(&self.filesystem)?;
+            self.client.close(self.filesystem.clone()).await?;
             self.open = false;
         }
 
@@ -60,36 +57,37 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn copy(
-        &self,
+    pub async fn copy(
+        &mut self,
         source: &FileSystemPath,
         destination: &FileSystemPath,
         destination_filesystem: Option<FileSystem>,
         recursive: bool,
         timeout: u64,
     ) -> Result<()> {
-        let mut request = x::CopyRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_source(source.proto());
-        request.set_destination(destination.proto());
-        request.set_recursive(recursive);
+        let destination_filesystem = destination_filesystem
+            .map(|f| f.filesystem)
+            .unwrap_or_else(|| self.filesystem.clone());
 
-        let mut _remote_fs;
-        if let Some(remote) = destination_filesystem {
-            request.set_destination_filesystem(remote.filesystem.clone());
-            _remote_fs = remote;
-        } else {
-            request.set_destination_filesystem(self.filesystem.clone());
+        let request = x::CopyRequest {
+            destination: Some(destination.proto()),
+            destination_filesystem: Some(destination_filesystem.clone()),
+            filesystem: Some(self.filesystem.clone()),
+            mode: 0,
+            recursive,
+            source: Some(source.proto()),
         };
 
-        let operation = self.client.copy(&request)?;
+        let response = self.client.copy(request).await?;
+        let response = response.into_inner();
 
-        let mut request = x::WaitUntilDoneRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_copy_operation(operation);
-        request.set_timeout(timeout);
+        let request = x::WaitUntilDoneRequest {
+            copy_operation: Some(response),
+            filesystem: Some(self.filesystem.clone()),
+            timeout,
+        };
 
-        self.client.wait_until_done(&request)?;
+        self.client.wait_until_done(request).await?;
 
         Ok(())
     }
@@ -97,39 +95,40 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create<AS, LS, PS1, PS2>(
-        adaptor: AS,
-        channel: Channel,
+    pub async fn create<S1, S2, S3, S4>(
+        adaptor: S1,
+        xenon_endpoint: S2,
         credential: Credential,
-        location: LS,
-        properties: Option<HashMap<PS1, PS2>>,
+        location: S3,
+        properties: HashMap<S4, S4>,
     ) -> Result<FileSystem>
     where
-        AS: Into<String>,
-        LS: Into<String>,
-        PS1: Into<String>,
-        PS2: Into<String>,
+        S1: Into<String>,
+        S2: Into<String>,
+        S3: Into<String>,
+        S4: Into<String>,
     {
         let adaptor = adaptor.into();
-        let client = FileSystemServiceClient::new(channel);
+        let properties = properties.into_iter().map(|(k, v)| (k.into(), v.into())).collect();
+        let credential = match credential {
+            Credential::Password(password) => {
+                x::create_file_system_request::Credential::PasswordCredential(password.proto())
+            }
+            Credential::Certificate(certificate) => {
+                x::create_file_system_request::Credential::CertificateCredential(certificate.proto())
+            }
+        };
 
         // Construct create request message.
-        let mut request = x::CreateFileSystemRequest::new();
-        request.set_adaptor(adaptor.clone());
-        request.set_location(location.into());
-        if let Some(p) = properties {
-            let mut properties = HashMap::new();
-            for (k, v) in p {
-                properties.insert(String::from(k.into()), String::from(v.into()));
-            }
-            request.set_properties(properties);
-        }
-        match credential {
-            Credential::Password(password) => request.set_password_credential(password.proto()),
-            Credential::Certificate(certificate) => request.set_certificate_credential(certificate.proto()),
-        }
+        let request = x::CreateFileSystemRequest {
+            adaptor: adaptor.clone(),
+            location: location.into(),
+            properties,
+            credential: Some(credential),
+        };
 
-        let filesystem = client.create(&request)?;
+        let mut client = FileSystemServiceClient::connect(xenon_endpoint.into()).await?;
+        let filesystem = client.create(request).await?.into_inner();
         let identifier = filesystem.id.clone();
 
         Ok(FileSystem {
@@ -144,15 +143,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create_directories(
-        &self,
+    pub async fn create_directories(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.create_directories(&request)?;
+        self.client.create_directories(request).await?;
 
         Ok(())
     }
@@ -160,15 +160,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create_directory(
-        &self,
+    pub async fn create_directory(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.create_directory(&request)?;
+        self.client.create_directory(request).await?;
 
         Ok(())
     }
@@ -176,15 +177,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create_file(
-        &self,
+    pub async fn create_file(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.create_file(&request)?;
+        self.client.create_file(request).await?;
 
         Ok(())
     }
@@ -192,17 +194,18 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn create_symbolic_link(
-        &self,
+    pub async fn create_symbolic_link(
+        &mut self,
         link: &FileSystemPath,
         target: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::CreateSymbolicLinkRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_link(link.proto());
-        request.set_target(target.proto());
+        let request = x::CreateSymbolicLinkRequest {
+            link: Some(link.proto()),
+            target: Some(target.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.create_symbolic_link(&request)?;
+        self.client.create_symbolic_link(request).await?;
 
         Ok(())
     }
@@ -210,17 +213,18 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn delete(
-        &self,
+    pub async fn delete(
+        &mut self,
         path: &FileSystemPath,
         recursive: bool,
     ) -> Result<()> {
-        let mut request = x::DeleteRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
-        request.set_recursive(recursive);
+        let request = x::DeleteRequest {
+            path: Some(path.proto()),
+            recursive,
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.delete(&request)?;
+        self.client.delete(request).await?;
 
         Ok(())
     }
@@ -228,51 +232,57 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn exists(
-        &self,
+    pub async fn exists(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<bool> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        let is = self.client.exists(&request)?;
+        let response = self.client.exists(request).await?;
+        let response = response.into_inner();
 
-        Ok(is.value)
+        Ok(response.value)
     }
 
     ///
     ///
     ///
-    pub fn get_attributes(
-        &self,
+    pub async fn get_attributes(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<FileSystemAttributes> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        let attributes = self.client.get_attributes(&request)?;
-        let attributes = FileSystemAttributes::from(attributes);
+        let response = self.client.get_attributes(request).await?;
+        let response = response.into_inner();
 
+        let attributes = FileSystemAttributes::from(response);
         Ok(attributes)
     }
 
     ///
     ///
     ///
-    pub fn get_fs_credential(&self) -> Result<Option<Credential>> {
-        let response = self.client.get_credential(&self.filesystem)?;
-        if let Some(one_of_credential) = response.credential {
-            use x::GetCredentialResponse_oneof_credential::*;
+    pub async fn get_fs_credential(&mut self) -> Result<Option<Credential>> {
+        let response = self.client.get_credential(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
-            match one_of_credential {
-                certificate_credential(credential) => Ok(Some(Credential::new_certificate(
+        if let Some(credential) = response.credential {
+            use x::get_credential_response::Credential::*;
+
+            match credential {
+                CertificateCredential(credential) => Ok(Some(Credential::new_certificate(
                     credential.certfile,
                     credential.username,
-                    Some(credential.passphrase),
+                    credential.passphrase,
                 ))),
-                password_credential(credential) => {
+                PasswordCredential(credential) => {
                     Ok(Some(Credential::new_password(credential.username, credential.password)))
                 }
                 _ => unreachable!(),
@@ -285,8 +295,9 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_location(&self) -> Result<String> {
-        let response = self.client.get_location(&self.filesystem)?;
+    pub async fn get_fs_location(&mut self) -> Result<String> {
+        let response = self.client.get_location(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
         Ok(response.location)
     }
@@ -294,8 +305,9 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_separator(&self) -> Result<String> {
-        let response = self.client.get_path_separator(&self.filesystem)?;
+    pub async fn get_fs_separator(&mut self) -> Result<String> {
+        let response = self.client.get_path_separator(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
         Ok(response.separator)
     }
@@ -303,8 +315,9 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_fs_properties(&self) -> Result<HashMap<String, String>> {
-        let response = self.client.get_properties(&self.filesystem)?;
+    pub async fn get_fs_properties(&mut self) -> Result<HashMap<String, String>> {
+        let response = self.client.get_properties(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
         Ok(response.properties)
     }
@@ -312,60 +325,52 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn get_working_directory(&self) -> Result<FileSystemPath> {
-        let directory = self.client.get_working_directory(&self.filesystem)?;
-        let directory = FileSystemPath::from(directory);
+    pub async fn get_working_directory(&mut self) -> Result<FileSystemPath> {
+        let response = self.client.get_working_directory(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
+        let directory = FileSystemPath::from(response);
         Ok(directory)
     }
 
     ///
     ///
     ///
-    pub fn is_open(&self) -> Result<bool> {
+    pub async fn is_open(&mut self) -> Result<bool> {
         if !self.open {
             return Ok(false);
         }
 
-        let is = self.client.is_open(&self.filesystem)?;
+        let response = self.client.is_open(self.filesystem.clone()).await?;
+        let response = response.into_inner();
 
-        Ok(is.value)
+        Ok(response.value)
     }
 
     ///
     ///
     ///
     pub async fn list(
-        &self,
+        &mut self,
         path: &FileSystemPath,
         recursive: bool,
     ) -> Result<Vec<FileSystemAttributes>> {
-        let mut request = x::ListRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_dir(path.proto());
-        request.set_recursive(recursive);
-
-        let reciever = self.client.list(&request)?;
-        let files = reciever
-            .collect::<Vec<Result<x::PathAttributes, grpcio::Error>>>()
-            .await;
-
-        let mut files = files.into_iter();
-
-        // In case the path does not exist,
-        let files = if files.len() == 1 {
-            let file = files.next().unwrap();
-            match file {
-                Ok(f) => vec![FileSystemAttributes::from(f)],
-                Err(_) => bail!("Couldn't list files in path."),
-            }
-        } else {
-            files
-                .into_iter()
-                .filter(|f| f.is_ok())
-                .map(|f| FileSystemAttributes::from(f.unwrap()))
-                .collect()
+        let request = x::ListRequest {
+            dir: Some(path.proto()),
+            recursive,
+            filesystem: Some(self.filesystem.clone()),
         };
+
+        let response = self.client.list(request).await?;
+        let response = response.into_inner();
+
+        let files: Vec<Result<x::PathAttributes, Status>> = response.collect().await;
+
+        let files = files
+            .into_iter()
+            .filter(|f| f.is_ok())
+            .map(|f| FileSystemAttributes::from(f.unwrap()))
+            .collect();
 
         Ok(files)
     }
@@ -373,17 +378,18 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn rename(
-        &self,
+    pub async fn rename(
+        &mut self,
         source: &FileSystemPath,
         target: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::RenameRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_source(source.proto());
-        request.set_target(target.proto());
+        let request = x::RenameRequest {
+            source: Some(source.proto()),
+            target: Some(target.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.rename(&request)?;
+        self.client.rename(request).await?;
 
         Ok(())
     }
@@ -392,53 +398,64 @@ impl FileSystem {
     ///
     ///
     pub async fn read_from_file(
-        &self,
+        &mut self,
         path: &FileSystemPath,
-    ) -> Result<Option<Vec<u8>>> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+    ) -> Result<Vec<u8>> {
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        let mut receiver = self.client.read_from_file(&request)?;
+        let response = self.client.read_from_file(request).await?;
+        let response = response.into_inner();
 
-        if let Some(Ok(file)) = receiver.next().await {
-            Ok(Some(file.buffer))
-        } else {
-            Ok(None)
+        let chunks: Vec<Result<x::ReadFromFileResponse, Status>> = response.collect().await;
+
+        if chunks.iter().any(|c| c.is_err()) {
+            bail!("Failed to read file: received at least one faulty chunk.");
         }
+
+        let file: Vec<u8> = chunks.into_iter().map(|c| c.unwrap().buffer).flatten().collect();
+
+        Ok(file)
     }
 
     ///
     ///
     ///
-    pub fn read_symbolic_link(
-        &self,
+    pub async fn read_symbolic_link(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<FileSystemPath> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        let target = self.client.read_symbolic_link(&request)?;
-        let target = FileSystemPath::from(target);
+        let response = self.client.read_symbolic_link(request).await?;
+        let response = response.into_inner();
 
+        let target = FileSystemPath::from(response);
         Ok(target)
     }
 
     ///
     ///
     ///
-    pub fn set_permissions(
-        &self,
+    pub async fn set_permissions(
+        &mut self,
         path: &FileSystemPath,
         permissions: HashSet<FileSystemPermission>,
     ) -> Result<()> {
-        let mut request = x::SetPosixFilePermissionsRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
-        request.set_permissions(permissions.iter().map(|p| p.proto()).collect());
+        let permissions = permissions.into_iter().map(|p| p.proto().into()).collect();
 
-        self.client.set_posix_file_permissions(&request)?;
+        let request = x::SetPosixFilePermissionsRequest {
+            path: Some(path.proto()),
+            permissions,
+            filesystem: Some(self.filesystem.clone()),
+        };
+
+        self.client.set_posix_file_permissions(request).await?;
 
         Ok(())
     }
@@ -446,15 +463,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub fn set_working_directory(
-        &self,
+    pub async fn set_working_directory(
+        &mut self,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::PathRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
+        let request = x::PathRequest {
+            path: Some(path.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
 
-        self.client.set_working_directory(&request)?;
+        self.client.set_working_directory(request).await?;
 
         Ok(())
     }
@@ -463,31 +481,24 @@ impl FileSystem {
     ///
     ///
     pub async fn write_to_file<B: Into<Vec<u8>>>(
-        &self,
+        &mut self,
         buffer: B,
         path: &FileSystemPath,
     ) -> Result<()> {
-        let mut request = x::WriteToFileRequest::new();
-        request.set_filesystem(self.filesystem.clone());
-        request.set_path(path.proto());
-        request.set_buffer(buffer.into());
+        let buffer = buffer.into();
+        let size = buffer.len() as u64;
 
-        let (mut sink, receiver) = self.client.write_to_file()?;
-        sink.send((request, WriteFlags::default())).await?;
-        sink.close().await?;
+        let request = x::WriteToFileRequest {
+            path: Some(path.proto()),
+            buffer,
+            filesystem: Some(self.filesystem.clone()),
+            size,
+        };
 
-        receiver.await?;
+        let request = stream::iter(vec![request]);
+        self.client.write_to_file(request).await?;
 
         Ok(())
-    }
-}
-
-impl Drop for FileSystem {
-    ///
-    ///
-    ///
-    fn drop(&mut self) {
-        self.close().unwrap();
     }
 }
 
@@ -522,8 +533,9 @@ impl FileSystemAttributes {
         let path = FileSystemPath::from(attributes.path.unwrap());
         let permissions = attributes
             .permissions
-            .iter()
-            .map(|p| FileSystemPermission::from(*p))
+            .into_iter()
+            .map(|p| x::PosixFilePermission::from_i32(p).unwrap_or_default())
+            .map(FileSystemPermission::from)
             .collect();
 
         FileSystemAttributes {
@@ -574,10 +586,12 @@ impl FileSystemPath {
     ///
     ///
     pub(crate) fn proto(&self) -> x::Path {
-        let mut path = x::Path::new();
-        path.set_path(self.path.clone().into_os_string().into_string().unwrap());
+        let path = self.path.clone().into_os_string().into_string().unwrap();
 
-        path
+        x::Path {
+            separator: String::from("/"),
+            path,
+        }
     }
 }
 
@@ -604,19 +618,18 @@ impl FileSystemPermission {
     ///
     pub(crate) fn from(permission: x::PosixFilePermission) -> FileSystemPermission {
         use x::PosixFilePermission::*;
-        use FileSystemPermission::*;
 
         match permission {
-            NONE => None,
-            OWNER_READ => OwnerRead,
-            OWNER_WRITE => OwnerWrite,
-            OWNER_EXECUTE => OwnerExecute,
-            GROUP_READ => GroupRead,
-            GROUP_WRITE => GroupWrite,
-            GROUP_EXECUTE => GroupExecute,
-            OTHERS_READ => OthersRead,
-            OTHERS_WRITE => OthersWrite,
-            OTHERS_EXECUTE => OthersExecute,
+            None => FileSystemPermission::None,
+            OwnerRead => FileSystemPermission::OwnerRead,
+            OwnerWrite => FileSystemPermission::OwnerWrite,
+            OwnerExecute => FileSystemPermission::OwnerExecute,
+            GroupRead => FileSystemPermission::GroupRead,
+            GroupWrite => FileSystemPermission::GroupWrite,
+            GroupExecute => FileSystemPermission::GroupExecute,
+            OthersRead => FileSystemPermission::OthersRead,
+            OthersWrite => FileSystemPermission::OthersWrite,
+            OthersExecute => FileSystemPermission::OthersExecute,
         }
     }
 
@@ -625,19 +638,18 @@ impl FileSystemPermission {
     ///
     pub fn proto(&self) -> x::PosixFilePermission {
         use x::PosixFilePermission::*;
-        use FileSystemPermission::*;
 
         match self {
-            None => NONE,
-            OwnerRead => OWNER_READ,
-            OwnerWrite => OWNER_WRITE,
-            OwnerExecute => OWNER_EXECUTE,
-            GroupRead => GROUP_READ,
-            GroupWrite => GROUP_WRITE,
-            GroupExecute => GROUP_EXECUTE,
-            OthersRead => OTHERS_READ,
-            OthersWrite => OTHERS_WRITE,
-            OthersExecute => OTHERS_EXECUTE,
+            FileSystemPermission::None => None,
+            FileSystemPermission::OwnerRead => OwnerRead,
+            FileSystemPermission::OwnerWrite => OwnerWrite,
+            FileSystemPermission::OwnerExecute => OwnerExecute,
+            FileSystemPermission::GroupRead => GroupRead,
+            FileSystemPermission::GroupWrite => GroupWrite,
+            FileSystemPermission::GroupExecute => GroupExecute,
+            FileSystemPermission::OthersRead => OthersRead,
+            FileSystemPermission::OthersWrite => OthersWrite,
+            FileSystemPermission::OthersExecute => OthersExecute,
         }
     }
 }
@@ -649,16 +661,16 @@ mod tests {
 
     #[test]
     fn filesystempermission_fromproto_ok() {
-        let none = x::PosixFilePermission::NONE;
-        let owner_read = x::PosixFilePermission::OWNER_READ;
-        let owner_write = x::PosixFilePermission::OWNER_WRITE;
-        let owner_execute = x::PosixFilePermission::OWNER_EXECUTE;
-        let group_read = x::PosixFilePermission::GROUP_READ;
-        let group_write = x::PosixFilePermission::GROUP_WRITE;
-        let group_execute = x::PosixFilePermission::GROUP_EXECUTE;
-        let others_read = x::PosixFilePermission::OTHERS_READ;
-        let others_write = x::PosixFilePermission::OTHERS_WRITE;
-        let others_execute = x::PosixFilePermission::OTHERS_EXECUTE;
+        let none = x::PosixFilePermission::None;
+        let owner_read = x::PosixFilePermission::OwnerRead;
+        let owner_write = x::PosixFilePermission::OwnerWrite;
+        let owner_execute = x::PosixFilePermission::OwnerExecute;
+        let group_read = x::PosixFilePermission::GroupRead;
+        let group_write = x::PosixFilePermission::GroupWrite;
+        let group_execute = x::PosixFilePermission::GroupExecute;
+        let others_read = x::PosixFilePermission::OthersRead;
+        let others_write = x::PosixFilePermission::OthersWrite;
+        let others_execute = x::PosixFilePermission::OthersExecute;
 
         assert_eq!(FileSystemPermission::from(none), FileSystemPermission::None);
 
@@ -709,18 +721,18 @@ mod tests {
         let others_write = FileSystemPermission::OthersWrite;
         let others_execute = FileSystemPermission::OthersExecute;
 
-        assert_eq!(none.proto(), x::PosixFilePermission::NONE);
+        assert_eq!(none.proto(), x::PosixFilePermission::None);
 
-        assert_eq!(owner_read.proto(), x::PosixFilePermission::OWNER_READ);
-        assert_eq!(owner_write.proto(), x::PosixFilePermission::OWNER_WRITE);
-        assert_eq!(owner_execute.proto(), x::PosixFilePermission::OWNER_EXECUTE);
+        assert_eq!(owner_read.proto(), x::PosixFilePermission::OwnerRead);
+        assert_eq!(owner_write.proto(), x::PosixFilePermission::OwnerWrite);
+        assert_eq!(owner_execute.proto(), x::PosixFilePermission::OwnerExecute);
 
-        assert_eq!(group_read.proto(), x::PosixFilePermission::GROUP_READ);
-        assert_eq!(group_write.proto(), x::PosixFilePermission::GROUP_WRITE);
-        assert_eq!(group_execute.proto(), x::PosixFilePermission::GROUP_EXECUTE);
+        assert_eq!(group_read.proto(), x::PosixFilePermission::GroupRead);
+        assert_eq!(group_write.proto(), x::PosixFilePermission::GroupWrite);
+        assert_eq!(group_execute.proto(), x::PosixFilePermission::GroupExecute);
 
-        assert_eq!(others_read.proto(), x::PosixFilePermission::OTHERS_READ);
-        assert_eq!(others_write.proto(), x::PosixFilePermission::OTHERS_WRITE);
-        assert_eq!(others_execute.proto(), x::PosixFilePermission::OTHERS_EXECUTE);
+        assert_eq!(others_read.proto(), x::PosixFilePermission::OthersRead);
+        assert_eq!(others_write.proto(), x::PosixFilePermission::OthersWrite);
+        assert_eq!(others_execute.proto(), x::PosixFilePermission::OthersExecute);
     }
 }
