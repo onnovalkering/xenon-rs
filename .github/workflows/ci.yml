@@ -11,17 +11,11 @@ jobs:
         os: [macos-latest, ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
       - name: Build project
-        run: |
-          if [ `uname` = 'Darwin' ]; then
-              export OPENSSL_ROOT_DIR='/usr/local/opt/openssl'
-          fi
-          
-          cargo build -v
+        run: cargo build -v
       
       - name: Run unit tests
         run: cargo test -v --lib
@@ -31,19 +25,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [macos-latest, ubuntu-latest]
         
     steps:
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
+      - name: Checkout repository
+        uses: actions/checkout@v2
       
       - name: Start services
-        run: docker-compose up -d        
+        run: |
+          if [ `uname` = 'Darwin' ]; then
+              brew install --cask docker
+          fi
+
+          docker-compose up -d        
 
       - name: Build project
         run: cargo build -v
 
       - name: Run integration tests
-        run: |
-          cargo test -v --test storage --test compute
+        run: cargo test -v --test storage --test compute
