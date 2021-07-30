@@ -14,7 +14,6 @@ use tonic::Status;
 pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient<Channel>,
-    open: bool,
     pub(crate) filesystem: x::FileSystem,
     pub identifier: String,
 }
@@ -44,11 +43,10 @@ impl FileSystem {
     ///
     ///
     pub async fn close(&mut self) -> Result<()> {
-        if self.open {
+        if self.is_open().await? {
             debug!("Closing filesystem: {}", self.identifier);
 
             self.client.close(self.filesystem.clone()).await?;
-            self.open = false;
         }
 
         Ok(())
@@ -132,7 +130,6 @@ impl FileSystem {
         Ok(FileSystem {
             adaptor,
             filesystem,
-            open: true,
             identifier,
             client,
         })
@@ -335,14 +332,15 @@ impl FileSystem {
     ///
     ///
     pub async fn is_open(&mut self) -> Result<bool> {
-        if !self.open {
-            return Ok(false);
-        }
+        let response = self.client.is_open(self.filesystem.clone()).await;
+        let value = if let Ok(response) = response {
+            let response = response.into_inner();
+            response.value
+        } else {
+            false
+        };
 
-        let response = self.client.is_open(self.filesystem.clone()).await?;
-        let response = response.into_inner();
-
-        Ok(response.value)
+        Ok(value)
     }
 
     ///
@@ -436,6 +434,37 @@ impl FileSystem {
         let target = FileSystemPath::from(response);
         Ok(target)
     }
+
+    ///
+    ///
+    ///
+    pub async fn restore<S1, S2>(
+        identifier: S1,
+        xenon_endpoint: S2,
+    ) -> Result<Self>
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+    {
+        let mut client = FileSystemServiceClient::connect(xenon_endpoint.into()).await?;
+        let filesystem = x::FileSystem { id: identifier.into() };
+
+        // Check if identifier corresponds to an existing and open scheduler.
+        let exists_and_open = client.is_open(filesystem.clone()).await?.into_inner().value;
+        if !exists_and_open {
+            bail!("Identifier '{}' doesn't correspond to an existing and/or open filesystem.");
+        }
+
+        let adaptor = client.get_adaptor_name(filesystem.clone()).await?.into_inner().name;
+        let identifier = filesystem.id.clone();
+
+        Ok(FileSystem {
+            adaptor,
+            filesystem,
+            identifier,
+            client,
+        })
+    }    
 
     ///
     ///

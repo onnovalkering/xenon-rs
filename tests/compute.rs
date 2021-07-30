@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use xenon::compute::{Job, JobDescription, JobErrorType, QueueErrorType, QueueStatus, Scheduler};
 use xenon::credentials::Credential;
 
+const XENON_ENDPOINT: &str = "http://localhost:50051";
+
 async fn create_slurm_scheduler() -> Result<Scheduler> {
     let credential = Credential::new_password(String::from("xenon"), String::from("javagat"));
     create_slurm_scheduler_inner(credential).await
@@ -19,7 +21,7 @@ async fn create_slurm_scheduler_inner(credential: Credential) -> Result<Schedule
         String::from("slurm"),
         String::from("ssh://slurm:22"),
         credential,
-        "http://localhost:50051",
+        XENON_ENDPOINT,
         Some(properties),
     )
     .await?;
@@ -353,6 +355,31 @@ async fn isopen_closed_false() -> Result<()> {
 
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), false);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn restore_open_ok() -> Result<()> {
+    let scheduler = create_slurm_scheduler().await?;
+    let mut restored = Scheduler::restore(scheduler.identifier, XENON_ENDPOINT).await?;
+
+    let result = restored.is_open().await;
+
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), true);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn restore_closed_err() -> Result<()> {
+    let mut scheduler = create_slurm_scheduler().await?;
+    scheduler.close().await?;
+
+    let restored = Scheduler::restore(scheduler.identifier, XENON_ENDPOINT).await;
+
+    assert!(restored.is_err());
 
     Ok(())
 }

@@ -12,7 +12,6 @@ type Map<T> = std::collections::HashMap<String, T>;
 pub struct Scheduler {
     pub adaptor: String,
     client: SchedulerServiceClient<Channel>,
-    open: bool,
     pub(crate) scheduler: x::Scheduler,
     pub identifier: String,
 }
@@ -40,9 +39,8 @@ impl Scheduler {
     ///
     ///
     pub async fn close(&mut self) -> Result<()> {
-        if self.open {
+        if self.is_open().await? {
             self.client.close(self.scheduler.clone()).await?;
-            self.open = false;
         }
 
         Ok(())
@@ -57,7 +55,7 @@ impl Scheduler {
         credential: Credential,
         xenon_endpoint: S3,
         properties: Option<HashMap<String, String>>,
-    ) -> Result<Scheduler>
+    ) -> Result<Self>
     where
         S1: Into<String>,
         S2: Into<String>,
@@ -88,7 +86,6 @@ impl Scheduler {
         Ok(Scheduler {
             adaptor,
             scheduler,
-            open: true,
             identifier,
             client,
         })
@@ -223,15 +220,47 @@ impl Scheduler {
     ///
     ///
     pub async fn is_open(&mut self) -> Result<bool> {
-        if self.open {
-            let response = self.client.is_open(self.scheduler.clone()).await?;
+        let response = self.client.is_open(self.scheduler.clone()).await;
+        let value = if let Ok(response) = response {
             let response = response.into_inner();
+            response.value
+        } else {
+            false
+        };
 
-            self.open = response.value
+        Ok(value)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn restore<S1, S2>(
+        identifier: S1,
+        xenon_endpoint: S2,
+    ) -> Result<Self>
+    where
+        S1: Into<String>,
+        S2: Into<String>,
+    {
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.into()).await?;
+        let scheduler = x::Scheduler { id: identifier.into() };
+
+        // Check if identifier corresponds to an existing and open scheduler.
+        let exists_and_open = client.is_open(scheduler.clone()).await?.into_inner().value;
+        if !exists_and_open {
+            bail!("Identifier '{}' doesn't correspond to an existing and/or open scheduler.");
         }
 
-        Ok(self.open)
-    }
+        let adaptor = client.get_adaptor_name(scheduler.clone()).await?.into_inner().name;
+        let identifier = scheduler.id.clone();
+
+        Ok(Scheduler {
+            adaptor,
+            scheduler,
+            identifier,
+            client,
+        })
+    }    
 
     // ///
     // ///

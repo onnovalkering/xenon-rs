@@ -6,6 +6,7 @@ use xenon::credentials::Credential;
 use xenon::storage::FileSystem;
 use xenon::storage::{FileSystemPath, FileSystemPermission};
 
+const XENON_ENDPOINT: &str = "http://localhost:50051";
 
 pub async fn create_sftp_filesystem() -> Result<FileSystem> {
     let credential = Credential::new_password(String::from("xenon"), String::from("javagat"));
@@ -23,7 +24,7 @@ pub async fn create_sftp_filesystem_inner(credential: Credential) -> Result<File
         String::from("sftp"),
         String::from("slurm:22"),
         credential,
-        "http://localhost:50051",
+        XENON_ENDPOINT,
         Some(properties),
     )
     .await?;
@@ -407,6 +408,31 @@ async fn isopen_closed_false() -> Result<()> {
     let result = filesystem.is_open().await;
     assert!(result.is_ok());
     assert_eq!(result.unwrap(), false);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn restore_open_ok() -> Result<()> {
+    let scheduler = create_sftp_filesystem().await?;
+    let mut restored = FileSystem::restore(scheduler.identifier, XENON_ENDPOINT).await?;
+
+    let result = restored.is_open().await;
+
+    assert!(result.is_ok());
+    assert_eq!(result.unwrap(), true);
+
+    Ok(())
+}
+
+#[tokio::test]
+async fn restore_closed_err() -> Result<()> {
+    let mut scheduler = create_sftp_filesystem().await?;
+    scheduler.close().await?;
+
+    let restored = FileSystem::restore(scheduler.identifier, XENON_ENDPOINT).await;
+
+    assert!(restored.is_err());
 
     Ok(())
 }
