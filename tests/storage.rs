@@ -112,6 +112,15 @@ async fn copy_existingremotefs_ok() -> Result<()> {
 }
 
 #[tokio::test]
+async fn create_certificatecredential_ok() -> Result<()> {
+    let credential = Credential::new_certificate("/keys/unsafe_ssh_key", "xenon", "");
+    let scheduler = create_sftp_filesystem_inner(credential).await;
+    assert!(scheduler.is_ok());
+
+    Ok(())
+}
+
+#[tokio::test]
 async fn create_passwordcredential_ok() -> Result<()> {
     let filesystem = create_sftp_filesystem().await;
 
@@ -121,13 +130,22 @@ async fn create_passwordcredential_ok() -> Result<()> {
 }
 
 #[tokio::test]
-async fn create_certificatecredential_ok() -> Result<()> {
-    let credential = Credential::new_certificate("/unsafe_ssh_key", "xenon", "");
-    let scheduler = create_sftp_filesystem_inner(credential).await;
-    assert!(scheduler.is_ok());
+async fn create_local_ok() -> Result<()> {
+    let filesystem = FileSystem::create_local(XENON_ENDPOINT).await;
+    assert!(filesystem.is_ok());
+
+    let mut filesystem = filesystem.unwrap();
+    let path = FileSystemPath::new("/keys/unsafe_ssh_key");
+    
+    let result = filesystem.read_from_file(&path).await;
+    assert!(result.is_ok());
+
+    let result = String::from_utf8(result.unwrap())?;
+    assert!(result.starts_with("-----BEGIN RSA PRIVATE KEY-----"));
 
     Ok(())
 }
+
 
 #[tokio::test]
 async fn createdirectories_existing_err() -> Result<()> {

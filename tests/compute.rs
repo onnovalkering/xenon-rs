@@ -73,7 +73,7 @@ async fn create_passwordcredential_ok() -> Result<()> {
 
 #[tokio::test]
 async fn create_certificatecredential_ok() -> Result<()> {
-    let credential = Credential::new_certificate("/unsafe_ssh_key", "xenon", "");
+    let credential = Credential::new_certificate("/keys/unsafe_ssh_key", "xenon", "");
     let scheduler = create_slurm_scheduler_inner(credential).await;
     assert!(scheduler.is_ok());
 

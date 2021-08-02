@@ -99,7 +99,7 @@ impl FileSystem {
         credential: Credential,
         xenon_endpoint: S3,
         properties: Option<HashMap<String, String>>,
-    ) -> Result<FileSystem>
+    ) -> Result<Self>
     where
         S1: Into<String>,
         S2: Into<String>,
@@ -134,6 +134,25 @@ impl FileSystem {
             client,
         })
     }
+
+    ///
+    ///
+    ///
+    pub async fn create_local<S1>(
+        xenon_endpoint: S1,
+    ) -> Result<Self>
+    where S1: Into<String> {
+        let xenon_endpoint = xenon_endpoint.into();
+        let mut client = FileSystemServiceClient::connect(xenon_endpoint.clone()).await?;
+        
+        let response = client.local_file_systems(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        let identifier = response.filesystems.first().cloned().map(|f| f.id);
+        ensure!(identifier.is_some(), "Failed to create local filesystem.");
+
+        Self::restore(identifier.unwrap(), xenon_endpoint).await
+    }    
 
     ///
     ///

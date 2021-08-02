@@ -14,6 +14,7 @@ RUN curl -LO \
  && rm "$RELEASE.tar"
 
 # https://github.com/xenon-middleware/xenon-docker-images/tree/master/unsafe-ssh-keys
+RUN mkdir /keys
 RUN printf "-----BEGIN RSA PRIVATE KEY-----\n\
 MIIEpAIBAAKCAQEAnCqpTQFbmi1WPX4uTUFCHAvf61AhvqXUFoJEHQEvtDYibWJZ\n\
 bI7LueA2eEKw68oynIfPeinr4+DOnejMG1+HKCWi03DzWoorBOYc0e9i3nxkU93j\n\
@@ -40,7 +41,7 @@ XE5qRcEQBJLx6UKNztiZv1sCgYACHBEuhZ5e5116eCAzVnZlStsRpEkliUzyRVd3\n\
 DbifiQKBgQCdXgr7tdEAmusvIcTRA1KMIOGE5pMGYfbMnDTTIihUfRMJbCnn9sHe\n\
 PrDKVVgD3W4hjOABN24KOlCZPtWZfKUKe893ali7mFAIwKNV/AKhQhDgGzJPidqc\n\
 6DIL2GhDwqtPIf3b6sI21ZvyAFDROZMKnoL5Q1xbbp5EADi2wPO55Q==\n\
------END RSA PRIVATE KEY-----" > /unsafe_ssh_key
+-----END RSA PRIVATE KEY-----" > /keys/unsafe_ssh_key
 
 EXPOSE 50051
 ENTRYPOINT ["/xenon/bin/xenon-grpc"]
