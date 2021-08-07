@@ -3,6 +3,8 @@ use crate::xenon::{self as x, file_system_service_client::FileSystemServiceClien
 use anyhow::Result;
 use futures::StreamExt;
 use futures_util::stream;
+use num_derive::FromPrimitive;
+use num_traits::FromPrimitive;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use tonic::transport::Channel;
@@ -22,11 +24,17 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn append_to_file<B: Into<Vec<u8>>>(
+    pub async fn append_to_file<B, P>(
         &mut self,
         buffer: B,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        B: Into<Vec<u8>>,
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::AppendToFileRequest {
             buffer: buffer.into(),
             path: Some(path.proto()),
@@ -55,14 +63,38 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn copy(
+    pub async fn cancel(
         &mut self,
-        source: &FileSystemPath,
-        destination: &FileSystemPath,
+        copy_operation: String,
+    ) -> Result<CopyStatus> {
+        let request = x::CopyOperationRequest {
+            filesystem: Some(self.filesystem.clone()),
+            copy_operation: Some(x::CopyOperation { id: copy_operation }),
+        };
+
+        let response = self.client.cancel(request).await?;
+        let response = response.into_inner();
+
+        Ok(CopyStatus::from(response))
+    }
+
+    ///
+    ///
+    ///
+    pub async fn copy<P1, P2>(
+        &mut self,
+        source: P1,
+        destination: P2,
         destination_filesystem: Option<FileSystem>,
         recursive: bool,
-        timeout: u64,
-    ) -> Result<()> {
+    ) -> Result<String>
+    where
+        P1: Into<FileSystemPath>,
+        P2: Into<FileSystemPath>,
+    {
+        let source = source.into();
+        let destination = destination.into();
+
         let destination_filesystem = destination_filesystem
             .map(|f| f.filesystem)
             .unwrap_or_else(|| self.filesystem.clone());
@@ -79,15 +111,7 @@ impl FileSystem {
         let response = self.client.copy(request).await?;
         let response = response.into_inner();
 
-        let request = x::WaitUntilDoneRequest {
-            copy_operation: Some(response),
-            filesystem: Some(self.filesystem.clone()),
-            timeout,
-        };
-
-        self.client.wait_until_done(request).await?;
-
-        Ok(())
+        Ok(response.id)
     }
 
     ///
@@ -138,13 +162,13 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn create_local<S1>(
-        xenon_endpoint: S1,
-    ) -> Result<Self>
-    where S1: Into<String> {
+    pub async fn create_local<S1>(xenon_endpoint: S1) -> Result<Self>
+    where
+        S1: Into<String>,
+    {
         let xenon_endpoint = xenon_endpoint.into();
         let mut client = FileSystemServiceClient::connect(xenon_endpoint.clone()).await?;
-        
+
         let response = client.local_file_systems(x::Empty {}).await?;
         let response = response.into_inner();
 
@@ -152,15 +176,20 @@ impl FileSystem {
         ensure!(identifier.is_some(), "Failed to create local filesystem.");
 
         Self::restore(identifier.unwrap(), xenon_endpoint).await
-    }    
+    }
 
     ///
     ///
     ///
-    pub async fn create_directories(
+    pub async fn create_directories<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -174,10 +203,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn create_directory(
+    pub async fn create_directory<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -191,10 +225,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn create_file(
+    pub async fn create_file<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -208,11 +247,18 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn create_symbolic_link(
+    pub async fn create_symbolic_link<P1, P2>(
         &mut self,
-        link: &FileSystemPath,
-        target: &FileSystemPath,
-    ) -> Result<()> {
+        link: P1,
+        target: P2,
+    ) -> Result<()>
+    where
+        P1: Into<FileSystemPath>,
+        P2: Into<FileSystemPath>,
+    {
+        let link = link.into();
+        let target = target.into();
+
         let request = x::CreateSymbolicLinkRequest {
             link: Some(link.proto()),
             target: Some(target.proto()),
@@ -227,11 +273,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn delete(
+    pub async fn delete<P>(
         &mut self,
-        path: &FileSystemPath,
+        path: P,
         recursive: bool,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::DeleteRequest {
             path: Some(path.proto()),
             recursive,
@@ -246,10 +297,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn exists(
+    pub async fn exists<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<bool> {
+        path: P,
+    ) -> Result<bool>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -264,10 +320,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn get_attributes(
+    pub async fn get_attributes<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<FileSystemAttributes> {
+        path: P,
+    ) -> Result<FileSystemAttributes>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -283,7 +344,7 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn get_fs_credential(&mut self) -> Result<Option<Credential>> {
+    pub async fn get_credential(&mut self) -> Result<Option<Credential>> {
         let response = self.client.get_credential(self.filesystem.clone()).await?;
         let response = response.into_inner();
 
@@ -309,7 +370,45 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn get_fs_location(&mut self) -> Result<String> {
+    pub async fn list_filesystems<S1>(xenon_endpoint: S1) -> Result<Vec<String>>
+    where
+        S1: Into<String>,
+    {
+        let xenon_endpoint = xenon_endpoint.into();
+        let mut client = FileSystemServiceClient::connect(xenon_endpoint.clone()).await?;
+
+        let response = client.list_file_systems(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        let identifiers = response.filesystems.into_iter().map(|f| f.id).collect();
+
+        Ok(identifiers)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn get_adaptor(&mut self) -> Result<String> {
+        let response = self.client.get_adaptor_name(self.filesystem.clone()).await?;
+        let response = response.into_inner();
+
+        Ok(response.name)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn get_available_adaptors(&mut self) -> Result<Vec<String>> {
+        let response = self.client.get_adaptor_names(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        Ok(response.name)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn get_location(&mut self) -> Result<String> {
         let response = self.client.get_location(self.filesystem.clone()).await?;
         let response = response.into_inner();
 
@@ -319,7 +418,17 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn get_fs_separator(&mut self) -> Result<String> {
+    pub async fn get_properties(&mut self) -> Result<HashMap<String, String>> {
+        let response = self.client.get_properties(self.filesystem.clone()).await?;
+        let response = response.into_inner();
+
+        Ok(response.properties)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn get_separator(&mut self) -> Result<String> {
         let response = self.client.get_path_separator(self.filesystem.clone()).await?;
         let response = response.into_inner();
 
@@ -329,11 +438,19 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn get_fs_properties(&mut self) -> Result<HashMap<String, String>> {
-        let response = self.client.get_properties(self.filesystem.clone()).await?;
+    pub async fn get_status(
+        &mut self,
+        copy_operation: String,
+    ) -> Result<CopyStatus> {
+        let request = x::CopyOperationRequest {
+            filesystem: Some(self.filesystem.clone()),
+            copy_operation: Some(x::CopyOperation { id: copy_operation }),
+        };
+
+        let response = self.client.get_status(request).await?;
         let response = response.into_inner();
 
-        Ok(response.properties)
+        Ok(CopyStatus::from(response))
     }
 
     ///
@@ -365,11 +482,16 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn list(
+    pub async fn list<P>(
         &mut self,
-        path: &FileSystemPath,
+        path: P,
         recursive: bool,
-    ) -> Result<Vec<FileSystemAttributes>> {
+    ) -> Result<Vec<FileSystemAttributes>>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::ListRequest {
             dir: Some(path.proto()),
             recursive,
@@ -393,29 +515,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn rename(
+    pub async fn read_from_file<P>(
         &mut self,
-        source: &FileSystemPath,
-        target: &FileSystemPath,
-    ) -> Result<()> {
-        let request = x::RenameRequest {
-            source: Some(source.proto()),
-            target: Some(target.proto()),
-            filesystem: Some(self.filesystem.clone()),
-        };
+        path: P,
+    ) -> Result<Vec<u8>>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
 
-        self.client.rename(request).await?;
-
-        Ok(())
-    }
-
-    ///
-    ///
-    ///
-    pub async fn read_from_file(
-        &mut self,
-        path: &FileSystemPath,
-    ) -> Result<Vec<u8>> {
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -438,10 +546,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn read_symbolic_link(
+    pub async fn read_symbolic_link<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<FileSystemPath> {
+        path: P,
+    ) -> Result<FileSystemPath>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -452,6 +565,32 @@ impl FileSystem {
 
         let target = FileSystemPath::from(response);
         Ok(target)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn rename<P1, P2>(
+        &mut self,
+        source: P1,
+        target: P2,
+    ) -> Result<()>
+    where
+        P1: Into<FileSystemPath>,
+        P2: Into<FileSystemPath>,
+    {
+        let source = source.into();
+        let target = target.into();
+
+        let request = x::RenameRequest {
+            source: Some(source.proto()),
+            target: Some(target.proto()),
+            filesystem: Some(self.filesystem.clone()),
+        };
+
+        self.client.rename(request).await?;
+
+        Ok(())
     }
 
     ///
@@ -483,16 +622,20 @@ impl FileSystem {
             identifier,
             client,
         })
-    }    
+    }
 
     ///
     ///
     ///
-    pub async fn set_permissions(
+    pub async fn set_permissions<P>(
         &mut self,
-        path: &FileSystemPath,
+        path: P,
         permissions: HashSet<FileSystemPermission>,
-    ) -> Result<()> {
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
         let permissions = permissions.into_iter().map(|p| p.proto().into()).collect();
 
         let request = x::SetPosixFilePermissionsRequest {
@@ -509,10 +652,15 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn set_working_directory(
+    pub async fn set_working_directory<P>(
         &mut self,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        P: Into<FileSystemPath>,
+    {
+        let path = path.into();
+
         let request = x::PathRequest {
             path: Some(path.proto()),
             filesystem: Some(self.filesystem.clone()),
@@ -526,13 +674,38 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn write_to_file<B: Into<Vec<u8>>>(
+    pub async fn wait_until_done(
+        &mut self,
+        copy_operation: String,
+        timeout: Option<u64>,
+    ) -> Result<CopyStatus> {
+        let request = x::WaitUntilDoneRequest {
+            filesystem: Some(self.filesystem.clone()),
+            copy_operation: Some(x::CopyOperation { id: copy_operation }),
+            timeout: timeout.unwrap_or_default(),
+        };
+
+        let response = self.client.wait_until_done(request).await?;
+        let response = response.into_inner();
+
+        Ok(CopyStatus::from(response))
+    }
+
+    ///
+    ///
+    ///
+    pub async fn write_to_file<B, P>(
         &mut self,
         buffer: B,
-        path: &FileSystemPath,
-    ) -> Result<()> {
+        path: P,
+    ) -> Result<()>
+    where
+        B: Into<Vec<u8>>,
+        P: Into<FileSystemPath>,
+    {
         let buffer = buffer.into();
         let size = buffer.len() as u64;
+        let path = path.into();
 
         let request = x::WriteToFileRequest {
             path: Some(path.proto()),
@@ -545,6 +718,63 @@ impl FileSystem {
         self.client.write_to_file(request).await?;
 
         Ok(())
+    }
+}
+
+///
+///
+///
+#[derive(Clone, Debug, PartialEq)]
+pub struct CopyStatus {
+    pub bytes_copied: u64,
+    pub bytes_to_copy: u64,
+    pub copy_operation: String,
+    pub done: bool,
+    pub error_message: String,
+    pub error_type: CopyErrorType,
+    pub running: bool,
+    pub state: String,
+}
+
+impl CopyStatus {
+    ///
+    ///
+    ///
+    pub(crate) fn from(status: x::CopyStatus) -> Self {
+        let error_type = CopyErrorType::from(status.error_type);
+
+        CopyStatus {
+            bytes_copied: status.bytes_copied,
+            bytes_to_copy: status.bytes_to_copy,
+            copy_operation: status.copy_operation.map(|co| co.id).unwrap_or_default(),
+            done: status.done,
+            error_message: status.error_message,
+            error_type,
+            running: status.running,
+            state: status.state,
+        }
+    }
+}
+
+///
+///
+///
+#[derive(Clone, Debug, Eq, Hash, PartialEq, FromPrimitive)]
+pub enum CopyErrorType {
+    None = 0,
+    NotFound = 1,
+    Cancelled = 2,
+    AlreadyExists = 3,
+    NotConnected = 4,
+    Xenon = 5,
+}
+
+impl CopyErrorType {
+    ///
+    ///
+    ///
+    pub(crate) fn from(error_type: i32) -> Self {
+        FromPrimitive::from_i32(error_type).expect("Expected a copy status error.")
     }
 }
 
@@ -580,7 +810,6 @@ impl FileSystemAttributes {
         let permissions = attributes
             .permissions
             .into_iter()
-            .map(|p| x::PosixFilePermission::from_i32(p).unwrap_or_default())
             .map(FileSystemPermission::from)
             .collect();
 
@@ -641,10 +870,34 @@ impl FileSystemPath {
     }
 }
 
+impl From<String> for FileSystemPath {
+    fn from(path: String) -> Self {
+        FileSystemPath::new(path)
+    }
+}
+
+impl From<&str> for FileSystemPath {
+    fn from(path: &str) -> Self {
+        FileSystemPath::new(path)
+    }
+}
+
+impl From<PathBuf> for FileSystemPath {
+    fn from(path: PathBuf) -> Self {
+        FileSystemPath::new(path)
+    }
+}
+
+impl From<&FileSystemPath> for FileSystemPath {
+    fn from(path: &FileSystemPath) -> Self {
+        path.clone()
+    }
+}
+
 ///
 ///
 ///
-#[derive(Clone, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Debug, Eq, Hash, PartialEq, FromPrimitive)]
 pub enum FileSystemPermission {
     None = 0,
     OwnerRead = 1,
@@ -662,21 +915,8 @@ impl FileSystemPermission {
     ///
     ///
     ///
-    pub(crate) fn from(permission: x::PosixFilePermission) -> FileSystemPermission {
-        use x::PosixFilePermission::*;
-
-        match permission {
-            None => FileSystemPermission::None,
-            OwnerRead => FileSystemPermission::OwnerRead,
-            OwnerWrite => FileSystemPermission::OwnerWrite,
-            OwnerExecute => FileSystemPermission::OwnerExecute,
-            GroupRead => FileSystemPermission::GroupRead,
-            GroupWrite => FileSystemPermission::GroupWrite,
-            GroupExecute => FileSystemPermission::GroupExecute,
-            OthersRead => FileSystemPermission::OthersRead,
-            OthersWrite => FileSystemPermission::OthersWrite,
-            OthersExecute => FileSystemPermission::OthersExecute,
-        }
+    pub(crate) fn from(permission: i32) -> FileSystemPermission {
+        FromPrimitive::from_i32(permission).expect("Expected a POSIX file permission.")
     }
 
     ///
@@ -707,16 +947,16 @@ mod tests {
 
     #[test]
     fn filesystempermission_fromproto_ok() {
-        let none = x::PosixFilePermission::None;
-        let owner_read = x::PosixFilePermission::OwnerRead;
-        let owner_write = x::PosixFilePermission::OwnerWrite;
-        let owner_execute = x::PosixFilePermission::OwnerExecute;
-        let group_read = x::PosixFilePermission::GroupRead;
-        let group_write = x::PosixFilePermission::GroupWrite;
-        let group_execute = x::PosixFilePermission::GroupExecute;
-        let others_read = x::PosixFilePermission::OthersRead;
-        let others_write = x::PosixFilePermission::OthersWrite;
-        let others_execute = x::PosixFilePermission::OthersExecute;
+        let none = x::PosixFilePermission::None as i32;
+        let owner_read = x::PosixFilePermission::OwnerRead as i32;
+        let owner_write = x::PosixFilePermission::OwnerWrite as i32;
+        let owner_execute = x::PosixFilePermission::OwnerExecute as i32;
+        let group_read = x::PosixFilePermission::GroupRead as i32;
+        let group_write = x::PosixFilePermission::GroupWrite as i32;
+        let group_execute = x::PosixFilePermission::GroupExecute as i32;
+        let others_read = x::PosixFilePermission::OthersRead as i32;
+        let others_write = x::PosixFilePermission::OthersWrite as i32;
+        let others_execute = x::PosixFilePermission::OthersExecute as i32;
 
         assert_eq!(FileSystemPermission::from(none), FileSystemPermission::None);
 

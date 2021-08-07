@@ -88,7 +88,7 @@ async fn copy_existing_ok() -> Result<()> {
 
     let source = FileSystemPath::new("test-slurm.job");
     let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem.copy(&source, &destination, None, false, 5000).await;
+    let result = filesystem.copy(&source, &destination, None, false).await;
 
     assert!(result.is_ok());
 
@@ -102,9 +102,7 @@ async fn copy_existingremotefs_ok() -> Result<()> {
 
     let source = FileSystemPath::new("test-slurm.job");
     let destination = FileSystemPath::new(format!("copy_{}.txt", random::<u16>()));
-    let result = filesystem1
-        .copy(&source, &destination, Some(filesystem2), false, 5000)
-        .await;
+    let result = filesystem1.copy(&source, &destination, Some(filesystem2), false).await;
 
     assert!(result.is_ok());
 
@@ -136,7 +134,7 @@ async fn create_local_ok() -> Result<()> {
 
     let mut filesystem = filesystem.unwrap();
     let path = FileSystemPath::new("/keys/unsafe_ssh_key");
-    
+
     let result = filesystem.read_from_file(&path).await;
     assert!(result.is_ok());
 
@@ -145,7 +143,6 @@ async fn create_local_ok() -> Result<()> {
 
     Ok(())
 }
-
 
 #[tokio::test]
 async fn createdirectories_existing_err() -> Result<()> {
@@ -342,7 +339,7 @@ async fn getattributes_nonexisting_err() -> Result<()> {
 async fn getfscredential_default_password() -> Result<()> {
     let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_credential().await;
+    let result = filesystem.get_credential().await;
 
     assert!(result.is_ok());
     let credential = result.unwrap();
@@ -363,7 +360,7 @@ async fn getfscredential_default_password() -> Result<()> {
 async fn getfslocation_default_location() -> Result<()> {
     let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_location().await;
+    let result = filesystem.get_location().await;
     assert!(result.is_ok());
     let location = result.unwrap();
 
@@ -376,7 +373,7 @@ async fn getfslocation_default_location() -> Result<()> {
 async fn getfsproperties_default_properties() -> Result<()> {
     let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_properties().await;
+    let result = filesystem.get_properties().await;
     assert!(result.is_ok());
     let properties = result.unwrap();
     assert!(properties.contains_key(&String::from("xenon.adaptors.filesystems.sftp.strictHostKeyChecking")));
@@ -388,7 +385,7 @@ async fn getfsproperties_default_properties() -> Result<()> {
 async fn getfsseparator_default_separator() -> Result<()> {
     let mut filesystem = create_sftp_filesystem().await?;
 
-    let result = filesystem.get_fs_separator().await;
+    let result = filesystem.get_separator().await;
     assert!(result.is_ok());
     let separator = result.unwrap();
 
