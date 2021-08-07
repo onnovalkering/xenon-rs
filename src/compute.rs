@@ -1,4 +1,5 @@
 use crate::credentials::Credential;
+use crate::storage::FileSystem;
 use crate::xenon::{self as x, scheduler_service_client::SchedulerServiceClient};
 use anyhow::Result;
 use std::collections::HashMap;
@@ -12,6 +13,7 @@ type Map<T> = std::collections::HashMap<String, T>;
 pub struct Scheduler {
     pub adaptor: String,
     client: SchedulerServiceClient<Channel>,
+    xenon_endpoint: String,
     pub(crate) scheduler: x::Scheduler,
     pub identifier: String,
 }
@@ -62,6 +64,8 @@ impl Scheduler {
         S3: Into<String>,
     {
         let adaptor = adaptor.into();
+        let xenon_endpoint = xenon_endpoint.into();
+
         let credential = match credential {
             Credential::Password(password) => {
                 x::create_scheduler_request::Credential::PasswordCredential(password.proto())
@@ -79,7 +83,7 @@ impl Scheduler {
             credential: Some(credential),
         };
 
-        let mut client = SchedulerServiceClient::connect(xenon_endpoint.into()).await?;
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.clone()).await?;
         let scheduler = client.create(request).await?.into_inner();
         let identifier = scheduler.id.clone();
 
@@ -88,7 +92,50 @@ impl Scheduler {
             scheduler,
             identifier,
             client,
+            xenon_endpoint,
         })
+    }
+
+    ///
+    ///
+    ///
+    pub async fn create_local<S1>(xenon_endpoint: S1) -> Result<Self>
+    where
+        S1: Into<String>,
+    {
+        let xenon_endpoint = xenon_endpoint.into();
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.clone()).await?;
+
+        let response = client.local_scheduler(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        Self::restore(response.id, xenon_endpoint).await
+    }    
+
+    ///
+    ///
+    ///
+    pub async fn get_credential(&mut self) -> Result<Option<Credential>> {
+        let response = self.client.get_credential(self.scheduler.clone()).await?;
+        let response = response.into_inner();
+
+        if let Some(credential) = response.credential {
+            use x::get_credential_response::Credential::*;
+
+            match credential {
+                CertificateCredential(credential) => Ok(Some(Credential::new_certificate(
+                    credential.certfile,
+                    credential.username,
+                    credential.passphrase,
+                ))),
+                PasswordCredential(credential) => {
+                    Ok(Some(Credential::new_password(credential.username, credential.password)))
+                }
+                _ => unreachable!(),
+            }
+        } else {
+            Ok(None)
+        }
     }
 
     ///
@@ -100,6 +147,26 @@ impl Scheduler {
 
         Ok(response.name)
     }
+
+    ///
+    ///
+    ///
+    pub async fn get_default_runtime(&mut self) -> Result<u32> {
+        let response = self.client.get_default_runtime(self.scheduler.clone()).await?;
+        let response = response.into_inner();
+
+        Ok(response.value)
+    }    
+
+    ///
+    ///
+    ///
+    pub async fn get_filesystem(&mut self) -> Result<FileSystem> {
+        let response = self.client.get_file_system(self.scheduler.clone()).await?;
+        let response = response.into_inner();
+
+        FileSystem::restore(response.id, self.xenon_endpoint.clone()).await
+    }    
 
     ///
     ///
@@ -162,6 +229,16 @@ impl Scheduler {
     ///
     ///
     ///
+    pub async fn get_location(&mut self) -> Result<String> {
+        let response = self.client.get_location(self.scheduler.clone()).await?;
+        let response = response.into_inner();
+
+        Ok(response.location)
+    }
+
+    ///
+    ///
+    ///
     pub async fn get_properties(&mut self) -> Result<Map<String>> {
         let response = self.client.get_properties(self.scheduler.clone()).await?;
         let response = response.into_inner();
@@ -219,6 +296,24 @@ impl Scheduler {
     ///
     ///
     ///
+    pub async fn list_schedulers<S1>(xenon_endpoint: S1) -> Result<Vec<String>>
+    where
+        S1: Into<String>,
+    {
+        let xenon_endpoint = xenon_endpoint.into();
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.clone()).await?;
+
+        let response = client.list_schedulers(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        let identifiers = response.schedulers.into_iter().map(|f| f.id).collect();
+
+        Ok(identifiers)
+    }    
+
+    ///
+    ///
+    ///
     pub async fn is_open(&mut self) -> Result<bool> {
         let response = self.client.is_open(self.scheduler.clone()).await;
         let value = if let Ok(response) = response {
@@ -242,7 +337,9 @@ impl Scheduler {
         S1: Into<String>,
         S2: Into<String>,
     {
-        let mut client = SchedulerServiceClient::connect(xenon_endpoint.into()).await?;
+        let xenon_endpoint = xenon_endpoint.into();
+
+        let mut client = SchedulerServiceClient::connect(xenon_endpoint.clone()).await?;
         let scheduler = x::Scheduler { id: identifier.into() };
 
         // Check if identifier corresponds to an existing and open scheduler.
@@ -259,12 +356,13 @@ impl Scheduler {
             scheduler,
             identifier,
             client,
+            xenon_endpoint,
         })
     }    
 
-    // ///
-    // ///
-    // ///
+    ///
+    ///
+    ///
     pub async fn submit_batch_job(
         &mut self,
         description: JobDescription,
