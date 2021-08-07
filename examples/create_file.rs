@@ -1,7 +1,7 @@
 use anyhow::Result;
 use std::collections::HashMap;
 use xenon::credentials::Credential;
-use xenon::storage::{FileSystem, FileSystemPath};
+use xenon::storage::FileSystem;
 
 // Run `docker-compose up --detach` before running this example.
 
@@ -22,14 +22,14 @@ async fn main() -> Result<()> {
     let mut filesystem = FileSystem::create("sftp", location, credential, xenon_endpoint, Some(properties)).await?;
 
     // Create a new file, if it not already exists.
-    let example_file = FileSystemPath::new("example.txt");
-    if !filesystem.exists(&example_file).await? {
-        filesystem.create_file(&example_file).await?;
+    let example_file = "./example.txt";
+    if !filesystem.exists(example_file).await? {
+        filesystem.create_file(example_file).await?;
     }
 
     // Append some text to the file.
     let text = String::from("Hello, world!\n");
-    filesystem.append_to_file(text, &example_file).await?;
+    filesystem.append_to_file(text, example_file).await?;
 
     // Close the connection to the remote filesystem.
     filesystem.close().await?;
