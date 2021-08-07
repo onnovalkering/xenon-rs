@@ -110,7 +110,7 @@ impl Scheduler {
         let response = response.into_inner();
 
         Self::restore(response.id, xenon_endpoint).await
-    }    
+    }
 
     ///
     ///
@@ -156,7 +156,7 @@ impl Scheduler {
         let response = response.into_inner();
 
         Ok(response.value)
-    }    
+    }
 
     ///
     ///
@@ -166,7 +166,7 @@ impl Scheduler {
         let response = response.into_inner();
 
         FileSystem::restore(response.id, self.xenon_endpoint.clone()).await
-    }    
+    }
 
     ///
     ///
@@ -309,7 +309,7 @@ impl Scheduler {
         let identifiers = response.schedulers.into_iter().map(|f| f.id).collect();
 
         Ok(identifiers)
-    }    
+    }
 
     ///
     ///
@@ -358,7 +358,7 @@ impl Scheduler {
             client,
             xenon_endpoint,
         })
-    }    
+    }
 
     ///
     ///

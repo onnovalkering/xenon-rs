@@ -370,24 +370,6 @@ impl FileSystem {
     ///
     ///
     ///
-    pub async fn list_filesystems<S1>(xenon_endpoint: S1) -> Result<Vec<String>>
-    where
-        S1: Into<String>,
-    {
-        let xenon_endpoint = xenon_endpoint.into();
-        let mut client = FileSystemServiceClient::connect(xenon_endpoint.clone()).await?;
-
-        let response = client.list_file_systems(x::Empty {}).await?;
-        let response = response.into_inner();
-
-        let identifiers = response.filesystems.into_iter().map(|f| f.id).collect();
-
-        Ok(identifiers)
-    }
-
-    ///
-    ///
-    ///
     pub async fn get_adaptor(&mut self) -> Result<String> {
         let response = self.client.get_adaptor_name(self.filesystem.clone()).await?;
         let response = response.into_inner();
@@ -462,6 +444,24 @@ impl FileSystem {
 
         let directory = FileSystemPath::from(response);
         Ok(directory)
+    }
+
+    ///
+    ///
+    ///
+    pub async fn list_filesystems<S1>(xenon_endpoint: S1) -> Result<Vec<String>>
+    where
+        S1: Into<String>,
+    {
+        let xenon_endpoint = xenon_endpoint.into();
+        let mut client = FileSystemServiceClient::connect(xenon_endpoint.clone()).await?;
+
+        let response = client.list_file_systems(x::Empty {}).await?;
+        let response = response.into_inner();
+
+        let identifiers = response.filesystems.into_iter().map(|f| f.id).collect();
+
+        Ok(identifiers)
     }
 
     ///
@@ -922,21 +922,8 @@ impl FileSystemPermission {
     ///
     ///
     ///
-    pub fn proto(&self) -> x::PosixFilePermission {
-        use x::PosixFilePermission::*;
-
-        match self {
-            FileSystemPermission::None => None,
-            FileSystemPermission::OwnerRead => OwnerRead,
-            FileSystemPermission::OwnerWrite => OwnerWrite,
-            FileSystemPermission::OwnerExecute => OwnerExecute,
-            FileSystemPermission::GroupRead => GroupRead,
-            FileSystemPermission::GroupWrite => GroupWrite,
-            FileSystemPermission::GroupExecute => GroupExecute,
-            FileSystemPermission::OthersRead => OthersRead,
-            FileSystemPermission::OthersWrite => OthersWrite,
-            FileSystemPermission::OthersExecute => OthersExecute,
-        }
+    pub fn proto(self) -> x::PosixFilePermission {
+        x::PosixFilePermission::from_i32(self as i32).expect("Expected a POSIX file permission.")
     }
 }
 
