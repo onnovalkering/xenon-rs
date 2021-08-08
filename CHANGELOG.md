@@ -2,6 +2,14 @@
 
 All notable changes to `xenon-rs` will be documented in this file.
 
+## [0.4.0] - 2021-08-08
+### Added
+- Added missing Xenon functions to compute and storage modules.
+
+### Changed
+- Use `tonic` and `prost` for gRPC implementation.
+- Use `Into<T>` instead of `T` where possible.
+
 ## [0.3.0] - 2021-03-03
 ### Added
 - Support for macOS (build, generate gRPC interface, and CI).
