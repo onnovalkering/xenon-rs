@@ -1,8 +1,6 @@
 use crate::xenon as x;
 
-///
-///
-///
+/// Credential used to access a remote location.
 #[derive(Clone)]
 pub enum Credential {
     Certificate(CertificateCredential),
@@ -63,9 +61,7 @@ impl Credential {
     }
 }
 
-///
-///
-///
+/// Credential variant for certificate-based access.
 #[derive(Clone)]
 pub struct CertificateCredential {
     pub certificate: String,
@@ -106,9 +102,7 @@ impl CertificateCredential {
     }
 }
 
-///
-///
-///
+/// Credential variant for username/password-based access.
 #[derive(Clone)]
 pub struct PasswordCredential {
     pub password: String,

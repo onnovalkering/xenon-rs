@@ -7,9 +7,7 @@ use tonic::transport::Channel;
 
 type Map<T> = std::collections::HashMap<String, T>;
 
-///
-///
-///
+/// Represents a scheduler that can be used to submit jobs and retrieve queue information.
 pub struct Scheduler {
     pub adaptor: String,
     client: SchedulerServiceClient<Channel>,
@@ -419,9 +417,7 @@ impl Scheduler {
     }
 }
 
-///
-///
-///
+/// Represents a Xenon job.
 #[derive(Clone, Debug, PartialEq)]
 pub struct Job {
     pub id: String,
@@ -454,9 +450,7 @@ impl Job {
     }
 }
 
-///
-///
-///
+/// Description of a job that can be submitted.
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct JobDescription {
     pub name: Option<String>,
@@ -507,9 +501,7 @@ impl JobDescription {
     }
 }
 
-///
-///
-///
+/// Contains information about a job.
 #[derive(Clone, Debug, PartialEq)]
 pub struct JobStatus {
     pub done: bool,
@@ -576,9 +568,7 @@ impl JobErrorType {
     }
 }
 
-///
-///
-///
+/// Contains information about a queue.
 #[derive(Clone, Debug, PartialEq)]
 pub struct QueueStatus {
     name: String,

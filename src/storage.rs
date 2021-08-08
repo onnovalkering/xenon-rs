@@ -10,9 +10,7 @@ use std::path::PathBuf;
 use tonic::transport::Channel;
 use tonic::Status;
 
-///
-///
-///
+/// Represents a file system that can be used to access data.
 pub struct FileSystem {
     pub adaptor: String,
     client: FileSystemServiceClient<Channel>,
@@ -721,9 +719,7 @@ impl FileSystem {
     }
 }
 
-///
-///
-///
+/// Contains information about a copy operation.
 #[derive(Clone, Debug, PartialEq)]
 pub struct CopyStatus {
     pub bytes_copied: u64,
@@ -778,9 +774,7 @@ impl CopyErrorType {
     }
 }
 
-///
-///
-///
+/// Represents a file system attribute.
 #[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemAttributes {
     pub creation_time: u64,
@@ -834,9 +828,7 @@ impl FileSystemAttributes {
     }
 }
 
-///
-///
-///
+/// Represents a file system path.
 #[derive(Clone, Debug, PartialEq)]
 pub struct FileSystemPath {
     pub path: PathBuf,
