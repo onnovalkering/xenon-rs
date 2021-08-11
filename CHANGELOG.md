@@ -2,6 +2,10 @@
 
 All notable changes to `xenon-rs` will be documented in this file.
 
+## [0.4.1] - 2021-08-11
+### Changed
+- Disable formatting of generated gRPC code.
+
 ## [0.4.0] - 2021-08-08
 ### Added
 - Added missing Xenon functions to compute and storage modules.

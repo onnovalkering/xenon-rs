@@ -1,6 +1,8 @@
-use std::io;
-
-fn main() -> io::Result<()> {
-    tonic_build::compile_protos("./src/proto/xenon.proto")?;
-    Ok(())
+fn main() -> Result<(), std::io::Error> {
+    tonic_build::configure()
+    .format(false)
+    .compile(
+        &["src/proto/xenon.proto"],
+        &["src/proto"],
+    )
 }
