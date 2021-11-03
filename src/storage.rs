@@ -608,7 +608,10 @@ impl FileSystem {
         // Check if identifier corresponds to an existing and open scheduler.
         let exists_and_open = client.is_open(filesystem.clone()).await?.into_inner().value;
         if !exists_and_open {
-            bail!("Identifier '{}' doesn't correspond to an existing and/or open filesystem.");
+            bail!(
+                "Identifier '{}' doesn't correspond to an existing and/or open filesystem.",
+                filesystem.id,
+            );
         }
 
         let adaptor = client.get_adaptor_name(filesystem.clone()).await?.into_inner().name;
