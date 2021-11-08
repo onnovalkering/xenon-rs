@@ -343,7 +343,10 @@ impl Scheduler {
         // Check if identifier corresponds to an existing and open scheduler.
         let exists_and_open = client.is_open(scheduler.clone()).await?.into_inner().value;
         if !exists_and_open {
-            bail!("Identifier '{}' doesn't correspond to an existing and/or open scheduler.");
+            bail!(
+                "Identifier '{}' doesn't correspond to an existing and/or open scheduler.",
+                scheduler.id,
+            );
         }
 
         let adaptor = client.get_adaptor_name(scheduler.clone()).await?.into_inner().name;
