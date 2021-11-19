@@ -24,7 +24,7 @@ RUN wget https://github.com/sylabs/singularity/releases/download/v${VERSION}/sin
     make -j -C ./builddir && \
     make -j -C ./builddir install
 
-FROM xenonmiddleware/slurm:20
+FROM docker.io/xenonmiddleware/slurm:20
 
 RUN apt-get update && apt-get install -y \
         ca-certificates \
