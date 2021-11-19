@@ -1,11 +1,11 @@
 [package]
 name = "xenon-rs"
-version = "0.4.1"
+version = "0.4.2"
 description = "Rust bindings to the Xenon middleware (gRPC)."
 authors = ["Onno Valkering"]
 repository = "https://github.com/onnovalkering/xenon-rs"
 documentation = "https://docs.rs/xenon-rs"
-keywords  = ["xenon", "grpc"]
+keywords  = ["hpc", "xenon-middleware", "grpc"]
 license = "MIT"
 edition = "2018"
 exclude = [

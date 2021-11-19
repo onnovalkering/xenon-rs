@@ -2,6 +2,14 @@
 
 All notable changes to `xenon-rs` will be documented in this file.
 
+## [0.4.2] - 2021-11-19
+## Fixed
+- Missing fmt argument in error message ([#1](https://github.com/onnovalkering/xenon-rs/pull/1))
+
+## Changed
+- Updated dependencies to the latest version.
+- Use fully qualified names for third-party images in Dockerfiles.
+
 ## [0.4.1] - 2021-08-11
 ### Changed
 - Disable formatting of generated gRPC code.
