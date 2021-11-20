@@ -31,6 +31,12 @@ async fn main() -> Result<()> {
     let text = String::from("Hello, world!\n");
     filesystem.append_to_file(text, example_file).await?;
 
+    // Read the contents of the file.
+    let bytes = filesystem.read_from_file(example_file).await?;
+    let text = String::from_utf8(bytes)?;
+
+    println!("File contents:\n{}", text);
+
     // Close the connection to the remote filesystem.
     filesystem.close().await?;
 
