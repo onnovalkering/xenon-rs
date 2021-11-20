@@ -4,12 +4,11 @@
 [![Coverage Status](https://coveralls.io/repos/github/onnovalkering/xenon-rs/badge.svg)](https://coveralls.io/github/onnovalkering/xenon-rs?branch=master)
 [![Crates.io](https://img.shields.io/crates/v/xenon-rs)](https://crates.io/crates/xenon-rs)
 
-This crate contains Rust bindings to the Xenon middleware (gRPC). 
+This crate contains Rust bindings to [Xenon](https://xenon-middleware.github.io). Xenon is a middleware that provides a uniform interface to various software systems that are used in the area of scientific and high-performance computing. These bindings are based on [gRPC](https://grpc.io) and require a [Xenon gRPC server](https://github.com/xenon-middleware/xenon-grpc) to attach to. These bindings are consistent with [Xenon's API](https://xenon-middleware.github.io/xenon/versions/3.0.0/javadoc).
 
 [Documentation](https://docs.rs/xenon-rs/latest/xenon)
 
 ## Usage
-The interface is kept, as much as possible, similar to [Xenon's Java API](https://xenon-middleware.github.io/xenon/versions/3.0.0/javadoc).
 
 ```rust
 use anyhow::Result;
