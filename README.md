@@ -9,7 +9,7 @@ This crate contains Rust bindings to [Xenon](https://xenon-middleware.github.io)
 [Documentation](https://docs.rs/xenon-rs/latest/xenon)
 
 ## Usage
-Compute and storage operations can be performed with instances of the `Scheduler` and `FileSystem` structs respectivly. Xenon properties, specific to the used adaptor, can be passed to configure the instances (see [here](#)).
+Compute and storage operations can be performed with instances of the `Scheduler` and `FileSystem` structs respectivly. Xenon properties, specific to the used adaptor, can be passed to configure the instances (see [here](https://github.com/onnovalkering/xenon-rs/blob/master/examples/create_file.rs)).
 
 Two types of credentials are supported: regular username/password combinations and (SSH) certificates.
 
@@ -83,6 +83,8 @@ A selection of storage operations:
 Examples of common compute operations:
 
 ```rust
+use xenon::compute::JobDescription;
+
 // Create a job description.
 let job_description = JobDescription {
     executable: Some(String::from("echo")),
