@@ -571,9 +571,7 @@ impl JobStatus {
     }
 }
 
-///
-///
-///
+/// Represents the type of errors that might occur while running a job.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum JobErrorType {
     None = 0,
@@ -639,9 +637,7 @@ impl QueueStatus {
     }
 }
 
-///
-///
-///
+/// Represents the type of errors that might occur while interacting with queues.
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum QueueErrorType {
     None = 0,

@@ -755,9 +755,7 @@ impl CopyStatus {
     }
 }
 
-///
-///
-///
+/// Represents the type of errors that might occur when performing a file copy.
 #[derive(Clone, Debug, Eq, Hash, PartialEq, FromPrimitive)]
 pub enum CopyErrorType {
     None = 0,
@@ -889,9 +887,7 @@ impl From<&FileSystemPath> for FileSystemPath {
     }
 }
 
-///
-///
-///
+/// The possible permissions to set on a file or directory.
 #[derive(Clone, Debug, Eq, Hash, PartialEq, FromPrimitive)]
 pub enum FileSystemPermission {
     None = 0,
