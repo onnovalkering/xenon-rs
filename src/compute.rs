@@ -20,12 +20,15 @@ impl Scheduler {
     ///
     ///
     ///
-    pub async fn cancel_job(
+    pub async fn cancel_job<J>(
         &mut self,
-        job: Job,
-    ) -> Result<JobStatus> {
+        job: J,
+    ) -> Result<JobStatus>
+    where
+        J: Into<Job>,
+    {
         let request = x::JobRequest {
-            job: Some(job.proto()),
+            job: Some(job.into().proto()),
             scheduler: Some(self.scheduler.clone()),
         };
 
@@ -169,12 +172,15 @@ impl Scheduler {
     ///
     ///
     ///
-    pub async fn get_job_status(
+    pub async fn get_job_status<J>(
         &mut self,
-        job: Job,
-    ) -> Result<JobStatus> {
+        job: J,
+    ) -> Result<JobStatus>
+    where
+        J: Into<Job>,
+    {
         let request = x::JobRequest {
-            job: Some(job.proto()),
+            job: Some(job.into().proto()),
             scheduler: Some(self.scheduler.clone()),
         };
 
@@ -187,11 +193,14 @@ impl Scheduler {
     ///
     ///
     ///
-    pub async fn get_job_statuses(
+    pub async fn get_job_statuses<J>(
         &mut self,
-        jobs: Vec<Job>,
-    ) -> Result<Vec<JobStatus>> {
-        let jobs = jobs.iter().map(|j| j.clone().proto()).collect();
+        jobs: Vec<J>,
+    ) -> Result<Vec<JobStatus>>
+    where
+        J: Into<Job> + Clone,
+    {
+        let jobs = jobs.iter().cloned().map(|j| j.into().proto()).collect();
 
         let request = x::GetJobStatusesRequest {
             jobs,
@@ -382,13 +391,16 @@ impl Scheduler {
     ///
     ///
     ///
-    pub async fn wait_until_done(
+    pub async fn wait_until_done<J>(
         &mut self,
-        job: Job,
+        job: J,
         timeout: Option<u64>,
-    ) -> Result<JobStatus> {
+    ) -> Result<JobStatus>
+    where
+        J: Into<Job>,
+    {
         let request = x::WaitRequest {
-            job: Some(job.proto()),
+            job: Some(job.into().proto()),
             timeout: timeout.unwrap_or_default(),
             scheduler: Some(self.scheduler.clone()),
         };
@@ -402,13 +414,16 @@ impl Scheduler {
     ///
     ///
     ///
-    pub async fn wait_until_running(
+    pub async fn wait_until_running<J>(
         &mut self,
-        job: Job,
+        job: J,
         timeout: Option<u64>,
-    ) -> Result<JobStatus> {
+    ) -> Result<JobStatus>
+    where
+        J: Into<Job>,
+    {
         let request = x::WaitRequest {
-            job: Some(job.proto()),
+            job: Some(job.into().proto()),
             timeout: timeout.unwrap_or_default(),
             scheduler: Some(self.scheduler.clone()),
         };
@@ -450,6 +465,24 @@ impl Job {
     ///
     pub(crate) fn proto(self) -> x::Job {
         x::Job { id: self.id }
+    }
+}
+
+impl From<String> for Job {
+    fn from(job: String) -> Self {
+        Job::new(job)
+    }
+}
+
+impl From<&str> for Job {
+    fn from(job: &str) -> Self {
+        Job::new(job)
+    }
+}
+
+impl From<&Job> for Job {
+    fn from(job: &Job) -> Self {
+        job.clone()
     }
 }
 

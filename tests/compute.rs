@@ -106,14 +106,14 @@ async fn getjobstatus_existing_ok() -> Result<()> {
     assert!(job.is_ok());
     let job = job.unwrap();
 
-    let job_status = scheduler.get_job_status(job.clone()).await;
+    let job_status = scheduler.get_job_status(&job).await;
     assert!(job_status.is_ok());
     let job_status = job_status.unwrap();
 
     assert!(!job_status.done);
     assert_eq!(job_status.error_type, JobErrorType::None);
 
-    scheduler.wait_until_done(job, None).await?;
+    scheduler.wait_until_done(&job, None).await?;
 
     Ok(())
 }
@@ -134,7 +134,7 @@ async fn getjobstatus_nonexisting_err() -> Result<()> {
 async fn getjobstatuses_none_empty() -> Result<()> {
     let mut scheduler = create_slurm_scheduler().await?;
 
-    let result = scheduler.get_job_statuses(vec![]).await;
+    let result = scheduler.get_job_statuses::<Job>(vec![]).await;
 
     assert!(result.is_ok());
     let result = result.unwrap();
