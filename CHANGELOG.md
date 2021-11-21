@@ -2,6 +2,10 @@
 
 All notable changes to `xenon-rs` will be documented in this file.
 
+## [0.4.3] - 2021-11-21
+## Changed
+- Compute methods accept `Into<Job>` where possible.
+
 ## [0.4.2] - 2021-11-19
 ## Fixed
 - Missing fmt argument in error message ([#1](https://github.com/onnovalkering/xenon-rs/pull/1))
