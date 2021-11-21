@@ -49,16 +49,16 @@ A selection of compute operations:
 
 | Method                   | Description |
 |------------------------|-------------|
-| [`cancel_job`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.cancel_job) | Cancel a job. |
-| [`get_job_status`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_job_status) | Get the status of a job. |
-| [`get_job_statuses`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_job_statuses) | Get the status of multiple jobs. |
-| [`get_jobs`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_jobs) | Get IDs of all active jobs. |
-| [`get_queue_names`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_queue_names) | Get the names of the available queues. |
-| [`get_queue_status`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_queue_status) | Get the status of a queue. |
-| [`get_queue_statuses`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.get_queue_statuses) | Get the status of all queues. |
-| [`submit_batch_job`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.submit_batch_job) | Submit a batch job. |
-| [`wait_until_done`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.wait_until_done) | Wait until a job is done or until it times out. |
-| [`wait_until_running`](https://docs.rs/xenon-rs/0.4.2/xenon/compute/struct.Scheduler.html#method.wait_until_running) | Wait until a job is running or until it times out. |
+| [`cancel_job`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.cancel_job) | Cancel a job. |
+| [`get_job_status`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_job_status) | Get the status of a job. |
+| [`get_job_statuses`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_job_statuses) | Get the status of multiple jobs. |
+| [`get_jobs`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_jobs) | Get IDs of all active jobs. |
+| [`get_queue_names`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_queue_names) | Get the names of the available queues. |
+| [`get_queue_status`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_queue_status) | Get the status of a queue. |
+| [`get_queue_statuses`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.get_queue_statuses) | Get the status of all queues. |
+| [`submit_batch_job`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.submit_batch_job) | Submit a batch job. |
+| [`wait_until_done`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.wait_until_done) | Wait until a job is done or until it times out. |
+| [`wait_until_running`](https://docs.rs/xenon-rs/latest/xenon/compute/struct.Scheduler.html#method.wait_until_running) | Wait until a job is running or until it times out. |
 
 ### Storage
 A selection of storage operations:
@@ -66,18 +66,18 @@ A selection of storage operations:
 | Method                 | Description |
 |------------------------|-------------|
 | [`append_to_file`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.append_to_file) | Append bytes to a file.  |
-| [`copy`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.copy) | Copy a file. |
-| [`create_directories`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.create_directories) | Create one or more new directories. |
-| [`create_directory`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.create_directory) | Create a new directory. |
-| [`create_file`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.create_file) | Create a new file. |
-| [`create_symbolic_link`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.create_symbolic_link) | Create a symbolic link. |
-| [`delete`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.delete) | Delete a file. |
-| [`exists`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.exists) | Check if a file exists. |
-| [`read_from_file`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.read_from_file) | Read bytes from a file. |
-| [`read_symbolic_link`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.read_symbolic_link) | Read the target of a symbolic link. |
-| [`rename`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.rename) | Rename a file. |
-| [`set_permissions`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.set_permissions) | Set permissions of a file or directory. |
-| [`write_to_file`](https://docs.rs/xenon-rs/0.4.2/xenon/storage/struct.FileSystem.html#method.write_to_file) | Write bytes to a file. |
+| [`copy`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.copy) | Copy a file. |
+| [`create_directories`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.create_directories) | Create one or more new directories. |
+| [`create_directory`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.create_directory) | Create a new directory. |
+| [`create_file`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.create_file) | Create a new file. |
+| [`create_symbolic_link`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.create_symbolic_link) | Create a symbolic link. |
+| [`delete`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.delete) | Delete a file. |
+| [`exists`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.exists) | Check if a file exists. |
+| [`read_from_file`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.read_from_file) | Read bytes from a file. |
+| [`read_symbolic_link`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.read_symbolic_link) | Read the target of a symbolic link. |
+| [`rename`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.rename) | Rename a file. |
+| [`set_permissions`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.set_permissions) | Set permissions of a file or directory. |
+| [`write_to_file`](https://docs.rs/xenon-rs/latest/xenon/storage/struct.FileSystem.html#method.write_to_file) | Write bytes to a file. |
 
 ## Examples
 Examples of common compute operations:
